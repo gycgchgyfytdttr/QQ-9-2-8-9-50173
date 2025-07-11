@@ -117,7 +117,7 @@ function SansHubLib:CreateWindow(name, version)
     minimizeButton.Position = UDim2.new(1, -65, 0, 10)
     minimizeButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
     minimizeButton.BackgroundTransparency = 0
-    minimizeButton.Text = "—"
+    minimizeButton.Text = "缩小"
     minimizeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
     minimizeButton.TextSize = 16
     minimizeButton.Font = Enum.Font.GothamBold
@@ -132,7 +132,7 @@ function SansHubLib:CreateWindow(name, version)
     closeButton.Position = UDim2.new(1, -35, 0, 10)
     closeButton.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
     closeButton.BackgroundTransparency = 0
-    closeButton.Text = "×"
+    closeButton.Text = "关闭"
     closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
     closeButton.TextSize = 16
     closeButton.Font = Enum.Font.GothamBold
@@ -165,7 +165,7 @@ function SansHubLib:CreateWindow(name, version)
     tabFrame.Parent = mainFrame
 
     local contentFrame = Instance.new("ScrollingFrame")
-    contentFrame.Size = UDim2.new(0, 250, 1, -70)
+    contentFrame.Size = UDim2.new(0, 350, 1, -70)
     contentFrame.Position = UDim2.new(0, 100, 0, 60)
     contentFrame.BackgroundTransparency = 1
     contentFrame.ScrollBarThickness = 5
