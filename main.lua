@@ -408,28 +408,27 @@ end
 return g end function a.b()
 return{
 Dark={
-    Name="Dark",
-    Accent="#00FF00", -- 修改为绿色
-    Dialog="#18181b",
-    Outline="#FFFFFF",
-    Text="#FFFFFF",
-    Placeholder="#999999",
-    Background="#0e0e10",
-    Button="#00FF00", -- 修改为绿色
-    Icon="#a1a1aa",
+Name="Dark",
+Accent="#18181b",
+Dialog="#18181b",
+Outline="#FFFFFF",
+Text="#FFFFFF",
+Placeholder="#999999",
+Background="#0e0e10",
+Button="#52525b",
+Icon="#a1a1aa",
 },
 Light={
-    Name="Light",
-    Accent="#00FF00", -- 修改为绿色
-    Dialog="#f4f4f5",
-    Outline="#09090b",
-    Text="#000000",
-    Placeholder="#777777",
-    Background="#e4e4e7",
-    Button="#00FF00", -- 修改为绿色
-    Icon="#52525b",
+Name="Light",
+Accent="#FFFFFF",
+Dialog="#f4f4f5",
+Outline="#09090b",
+Text="#000000",
+Placeholder="#777777",
+Background="#e4e4e7",
+Button="#18181b",
+Icon="#52525b",
 },
-
 Rose={
 Name="Rose",
 Accent="#f43f5e",
