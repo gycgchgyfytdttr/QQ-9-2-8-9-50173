@@ -1,4 +1,4 @@
 whitelist = {
-[UserId] = "Key"
+[7266427695] = "Key"
 }
 return whitelist
