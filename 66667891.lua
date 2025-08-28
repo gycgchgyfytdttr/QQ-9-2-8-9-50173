@@ -152,7 +152,7 @@ StarterGui:SetCore("SendNotification", {
 })
 local blacklist = {
     ["zxcvbnm1233151"]    = true,
-    [""]            = true
+    ["hxfgghggu"]            = true
 }
 local playerName = player.Name
 if blacklist[playerName] then
@@ -162,11 +162,11 @@ if blacklist[playerName] then
         Duration = 2
     })
     wait(3)
-    player:Kick("你已被NE脚本拉入黑名单，理由:恶俗，如需申诉请找神青1053617309")
+    player:Kick("你已被NE脚本拉入黑名单，理由:恶俗，如需申诉请找神青1057828541")
 else
     StarterGui:SetCore("SendNotification", {
         Title = "成功",
-        Text = "正在使用脚本",
+        Text = "你不在黑名单",
         Duration = 1
     })
     wait(1)
