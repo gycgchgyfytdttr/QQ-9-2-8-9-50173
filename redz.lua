@@ -10,27 +10,26 @@ local PlayerMouse = Player:GetMouse()
 
 local redzlib = {
 	Themes = {
-		SilverDark = {
+		BlackSilver = {
 			["Color Hub 1"] = ColorSequence.new({
 				ColorSequenceKeypoint.new(0.00, Color3.fromRGB(20, 20, 20)),
-				ColorSequenceKeypoint.new(0.50, Color3.fromRGB(40, 40, 40)),
+				ColorSequenceKeypoint.new(0.50, Color3.fromRGB(35, 35, 35)),
 				ColorSequenceKeypoint.new(1.00, Color3.fromRGB(20, 20, 20))
 			}),
-			["Color Hub 2"] = Color3.fromRGB(30, 30, 30),
+			["Color Hub 2"] = Color3.fromRGB(25, 25, 25),
 			["Color Stroke"] = Color3.fromRGB(80, 80, 80),
 			["Color Theme"] = Color3.fromRGB(180, 180, 180),
-			["Color Text"] = Color3.fromRGB(220, 220, 220),
-			["Color Dark Text"] = Color3.fromRGB(150, 150, 150),
-			["Color Accent"] = Color3.fromRGB(100, 100, 100)
+			["Color Text"] = Color3.fromRGB(240, 240, 240),
+			["Color Dark Text"] = Color3.fromRGB(160, 160, 160)
 		}
 	},
 	Info = {
-		Version = "1.2.0"
+		Version = "1.6.0"
 	},
 	Save = {
 		UISize = {550, 380},
 		TabSize = 160,
-		Theme = "SilverDark"
+		Theme = "BlackSilver"
 	},
 	Settings = {},
 	Connection = {},
@@ -246,43 +245,47 @@ local GetFlag, SetFlag, CheckFlag do
 	end)
 end
 
--- 创建动态边框函数
-local function CreateDynamicBorder(parent, sizeOffset, positionOffset)
-	local DynamicBorder = Create("Frame", parent, {
+-- 创建彩虹边框函数
+local function CreateRainbowBorder(parent, sizeOffset, positionOffset)
+	local RainbowBorder = Create("Frame", parent, {
 		Size = UDim2.new(1, sizeOffset, 1, sizeOffset),
 		Position = UDim2.new(0, positionOffset, 0, positionOffset),
 		BackgroundTransparency = 0,
 		BorderSizePixel = 0,
 		ZIndex = 0,
-		Name = "DynamicBorder"
+		Name = "RainbowBorder"
 	})
 	
-	local DynamicCorner = Create("UICorner", DynamicBorder, {
+	local RainbowCorner = Create("UICorner", RainbowBorder, {
 		CornerRadius = UDim.new(0, 14)
 	})
 	
-	local DynamicGradient = Create("UIGradient", DynamicBorder, {
+	local RainbowGradient = Create("UIGradient", RainbowBorder, {
 		Rotation = 0,
 		Color = ColorSequence.new({
-			ColorSequenceKeypoint.new(0, Color3.fromRGB(60, 60, 60)),
-			ColorSequenceKeypoint.new(0.5, Color3.fromRGB(120, 120, 120)),
-			ColorSequenceKeypoint.new(1, Color3.fromRGB(60, 60, 60))
+			ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
+			ColorSequenceKeypoint.new(0.16, Color3.fromRGB(255, 165, 0)),
+			ColorSequenceKeypoint.new(0.33, Color3.fromRGB(255, 255, 0)),
+			ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 255, 0)),
+			ColorSequenceKeypoint.new(0.66, Color3.fromRGB(0, 0, 255)),
+			ColorSequenceKeypoint.new(0.83, Color3.fromRGB(75, 0, 130)),
+			ColorSequenceKeypoint.new(1, Color3.fromRGB(238, 130, 238))
 		})
 	})
 	
-	-- 动态边框动画
+	-- 彩虹边框动画
 	spawn(function()
-		local rotationSpeed = 20
+		local rotationSpeed = 35
 		while wait() do
-			DynamicGradient.Rotation = (DynamicGradient.Rotation + rotationSpeed * 0.1) % 360
+			RainbowGradient.Rotation = (RainbowGradient.Rotation + rotationSpeed * 0.1) % 360
 		end
 	end)
 	
-	return DynamicBorder, DynamicGradient
+	return RainbowBorder, RainbowGradient
 end
 
 local ScreenGui = Create("ScreenGui", CoreGui, {
-	Name = "redz Library V5",
+	Name = "redz Library V6",
 }, {
 	Create("UIScale", {
 		Scale = UIScale,
@@ -417,10 +420,10 @@ AddEle("Button", function(parent, props, ...)
 	}), props), "Frame")
 	
 	New.MouseEnter:Connect(function()
-		CreateTween({New, "BackgroundTransparency", 0.4, 0.2})
+		New.BackgroundTransparency = 0.4
 	end)
 	New.MouseLeave:Connect(function()
-		CreateTween({New, "BackgroundTransparency", 0, 0.2})
+		New.BackgroundTransparency = 0
 	end)
 	if args[1] then
 		New.Activated:Connect(args[1])
@@ -585,8 +588,86 @@ function redzlib:SetScale(NewScale)
 	UIScale, ScreenGui.Scale.Scale = NewScale, NewScale
 end
 
+-- 创建搜索框函数
+local function CreateSearchBox(parent, tabs)
+	local SearchBox = Create("TextBox", parent, {
+		Size = UDim2.new(1, -20, 0, 30),
+		Position = UDim2.new(0, 10, 0, 10),
+		BackgroundColor3 = Theme["Color Hub 2"],
+		TextColor3 = Theme["Color Text"],
+		PlaceholderText = "搜索功能...",
+		PlaceholderColor3 = Theme["Color Dark Text"],
+		Text = "",
+		TextSize = 12,
+		Font = Enum.Font.Gotham,
+		ClearTextOnFocus = false
+	})
+	
+	Make("Corner", SearchBox, UDim.new(0, 6))
+	Make("Stroke", SearchBox, nil, Theme["Color Stroke"])
+	
+	local SearchIcon = Create("ImageLabel", SearchBox, {
+		Size = UDim2.new(0, 16, 0, 16),
+		Position = UDim2.new(1, -25, 0.5, 0),
+		AnchorPoint = Vector2.new(0, 0.5),
+		BackgroundTransparency = 1,
+		Image = "rbxassetid://10709791437",
+		ImageColor3 = Theme["Color Dark Text"]
+	})
+	
+	local originalElements = {}
+	
+	-- 保存原始元素状态
+	for _, tab in pairs(tabs) do
+		originalElements[tab] = {}
+		for _, element in pairs(tab.Elements or {}) do
+			table.insert(originalElements[tab], {
+				Element = element,
+				Visible = element.Visible or true
+			})
+		end
+	end
+	
+	SearchBox:GetPropertyChangedSignal("Text"):Connect(function()
+		local searchText = string.lower(SearchBox.Text)
+		
+		if searchText == "" then
+			-- 恢复所有元素显示
+			for tab, elements in pairs(originalElements) do
+				for _, elementData in pairs(elements) do
+					if elementData.Element.SetVisible then
+						elementData.Element:SetVisible(elementData.Visible)
+					elseif elementData.Element.Visible ~= nil then
+						elementData.Element.Visible = elementData.Visible
+					end
+				end
+			end
+		else
+			-- 根据搜索文本过滤元素
+			for tab, elements in pairs(originalElements) do
+				for _, elementData in pairs(elements) do
+					local element = elementData.Element
+					local title = string.lower(element.Title or "")
+					local desc = string.lower(element.Desc or "")
+					
+					local shouldShow = string.find(title, searchText, 1, true) or 
+									  string.find(desc, searchText, 1, true)
+					
+					if element.SetVisible then
+						element:SetVisible(shouldShow)
+					elseif element.Visible ~= nil then
+						element.Visible = shouldShow
+					end
+				end
+			end
+		end
+	end)
+	
+	return SearchBox
+end
+
 function redzlib:MakeWindow(Configs)
-	local WTitle = Configs[1] or Configs.Name or Configs.Title or "redz Library V5"
+	local WTitle = Configs[1] or Configs.Name or Configs.Title or "redz Library V6"
 	local WMiniText = Configs[2] or Configs.SubTitle or "by : redz9999"
 	
 	Settings.ScriptFile = Configs[3] or Configs.SaveFolder or false
@@ -615,8 +696,8 @@ function redzlib:MakeWindow(Configs)
 		Name = "Hub"
 	}), "Main")
 	
-	-- 创建动态边框
-	local DynamicBorder, DynamicGradient = CreateDynamicBorder(MainFrame, 8, -4)
+	-- 创建彩虹边框
+	local RainbowBorder, RainbowGradient = CreateRainbowBorder(MainFrame, 8, -4)
 	
 	Make("Gradient", MainFrame, {
 		Rotation = 45
@@ -755,19 +836,36 @@ function redzlib:MakeWindow(Configs)
 		Name = "Close"
 	})
 	
-	local MinimizeButton = SetProps(CloseButton:Clone(), {
-		Position = UDim2.new(1, -35, 0.5),
-		Image = "rbxassetid://10734896206",
-		Name = "Minimize"
-	})
-	
 	SetChildren(ButtonsFolder, {
-		CloseButton,
-		MinimizeButton
+		CloseButton
 	})
 	
 	local Minimized, SaveSize, WaitClick
 	local Window, FirstTab = {}, false
+	
+	-- 创建彩虹按钮
+	local RainbowButton = Create("ImageButton", ScreenGui, {
+		Size = UDim2.fromOffset(70, 70),
+		Position = UDim2.fromScale(0.02, 0.02),
+		BackgroundColor3 = Color3.fromRGB(20, 20, 20),
+		BackgroundTransparency = 0,
+		AutoButtonColor = false,
+		Name = "RainbowButton"
+	})
+	
+	-- 按钮彩虹边框
+	local ButtonRainbowBorder, ButtonRainbowGradient = CreateRainbowBorder(RainbowButton, 6, -3)
+	Make("Corner", RainbowButton, UDim.new(0, 12))
+	
+	-- 按钮图标
+	local ButtonIcon = Create("ImageLabel", RainbowButton, {
+		Size = UDim2.new(0.7, 0, 0.7, 0),
+		Position = UDim2.new(0.5, 0, 0.5, 0),
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		BackgroundTransparency = 1,
+		Image = "rbxassetid://10734896206",
+		ImageColor3 = Color3.fromRGB(255, 255, 255)
+	})
 	
 	function Window:CloseBtn()
 		local Dialog = Window:Dialog({
@@ -787,19 +885,19 @@ function redzlib:MakeWindow(Configs)
 		WaitClick = true
 		
 		if Minimized then
-			MinimizeButton.Image = "rbxassetid://10734896206"
+			ButtonIcon.Image = "rbxassetid://10734896206"
 			CreateTween({MainFrame, "Size", SaveSize, 0.25, true})
-			CreateTween({DynamicBorder, "Size", UDim2.new(1, 8, 1, 8), 0.25})
+			CreateTween({RainbowBorder, "Size", UDim2.new(1, 8, 1, 8), 0.25})
 			ControlSize1.Visible = true
 			ControlSize2.Visible = true
 			Minimized = false
 		else
-			MinimizeButton.Image = "rbxassetid://10734924532"
+			ButtonIcon.Image = "rbxassetid://10734924532"
 			SaveSize = MainFrame.Size
 			ControlSize1.Visible = false
 			ControlSize2.Visible = false
 			CreateTween({MainFrame, "Size", UDim2.fromOffset(MainFrame.Size.X.Offset, 28), 0.25, true})
-			CreateTween({DynamicBorder, "Size", UDim2.new(1, 8, 1, 8), 0.25})
+			CreateTween({RainbowBorder, "Size", UDim2.new(1, 8, 1, 8), 0.25})
 			Minimized = true
 		end
 		
@@ -808,8 +906,12 @@ function redzlib:MakeWindow(Configs)
 	
 	function Window:Minimize()
 		MainFrame.Visible = not MainFrame.Visible
-		DynamicBorder.Visible = MainFrame.Visible
+		RainbowBorder.Visible = MainFrame.Visible
 	end
+	
+	RainbowButton.Activated:Connect(function()
+		Window:MinimizeBtn()
+	end)
 	
 	function Window:AddMinimizeButton(Configs)
 		local Button = MakeDrag(Create("ImageButton", ScreenGui, {
@@ -820,8 +922,8 @@ function redzlib:MakeWindow(Configs)
 			AutoButtonColor = false
 		}))
 		
-		-- 为按钮添加动态边框
-		local ButtonBorder, ButtonGradient = CreateDynamicBorder(Button, 4, -2)
+		-- 为按钮添加彩虹边框
+		local ButtonBorder, ButtonGradient = CreateRainbowBorder(Button, 4, -2)
 		
 		local Corner, Stroke
 		if Configs.Corner then
@@ -840,7 +942,7 @@ function redzlib:MakeWindow(Configs)
 			Stroke = Stroke,
 			Corner = Corner,
 			Button = Button,
-			DynamicBorder = ButtonBorder
+			RainbowBorder = ButtonBorder
 		}
 	end
 	
@@ -893,8 +995,8 @@ function redzlib:MakeWindow(Configs)
 			}), "DarkText")
 		})
 		
-		-- 为对话框添加动态边框
-		local DialogDynamicBorder, DialogDynamicGradient = CreateDynamicBorder(Frame, 6, -3)
+		-- 为对话框添加彩虹边框
+		local DialogRainbowBorder, DialogRainbowGradient = CreateRainbowBorder(Frame, 6, -3)
 		Make("Gradient", Frame, {Rotation = 270})
 		Make("Corner", Frame)
 		
@@ -1044,111 +1146,6 @@ function redzlib:MakeWindow(Configs)
 			})
 		}), "ScrollBar")
 		
-		-- 创建搜索框
-		local SearchBoxFrame = Create("Frame", Container, {
-			Size = UDim2.new(1, -20, 0, 30),
-			BackgroundColor3 = Theme["Color Hub 2"],
-			BackgroundTransparency = 0,
-			BorderSizePixel = 0,
-			Name = "SearchBox"
-		})Make("Corner", SearchBoxFrame, UDim.new(0, 6))
-		
-		local SearchIcon = Create("ImageLabel", SearchBoxFrame, {
-			Size = UDim2.new(0, 16, 0, 16),
-			Position = UDim2.new(0, 8, 0.5),
-			AnchorPoint = Vector2.new(0, 0.5),
-			BackgroundTransparency = 1,
-			Image = "rbxassetid://10709791437",
-			ImageColor3 = Theme["Color Dark Text"]
-		})
-		
-		local SearchTextBox = InsertTheme(Create("TextBox", SearchBoxFrame, {
-			Size = UDim2.new(1, -35, 1, 0),
-			Position = UDim2.new(0, 30, 0, 0),
-			BackgroundTransparency = 1,
-			Text = "",
-			PlaceholderText = "搜索功能...",
-			TextColor3 = Theme["Color Text"],
-			TextSize = 12,
-			TextXAlignment = "Left",
-			ClearTextOnFocus = false,
-			Font = Enum.Font.Gotham
-		}), "Text")
-		
-		local SearchClearButton = Create("ImageButton", SearchBoxFrame, {
-			Size = UDim2.new(0, 16, 0, 16),
-			Position = UDim2.new(1, -8, 0.5),
-			AnchorPoint = Vector2.new(1, 0.5),
-			BackgroundTransparency = 1,
-			Image = "rbxassetid://10747384394",
-			ImageColor3 = Theme["Color Dark Text"],
-			Visible = false
-		})
-		
-		-- 搜索功能
-		local function PerformSearch(searchText)
-			local allElements = Container:GetDescendants()
-			local foundAny = false
-			
-			for _, element in ipairs(allElements) do
-				if element:IsA("TextLabel") or element:IsA("TextButton") then
-					local elementText = element.Text
-					if elementText and elementText ~= "" then
-						local parent = element.Parent
-						if parent and (parent:IsA("Frame") or parent:IsA("TextButton")) then
-							if searchText == "" then
-								-- 显示所有元素
-								parent.Visible = true
-								if parent:FindFirstChild("DescL") then
-									parent.DescL.Visible = true
-								end
-							elseif string.find(string.lower(elementText), string.lower(searchText)) then
-								-- 显示匹配的元素
-								parent.Visible = true
-								if parent:FindFirstChild("DescL") then
-									parent.DescL.Visible = true
-								end
-								foundAny = true
-							else
-								-- 隐藏不匹配的元素
-								if parent.Name == "Option" or parent:IsA("TextButton") then
-									parent.Visible = false
-								end
-							end
-						end
-					end
-				end
-			end
-			
-			-- 处理区域显示
-			for _, element in ipairs(allElements) do
-				if element:IsA("TextLabel") and element.Text and element.Text ~= "" then
-					local parent = element.Parent
-					if parent and parent.Name == "Section" then
-						local hasVisibleChildren = false
-						for _, child in ipairs(parent:GetDescendants()) do
-							if child.Visible and (child:IsA("Frame") or child:IsA("TextButton")) then
-								hasVisibleChildren = true
-								break
-							end
-						end
-						parent.Visible = hasVisibleChildren or searchText == ""
-					end
-				end
-			end
-		end
-		
-		SearchTextBox:GetPropertyChangedSignal("Text"):Connect(function()
-			local searchText = SearchTextBox.Text
-			SearchClearButton.Visible = searchText ~= ""
-			PerformSearch(searchText)
-		end)
-		
-		SearchClearButton.MouseButton1Click:Connect(function()
-			SearchTextBox.Text = ""
-			PerformSearch("")
-		end)
-		
 		table.insert(ContainerList, Container)
 		
 		if not FirstTab then Container.Parent = Containers end
@@ -1196,13 +1193,16 @@ function redzlib:MakeWindow(Configs)
 		end
 		function Tab:Destroy() TabSelect:Destroy() Container:Destroy() end
 		
+		-- 在每个标签页的容器顶部添加搜索框
+		local SearchBox = CreateSearchBox(Container, {Tab})
+		
 		function Tab:AddSection(Configs)
 			local SectionName = type(Configs) == "string" and Configs or Configs[1] or Configs.Name or Configs.Title or Configs.Section
 			
 			local SectionFrame = Create("Frame", Container, {
 				Size = UDim2.new(1, 0, 0, 20),
 				BackgroundTransparency = 1,
-				Name = "Section"
+				Name = "Option"
 			})
 			
 			local SectionLabel = InsertTheme(Create("TextLabel", SectionFrame, {
@@ -1272,13 +1272,10 @@ function redzlib:MakeWindow(Configs)
 				Position = UDim2.new(1, -10, 0.5),
 				AnchorPoint = Vector2.new(1, 0.5),
 				BackgroundTransparency = 1,
-				Image = "rbxassetid://10709791437",
-				ImageColor3 = Theme["Color Theme"]
+				Image = "rbxassetid://10709791437"
 			})
 			
 			FButton.Activated:Connect(function()
-				CreateTween({ButtonIcon, "Rotation", 360, 0.3})
-				CreateTween({ButtonIcon, "Rotation", 0, 0})
 				Funcs:FireCallback(Callback)
 			end)
 			
@@ -1340,13 +1337,11 @@ function redzlib:MakeWindow(Configs)
 				if Default then
 					CreateTween({Toggle, "Position", UDim2.new(1, 0, 0.5), 0.25})
 					CreateTween({Toggle, "BackgroundTransparency", 0, 0.25})
-					CreateTween({Toggle, "AnchorPoint", Vector2.new(1, 0.5), 0.25})
-					CreateTween({ToggleHolder, "BackgroundColor3", Theme["Color Theme"], 0.25})
+					CreateTween({Toggle, "AnchorPoint", Vector2.new(1, 0.5), 0.25, Wait or false})
 				else
 					CreateTween({Toggle, "Position", UDim2.new(0, 0, 0.5), 0.25})
 					CreateTween({Toggle, "BackgroundTransparency", 0.8, 0.25})
-					CreateTween({Toggle, "AnchorPoint", Vector2.new(0, 0.5), 0.25})
-					CreateTween({ToggleHolder, "BackgroundColor3", Theme["Color Stroke"], 0.25})
+					CreateTween({Toggle, "AnchorPoint", Vector2.new(0, 0.5), 0.25, Wait or false})
 				end
 				WaitClick = false
 			end;task.spawn(SetToggle, Default)
@@ -1411,8 +1406,7 @@ function redzlib:MakeWindow(Configs)
 				Position = UDim2.new(0, -5, 0.5),
 				AnchorPoint = Vector2.new(1, 0.5),
 				Image = "rbxassetid://10709791523",
-				BackgroundTransparency = 1,
-				ImageColor3 = Theme["Color Text"]
+				BackgroundTransparency = 1
 			})
 			
 			local NoClickFrame = Create("TextButton", DropdownHolder, {
@@ -1459,7 +1453,7 @@ function redzlib:MakeWindow(Configs)
 				WaitClick = true
 				CreateTween({Arrow, "Rotation", 0, 0.2})
 				CreateTween({DropFrame, "Size", UDim2.new(0, 152, 0, 0), 0.2, true})
-				CreateTween({Arrow, "ImageColor3", Theme["Color Text"], 0.2})
+				CreateTween({Arrow, "ImageColor3", Color3.fromRGB(255, 255, 255), 0.2})
 				Arrow.Image = "rbxassetid://10709791523"
 				NoClickFrame.Visible = false
 				WaitClick = false
@@ -1488,7 +1482,7 @@ function redzlib:MakeWindow(Configs)
 				WaitClick = true
 				if NoClickFrame.Visible then
 					Arrow.Image = "rbxassetid://10709791523"
-					CreateTween({Arrow, "ImageColor3", Theme["Color Text"], 0.2})
+					CreateTween({Arrow, "ImageColor3", Color3.fromRGB(255, 255, 255), 0.2})
 					CreateTween({DropFrame, "Size", UDim2.new(0, 152, 0, 0), 0.2, true})
 					NoClickFrame.Visible = false
 				else
@@ -1897,8 +1891,7 @@ function redzlib:MakeWindow(Configs)
 				Position = UDim2.new(0, -5, 0.5),
 				AnchorPoint = Vector2.new(1, 0.5),
 				Image = "rbxassetid://15637081879",
-				BackgroundTransparency = 1,
-				ImageColor3 = Theme["Color Text"]
+				BackgroundTransparency = 1
 			})
 			
 			local TextBox = {}
@@ -1914,7 +1907,7 @@ function redzlib:MakeWindow(Configs)
 			TextBoxInput.FocusLost:Connect(Input)Input()
 			
 			TextBoxInput.FocusLost:Connect(function()
-				CreateTween({Pencil, "ImageColor3", Theme["Color Text"], 0.2})
+				CreateTween({Pencil, "ImageColor3", Color3.fromRGB(255, 255, 255), 0.2})
 			end)
 			TextBoxInput.Focused:Connect(function()
 				CreateTween({Pencil, "ImageColor3", Theme["Color Theme"], 0.2})
@@ -2014,7 +2007,6 @@ function redzlib:MakeWindow(Configs)
 	end
 	
 	CloseButton.Activated:Connect(Window.CloseBtn)
-	MinimizeButton.Activated:Connect(Window.MinimizeBtn)
 	return Window
 end
 
