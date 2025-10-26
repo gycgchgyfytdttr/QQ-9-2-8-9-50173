@@ -13,18 +13,18 @@ local redzlib = {
 		BlackSilver = {
 			["Color Hub 1"] = ColorSequence.new({
 				ColorSequenceKeypoint.new(0.00, Color3.fromRGB(20, 20, 20)),
-				ColorSequenceKeypoint.new(0.50, Color3.fromRGB(35, 35, 35)),
+				ColorSequenceKeypoint.new(0.50, Color3.fromRGB(40, 40, 40)),
 				ColorSequenceKeypoint.new(1.00, Color3.fromRGB(20, 20, 20))
 			}),
-			["Color Hub 2"] = Color3.fromRGB(25, 25, 25),
-			["Color Stroke"] = Color3.fromRGB(80, 80, 80),
+			["Color Hub 2"] = Color3.fromRGB(30, 30, 30),
+			["Color Stroke"] = Color3.fromRGB(100, 100, 100),
 			["Color Theme"] = Color3.fromRGB(180, 180, 180),
 			["Color Text"] = Color3.fromRGB(240, 240, 240),
-			["Color Dark Text"] = Color3.fromRGB(160, 160, 160)
+			["Color Dark Text"] = Color3.fromRGB(150, 150, 150)
 		}
 	},
 	Info = {
-		Version = "1.6.0"
+		Version = "1.1.0"
 	},
 	Save = {
 		UISize = {550, 380},
@@ -245,47 +245,27 @@ local GetFlag, SetFlag, CheckFlag do
 	end)
 end
 
--- 创建彩虹边框函数
-local function CreateRainbowBorder(parent, sizeOffset, positionOffset)
-	local RainbowBorder = Create("Frame", parent, {
+-- 创建黑银色边框函数
+local function CreateSilverBorder(parent, sizeOffset, positionOffset)
+	local SilverBorder = Create("Frame", parent, {
 		Size = UDim2.new(1, sizeOffset, 1, sizeOffset),
 		Position = UDim2.new(0, positionOffset, 0, positionOffset),
+		BackgroundColor3 = Color3.fromRGB(100, 100, 100),
 		BackgroundTransparency = 0,
 		BorderSizePixel = 0,
 		ZIndex = 0,
-		Name = "RainbowBorder"
+		Name = "SilverBorder"
 	})
 	
-	local RainbowCorner = Create("UICorner", RainbowBorder, {
+	local SilverCorner = Create("UICorner", SilverBorder, {
 		CornerRadius = UDim.new(0, 14)
 	})
 	
-	local RainbowGradient = Create("UIGradient", RainbowBorder, {
-		Rotation = 0,
-		Color = ColorSequence.new({
-			ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
-			ColorSequenceKeypoint.new(0.16, Color3.fromRGB(255, 165, 0)),
-			ColorSequenceKeypoint.new(0.33, Color3.fromRGB(255, 255, 0)),
-			ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 255, 0)),
-			ColorSequenceKeypoint.new(0.66, Color3.fromRGB(0, 0, 255)),
-			ColorSequenceKeypoint.new(0.83, Color3.fromRGB(75, 0, 130)),
-			ColorSequenceKeypoint.new(1, Color3.fromRGB(238, 130, 238))
-		})
-	})
-	
-	-- 彩虹边框动画
-	spawn(function()
-		local rotationSpeed = 35
-		while wait() do
-			RainbowGradient.Rotation = (RainbowGradient.Rotation + rotationSpeed * 0.1) % 360
-		end
-	end)
-	
-	return RainbowBorder, RainbowGradient
+	return SilverBorder
 end
 
 local ScreenGui = Create("ScreenGui", CoreGui, {
-	Name = "redz Library V6",
+	Name = "redz Library V5",
 }, {
 	Create("UIScale", {
 		Scale = UIScale,
@@ -588,86 +568,8 @@ function redzlib:SetScale(NewScale)
 	UIScale, ScreenGui.Scale.Scale = NewScale, NewScale
 end
 
--- 创建搜索框函数
-local function CreateSearchBox(parent, tabs)
-	local SearchBox = Create("TextBox", parent, {
-		Size = UDim2.new(1, -20, 0, 30),
-		Position = UDim2.new(0, 10, 0, 10),
-		BackgroundColor3 = Theme["Color Hub 2"],
-		TextColor3 = Theme["Color Text"],
-		PlaceholderText = "搜索功能...",
-		PlaceholderColor3 = Theme["Color Dark Text"],
-		Text = "",
-		TextSize = 12,
-		Font = Enum.Font.Gotham,
-		ClearTextOnFocus = false
-	})
-	
-	Make("Corner", SearchBox, UDim.new(0, 6))
-	Make("Stroke", SearchBox, nil, Theme["Color Stroke"])
-	
-	local SearchIcon = Create("ImageLabel", SearchBox, {
-		Size = UDim2.new(0, 16, 0, 16),
-		Position = UDim2.new(1, -25, 0.5, 0),
-		AnchorPoint = Vector2.new(0, 0.5),
-		BackgroundTransparency = 1,
-		Image = "rbxassetid://10709791437",
-		ImageColor3 = Theme["Color Dark Text"]
-	})
-	
-	local originalElements = {}
-	
-	-- 保存原始元素状态
-	for _, tab in pairs(tabs) do
-		originalElements[tab] = {}
-		for _, element in pairs(tab.Elements or {}) do
-			table.insert(originalElements[tab], {
-				Element = element,
-				Visible = element.Visible or true
-			})
-		end
-	end
-	
-	SearchBox:GetPropertyChangedSignal("Text"):Connect(function()
-		local searchText = string.lower(SearchBox.Text)
-		
-		if searchText == "" then
-			-- 恢复所有元素显示
-			for tab, elements in pairs(originalElements) do
-				for _, elementData in pairs(elements) do
-					if elementData.Element.SetVisible then
-						elementData.Element:SetVisible(elementData.Visible)
-					elseif elementData.Element.Visible ~= nil then
-						elementData.Element.Visible = elementData.Visible
-					end
-				end
-			end
-		else
-			-- 根据搜索文本过滤元素
-			for tab, elements in pairs(originalElements) do
-				for _, elementData in pairs(elements) do
-					local element = elementData.Element
-					local title = string.lower(element.Title or "")
-					local desc = string.lower(element.Desc or "")
-					
-					local shouldShow = string.find(title, searchText, 1, true) or 
-									  string.find(desc, searchText, 1, true)
-					
-					if element.SetVisible then
-						element:SetVisible(shouldShow)
-					elseif element.Visible ~= nil then
-						element.Visible = shouldShow
-					end
-				end
-			end
-		end
-	end)
-	
-	return SearchBox
-end
-
 function redzlib:MakeWindow(Configs)
-	local WTitle = Configs[1] or Configs.Name or Configs.Title or "redz Library V6"
+	local WTitle = Configs[1] or Configs.Name or Configs.Title or "redz Library V5"
 	local WMiniText = Configs[2] or Configs.SubTitle or "by : redz9999"
 	
 	Settings.ScriptFile = Configs[3] or Configs.SaveFolder or false
@@ -696,8 +598,8 @@ function redzlib:MakeWindow(Configs)
 		Name = "Hub"
 	}), "Main")
 	
-	-- 创建彩虹边框
-	local RainbowBorder, RainbowGradient = CreateRainbowBorder(MainFrame, 8, -4)
+	-- 创建黑银色边框
+	local SilverBorder = CreateSilverBorder(MainFrame, 8, -4)
 	
 	Make("Gradient", MainFrame, {
 		Rotation = 45
@@ -836,36 +738,83 @@ function redzlib:MakeWindow(Configs)
 		Name = "Close"
 	})
 	
-	SetChildren(ButtonsFolder, {
-		CloseButton
-	})
-	
 	local Minimized, SaveSize, WaitClick
 	local Window, FirstTab = {}, false
 	
-	-- 创建彩虹按钮
-	local RainbowButton = Create("ImageButton", ScreenGui, {
-		Size = UDim2.fromOffset(70, 70),
-		Position = UDim2.fromScale(0.02, 0.02),
-		BackgroundColor3 = Color3.fromRGB(20, 20, 20),
-		BackgroundTransparency = 0,
-		AutoButtonColor = false,
-		Name = "RainbowButton"
+	-- 创建搜索框
+	local SearchBox = Create("TextBox", Components, {
+		Size = UDim2.new(1, -20, 0, 30),
+		Position = UDim2.new(0, 10, 0, 5),
+		BackgroundColor3 = Theme["Color Hub 2"],
+		TextColor3 = Theme["Color Text"],
+		PlaceholderText = "搜索功能...",
+		PlaceholderColor3 = Theme["Color Dark Text"],
+		Text = "",
+		TextSize = 12,
+		Font = Enum.Font.Gotham,
+		ClearTextOnFocus = false
 	})
+	Make("Corner", SearchBox, UDim.new(0, 6))
+	Make("Stroke", SearchBox)
 	
-	-- 按钮彩虹边框
-	local ButtonRainbowBorder, ButtonRainbowGradient = CreateRainbowBorder(RainbowButton, 6, -3)
-	Make("Corner", RainbowButton, UDim.new(0, 12))
+	-- 搜索功能实现
+	local function SearchFunctions(keyword)
+		if keyword == "" then
+			-- 显示所有元素
+			for _, container in pairs(Containers:GetChildren()) do
+				if container:IsA("ScrollingFrame") then
+					for _, element in pairs(container:GetChildren()) do
+						if element:IsA("Frame") and element.Name == "Option" then
+							element.Visible = true
+						end
+					end
+				end
+			end
+			return
+		end
+		
+		keyword = string.lower(keyword)
+		local foundInSections = {}
+		
+		-- 搜索所有容器
+		for _, container in pairs(Containers:GetChildren()) do
+			if container:IsA("ScrollingFrame") then
+				local hasVisibleElements = false
+				
+				for _, element in pairs(container:GetChildren()) do
+					if element:IsA("Frame") and element.Name == "Option" then
+						local titleLabel = element:FindFirstChildOfClass("TextLabel")
+						if titleLabel then
+							local titleText = string.lower(titleLabel.Text)
+							if string.find(titleText, keyword, 1, true) then
+								element.Visible = true
+								hasVisibleElements = true
+								
+								-- 标记包含匹配元素的区域
+								local section = element:FindFirstAncestorOfClass("Frame")
+								if section then
+									foundInSections[section] = true
+								end
+							else
+								element.Visible = false
+							end
+						end
+					end
+				end
+				
+				-- 显示/隐藏区域标题
+				for _, child in pairs(container:GetChildren()) do
+					if child:IsA("TextLabel") and child.TextSize == 14 then -- 假设区域标题的TextSize为14
+						child.Visible = foundInSections[child.Parent] or hasVisibleElements
+					end
+				end
+			end
+		end
+	end
 	
-	-- 按钮图标
-	local ButtonIcon = Create("ImageLabel", RainbowButton, {
-		Size = UDim2.new(0.7, 0, 0.7, 0),
-		Position = UDim2.new(0.5, 0, 0.5, 0),
-		AnchorPoint = Vector2.new(0.5, 0.5),
-		BackgroundTransparency = 1,
-		Image = "rbxassetid://10734896206",
-		ImageColor3 = Color3.fromRGB(255, 255, 255)
-	})
+	SearchBox:GetPropertyChangedSignal("Text"):Connect(function()
+		SearchFunctions(SearchBox.Text)
+	end)
 	
 	function Window:CloseBtn()
 		local Dialog = Window:Dialog({
@@ -885,19 +834,17 @@ function redzlib:MakeWindow(Configs)
 		WaitClick = true
 		
 		if Minimized then
-			ButtonIcon.Image = "rbxassetid://10734896206"
 			CreateTween({MainFrame, "Size", SaveSize, 0.25, true})
-			CreateTween({RainbowBorder, "Size", UDim2.new(1, 8, 1, 8), 0.25})
+			CreateTween({SilverBorder, "Size", UDim2.new(1, 8, 1, 8), 0.25})
 			ControlSize1.Visible = true
 			ControlSize2.Visible = true
 			Minimized = false
 		else
-			ButtonIcon.Image = "rbxassetid://10734924532"
 			SaveSize = MainFrame.Size
 			ControlSize1.Visible = false
 			ControlSize2.Visible = false
 			CreateTween({MainFrame, "Size", UDim2.fromOffset(MainFrame.Size.X.Offset, 28), 0.25, true})
-			CreateTween({RainbowBorder, "Size", UDim2.new(1, 8, 1, 8), 0.25})
+			CreateTween({SilverBorder, "Size", UDim2.new(1, 8, 1, 8), 0.25})
 			Minimized = true
 		end
 		
@@ -906,12 +853,8 @@ function redzlib:MakeWindow(Configs)
 	
 	function Window:Minimize()
 		MainFrame.Visible = not MainFrame.Visible
-		RainbowBorder.Visible = MainFrame.Visible
+		SilverBorder.Visible = MainFrame.Visible
 	end
-	
-	RainbowButton.Activated:Connect(function()
-		Window:MinimizeBtn()
-	end)
 	
 	function Window:AddMinimizeButton(Configs)
 		local Button = MakeDrag(Create("ImageButton", ScreenGui, {
@@ -922,8 +865,8 @@ function redzlib:MakeWindow(Configs)
 			AutoButtonColor = false
 		}))
 		
-		-- 为按钮添加彩虹边框
-		local ButtonBorder, ButtonGradient = CreateRainbowBorder(Button, 4, -2)
+		-- 为按钮添加黑银色边框
+		local ButtonBorder = CreateSilverBorder(Button, 4, -2)
 		
 		local Corner, Stroke
 		if Configs.Corner then
@@ -942,7 +885,7 @@ function redzlib:MakeWindow(Configs)
 			Stroke = Stroke,
 			Corner = Corner,
 			Button = Button,
-			RainbowBorder = ButtonBorder
+			SilverBorder = ButtonBorder
 		}
 	end
 	
@@ -995,8 +938,8 @@ function redzlib:MakeWindow(Configs)
 			}), "DarkText")
 		})
 		
-		-- 为对话框添加彩虹边框
-		local DialogRainbowBorder, DialogRainbowGradient = CreateRainbowBorder(Frame, 6, -3)
+		-- 为对话框添加黑银色边框
+		local DialogSilverBorder = CreateSilverBorder(Frame, 6, -3)
 		Make("Gradient", Frame, {Rotation = 270})
 		Make("Corner", Frame)
 		
@@ -1192,9 +1135,6 @@ function redzlib:MakeWindow(Configs)
 			Funcs:ToggleParent(Container, Bool, Containers)
 		end
 		function Tab:Destroy() TabSelect:Destroy() Container:Destroy() end
-		
-		-- 在每个标签页的容器顶部添加搜索框
-		local SearchBox = CreateSearchBox(Container, {Tab})
 		
 		function Tab:AddSection(Configs)
 			local SectionName = type(Configs) == "string" and Configs or Configs[1] or Configs.Name or Configs.Title or Configs.Section
