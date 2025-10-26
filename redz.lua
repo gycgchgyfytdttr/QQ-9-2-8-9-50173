@@ -761,7 +761,7 @@ function redzlib:MakeWindow(Configs)
     
     function Window:CloseBtn()
         local Dialog = Window:Dialog({
-            Title = "Xi Pro",
+            Title = "ui",
             Text = "你想要关闭脚本吗？",
             Options = {
                 {"确认", function()
