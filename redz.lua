@@ -13,11 +13,11 @@ local redzlib = {
 		BlackSilver = {
 			["Color Hub 1"] = ColorSequence.new({
 				ColorSequenceKeypoint.new(0.00, Color3.fromRGB(20, 20, 20)),
-				ColorSequenceKeypoint.new(0.50, Color3.fromRGB(40, 40, 40)),
+				ColorSequenceKeypoint.new(0.50, Color3.fromRGB(30, 30, 30)),
 				ColorSequenceKeypoint.new(1.00, Color3.fromRGB(20, 20, 20))
 			}),
-			["Color Hub 2"] = Color3.fromRGB(30, 30, 30),
-			["Color Stroke"] = Color3.fromRGB(100, 100, 100),
+			["Color Hub 2"] = Color3.fromRGB(25, 25, 25),
+			["Color Stroke"] = Color3.fromRGB(80, 80, 80),
 			["Color Theme"] = Color3.fromRGB(180, 180, 180),
 			["Color Text"] = Color3.fromRGB(240, 240, 240),
 			["Color Dark Text"] = Color3.fromRGB(150, 150, 150)
@@ -245,12 +245,11 @@ local GetFlag, SetFlag, CheckFlag do
 	end)
 end
 
--- 创建黑银色边框函数
 local function CreateSilverBorder(parent, sizeOffset, positionOffset)
 	local SilverBorder = Create("Frame", parent, {
 		Size = UDim2.new(1, sizeOffset, 1, sizeOffset),
 		Position = UDim2.new(0, positionOffset, 0, positionOffset),
-		BackgroundColor3 = Color3.fromRGB(100, 100, 100),
+		BackgroundColor3 = Color3.fromRGB(80, 80, 80),
 		BackgroundTransparency = 0,
 		BorderSizePixel = 0,
 		ZIndex = 0,
@@ -598,7 +597,7 @@ function redzlib:MakeWindow(Configs)
 		Name = "Hub"
 	}), "Main")
 	
-	-- 创建黑银色边框
+	-- 创建银色边框
 	local SilverBorder = CreateSilverBorder(MainFrame, 8, -4)
 	
 	Make("Gradient", MainFrame, {
@@ -738,18 +737,28 @@ function redzlib:MakeWindow(Configs)
 		Name = "Close"
 	})
 	
+	local MinimizeButton = SetProps(CloseButton:Clone(), {
+		Position = UDim2.new(1, -35, 0.5),
+		Image = "rbxassetid://10734896206",
+		Name = "Minimize"
+	})
+	
+	SetChildren(ButtonsFolder, {
+		CloseButton,
+		MinimizeButton
+	})
+	
 	local Minimized, SaveSize, WaitClick
 	local Window, FirstTab = {}, false
 	
 	-- 创建搜索框
 	local SearchBox = Create("TextBox", Components, {
 		Size = UDim2.new(1, -20, 0, 30),
-		Position = UDim2.new(0, 10, 0, 5),
-		BackgroundColor3 = Theme["Color Hub 2"],
-		TextColor3 = Theme["Color Text"],
+		Position = UDim2.new(0, 10, 0, 10),
 		PlaceholderText = "搜索功能...",
-		PlaceholderColor3 = Theme["Color Dark Text"],
 		Text = "",
+		TextColor3 = Theme["Color Text"],
+		BackgroundColor3 = Theme["Color Hub 2"],
 		TextSize = 12,
 		Font = Enum.Font.Gotham,
 		ClearTextOnFocus = false
@@ -757,64 +766,18 @@ function redzlib:MakeWindow(Configs)
 	Make("Corner", SearchBox, UDim.new(0, 6))
 	Make("Stroke", SearchBox)
 	
-	-- 搜索功能实现
-	local function SearchFunctions(keyword)
-		if keyword == "" then
-			-- 显示所有元素
-			for _, container in pairs(Containers:GetChildren()) do
-				if container:IsA("ScrollingFrame") then
-					for _, element in pairs(container:GetChildren()) do
-						if element:IsA("Frame") and element.Name == "Option" then
-							element.Visible = true
-						end
-					end
-				end
-			end
-			return
-		end
-		
-		keyword = string.lower(keyword)
-		local foundInSections = {}
-		
-		-- 搜索所有容器
-		for _, container in pairs(Containers:GetChildren()) do
-			if container:IsA("ScrollingFrame") then
-				local hasVisibleElements = false
-				
-				for _, element in pairs(container:GetChildren()) do
-					if element:IsA("Frame") and element.Name == "Option" then
-						local titleLabel = element:FindFirstChildOfClass("TextLabel")
-						if titleLabel then
-							local titleText = string.lower(titleLabel.Text)
-							if string.find(titleText, keyword, 1, true) then
-								element.Visible = true
-								hasVisibleElements = true
-								
-								-- 标记包含匹配元素的区域
-								local section = element:FindFirstAncestorOfClass("Frame")
-								if section then
-									foundInSections[section] = true
-								end
-							else
-								element.Visible = false
-							end
-						end
-					end
-				end
-				
-				-- 显示/隐藏区域标题
-				for _, child in pairs(container:GetChildren()) do
-					if child:IsA("TextLabel") and child.TextSize == 14 then -- 假设区域标题的TextSize为14
-						child.Visible = foundInSections[child.Parent] or hasVisibleElements
-					end
-				end
-			end
-		end
-	end
+	local SearchIcon = Create("ImageLabel", SearchBox, {
+		Size = UDim2.new(0, 16, 0, 16),
+		Position = UDim2.new(0, 8, 0.5, 0),
+		AnchorPoint = Vector2.new(0, 0.5),
+		BackgroundTransparency = 1,
+		Image = "rbxassetid://10709791437",
+		ImageColor3 = Theme["Color Dark Text"]
+	})
 	
-	SearchBox:GetPropertyChangedSignal("Text"):Connect(function()
-		SearchFunctions(SearchBox.Text)
-	end)
+	-- 调整容器位置以适应搜索框
+	Containers.Position = UDim2.new(1, 0, 1, -40)
+	Containers.Size = UDim2.new(1, -MainScroll.Size.X.Offset, 1, -TopBar.Size.Y.Offset - 40)
 	
 	function Window:CloseBtn()
 		local Dialog = Window:Dialog({
@@ -834,12 +797,14 @@ function redzlib:MakeWindow(Configs)
 		WaitClick = true
 		
 		if Minimized then
+			MinimizeButton.Image = "rbxassetid://10734896206"
 			CreateTween({MainFrame, "Size", SaveSize, 0.25, true})
 			CreateTween({SilverBorder, "Size", UDim2.new(1, 8, 1, 8), 0.25})
 			ControlSize1.Visible = true
 			ControlSize2.Visible = true
 			Minimized = false
 		else
+			MinimizeButton.Image = "rbxassetid://10734924532"
 			SaveSize = MainFrame.Size
 			ControlSize1.Visible = false
 			ControlSize2.Visible = false
@@ -865,7 +830,6 @@ function redzlib:MakeWindow(Configs)
 			AutoButtonColor = false
 		}))
 		
-		-- 为按钮添加黑银色边框
 		local ButtonBorder = CreateSilverBorder(Button, 4, -2)
 		
 		local Corner, Stroke
@@ -938,7 +902,6 @@ function redzlib:MakeWindow(Configs)
 			}), "DarkText")
 		})
 		
-		-- 为对话框添加黑银色边框
 		local DialogSilverBorder = CreateSilverBorder(Frame, 6, -3)
 		Make("Gradient", Frame, {Rotation = 270})
 		Make("Corner", Frame)
@@ -1947,6 +1910,45 @@ function redzlib:MakeWindow(Configs)
 	end
 	
 	CloseButton.Activated:Connect(Window.CloseBtn)
+	MinimizeButton.Activated:Connect(Window.MinimizeBtn)
+	
+	-- 搜索功能
+	local function SearchFunctions(searchText)
+		if not searchText or searchText == "" then
+			-- 显示所有功能
+			for _, tab in pairs(redzlib.Tabs) do
+				tab.func:Enable()
+			end
+			return
+		end
+		
+		searchText = string.lower(searchText)
+		local foundAny = false
+		
+		for _, tab in pairs(redzlib.Tabs) do
+			local tabName = string.lower(tab.TabInfo.Name or "")
+			local hasMatch = string.find(tabName, searchText, 1, true) ~= nil
+			
+			if hasMatch then
+				tab.func:Enable()
+				foundAny = true
+			else
+				tab.func:Disable()
+			end
+		end
+		
+		if not foundAny then
+			-- 如果没有找到匹配的标签，显示第一个标签
+			if #redzlib.Tabs > 0 then
+				redzlib.Tabs[1].func:Enable()
+			end
+		end
+	end
+	
+	SearchBox:GetPropertyChangedSignal("Text"):Connect(function()
+		SearchFunctions(SearchBox.Text)
+	end)
+	
 	return Window
 end
 
