@@ -16,15 +16,15 @@ local redzlib = {
                 ColorSequenceKeypoint.new(0.50, Color3.fromRGB(0, 150, 200)),
                 ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 80, 120))
             }),
-            ["Color Hub 2"] = Color3.fromRGB(30, 30, 45),
+            ["Color Hub 2"] = Color3.fromRGB(25, 25, 35),
             ["Color Stroke"] = Color3.fromRGB(100, 150, 200),
             ["Color Theme"] = Color3.fromRGB(0, 162, 255),
-            ["Color Text"] = Color3.fromRGB(220, 240, 255),
-            ["Color Dark Text"] = Color3.fromRGB(150, 180, 200)
+            ["Color Text"] = Color3.fromRGB(240, 240, 255),
+            ["Color Dark Text"] = Color3.fromRGB(180, 200, 220)
         }
     },
     Info = {
-        Version = "1.2.0"
+        Version = "2.0.0"
     },
     Save = {
         UISize = {550, 380},
@@ -603,11 +603,11 @@ function redzlib:MakeWindow(Configs)
 
     local RainbowGradient = Create("UIGradient", RainbowStroke, {
         Color = ColorSequence.new({
-            ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 200, 100)),
+            ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 255, 0)),
             ColorSequenceKeypoint.new(0.25, Color3.fromRGB(200, 200, 200)),
-            ColorSequenceKeypoint.new(0.50, Color3.fromRGB(0, 162, 255)),
+            ColorSequenceKeypoint.new(0.50, Color3.fromRGB(0, 255, 0)),
             ColorSequenceKeypoint.new(0.75, Color3.fromRGB(200, 200, 200)),
-            ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 200, 100))
+            ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 255, 0))
         }),
         Rotation = 0
     })
@@ -616,6 +616,16 @@ function redzlib:MakeWindow(Configs)
     RunService.Heartbeat:Connect(function(deltaTime)
         RainbowGradient.Rotation = (RainbowGradient.Rotation + rotationSpeed * deltaTime) % 360
     end)
+
+    function ApplyTheme(frame)
+        for _, child in ipairs(frame:GetDescendants()) do
+            if child:IsA("TextLabel") or child:IsA("TextButton") or child:IsA("TextBox") then
+                child.TextColor3 = currentTheme["Color Text"]
+            elseif child:IsA("Frame") or child:IsA("ScrollingFrame") then
+                child.BackgroundColor3 = currentTheme["Color Hub 2"]
+            end
+        end
+    end
     
     local Components = Create("Folder", MainFrame, {
         Name = "Components"
@@ -663,16 +673,16 @@ function redzlib:MakeWindow(Configs)
     local titleGradient = Create("UIGradient", Title, {
         Color = ColorSequence.new({
             ColorSequenceKeypoint.new(0.0, Color3.fromRGB(0, 200, 255)),
-            ColorSequenceKeypoint.new(0.25, Color3.fromRGB(100, 200, 255)),
-            ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 150, 200)),
-            ColorSequenceKeypoint.new(0.75, Color3.fromRGB(100, 200, 255)),
+            ColorSequenceKeypoint.new(0.25, Color3.fromRGB(0, 150, 200)),
+            ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 100, 255)),
+            ColorSequenceKeypoint.new(0.75, Color3.fromRGB(100, 150, 255)),
             ColorSequenceKeypoint.new(1.0, Color3.fromRGB(0, 200, 255))
         }),
         Rotation = 0
     })
 
     local titleGlow = Create("UIStroke", Title, {
-        Color = Color3.fromRGB(0, 150, 200),
+        Color = Color3.fromRGB(0, 150, 255),
         Thickness = 1.2,
         Transparency = 0.8
     })
@@ -685,6 +695,7 @@ function redzlib:MakeWindow(Configs)
         local light = math.sin(math.rad(lightAngle)) * 0.2 + 0.8
         titleGlow.Transparency = 0.3 + (1 - light) * 0.5
     end)
+
     
     local MainScroll = InsertTheme(Create("ScrollingFrame", Components, {
         Size = UDim2.new(0, redzlib.Save.TabSize, 1, -TopBar.Size.Y.Offset),
@@ -780,7 +791,7 @@ function redzlib:MakeWindow(Configs)
         Name = "Minimize"
     })
 
-    local SettingsButton = SetProps(CloseButton:Clone(), {
+    local SettingButton = SetProps(CloseButton:Clone(), {
         Position = UDim2.new(1, -60, 0.5),
         Image = "rbxassetid://10734950309",
         Name = "Settings"
@@ -789,7 +800,7 @@ function redzlib:MakeWindow(Configs)
     SetChildren(ButtonsFolder, {
         CloseButton,
         MinimizeButton,
-        SettingsButton
+        SettingButton
     })
     
     local Minimized, SaveSize, WaitClick
@@ -815,26 +826,15 @@ function redzlib:MakeWindow(Configs)
         if Minimized then
             MinimizeButton.Image = "rbxassetid://10734896206"
             CreateTween({MainFrame, "Size", SaveSize, 0.25})
-            CreateTween({MainFrame, "Position", SavePosition, 0.25, true})
             ControlSize1.Visible = true
             ControlSize2.Visible = true
             Minimized = false
         else
             SaveSize = MainFrame.Size
-            SavePosition = MainFrame.Position
-            
             MinimizeButton.Image = "rbxassetid://10734924532"
             ControlSize1.Visible = false
             ControlSize2.Visible = false
-            
-            local screenWidth = workspace.CurrentCamera.ViewportSize.X
-            local newPosition = UDim2.new(
-                0.5, -100,  
-                0, 10       
-            )
-            
-            CreateTween({MainFrame, "Size", UDim2.fromOffset(200, 28), 0.25}) 
-            CreateTween({MainFrame, "Position", newPosition, 0.25, true})
+            CreateTween({MainFrame, "Size", UDim2.fromOffset(MainFrame.Size.X.Offset, 28), 0.25, true})
             Minimized = true
         end
         
@@ -970,7 +970,7 @@ function redzlib:MakeWindow(Configs)
             
             for _,Button in pairs(ButtonsHolder:GetChildren()) do
                 if Button:IsA("TextButton") then
-                    Button.Size = UDim2.new(1 / ButtonCount, -(((ButtonCount - 1) * 20) / ButtonCount), 0, 32) -- Fluent Library :)
+                    Button.Size = UDim2.new(1 / ButtonCount, -(((ButtonCount - 1) * 20) / ButtonCount), 0, 32)
                 end
             end
             Button.Activated:Connect(Dialog.Close)
@@ -1965,14 +1965,30 @@ function redzlib:MakeWindow(Configs)
             }), "ScrollBar")
             SettingTab.Parent = Containers
             table.insert(ContainerList, SettingTab)
-            
-            -- 设置标签页内容
+
+            -- 添加设置选项
             local S = {}
-            
+            function S:AddSection(Configs)
+                return Tab:AddSection(Configs)
+            end
+
+            function S:AddToggle(Configs)
+                return Tab:AddToggle(Configs)
+            end
+
+            function S:AddSlider(Configs)
+                return Tab:AddSlider(Configs)
+            end
+
+            function S:AddDropdown(Configs)
+                return Tab:AddDropdown(Configs)
+            end
+
+            -- 添加设置选项
             S:AddSection({
-                Title = "UI 设置"
+                Name = "UI 设置"
             })
-            
+
             S:AddSlider({
                 Title = "UI 大小",
                 Description = "调整UI整体大小",
@@ -1983,74 +1999,66 @@ function redzlib:MakeWindow(Configs)
                     redzlib:SetScale(Value)
                 end
             })
-            
-            S:AddSlider({
-                Title = "UI 透明度",
-                Description = "调整UI背景透明度",
-                Default = 0.03,
-                Min = 0,
-                Max = 1,
-                Callback = function(Value)
-                    MainFrame.BackgroundTransparency = Value
-                end
-            })
-            
+
             S:AddDropdown({
-                Title = "UI 主题颜色",
+                Title = "UI 主题",
                 Options = {"BlueSilver"},
                 Default = "BlueSilver",
                 Callback = function(State)
                     redzlib:SetTheme(State)
                 end
             })
-            
-            S:AddDropdown({
-                Title = "边框渐变颜色",
-                Options = {"蓝绿渐变", "蓝银渐变", "彩虹渐变"},
-                Default = "蓝银渐变",
-                Callback = function(State)
-                    if State == "蓝绿渐变" then
-                        RainbowGradient.Color = ColorSequence.new({
-                            ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 200, 100)),
-                            ColorSequenceKeypoint.new(0.50, Color3.fromRGB(0, 162, 255)),
-                            ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 200, 100))
-                        })
-                    elseif State == "蓝银渐变" then
-                        RainbowGradient.Color = ColorSequence.new({
-                            ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 200, 100)),
-                            ColorSequenceKeypoint.new(0.25, Color3.fromRGB(200, 200, 200)),
-                            ColorSequenceKeypoint.new(0.50, Color3.fromRGB(0, 162, 255)),
-                            ColorSequenceKeypoint.new(0.75, Color3.fromRGB(200, 200, 200)),
-                            ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 200, 100))
-                        })
-                    elseif State == "彩虹渐变" then
-                        RainbowGradient.Color = ColorSequence.new({
-                            ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 0, 0)),
-                            ColorSequenceKeypoint.new(0.17, Color3.fromRGB(255, 165, 0)),
-                            ColorSequenceKeypoint.new(0.33, Color3.fromRGB(255, 255, 0)),
-                            ColorSequenceKeypoint.new(0.50, Color3.fromRGB(0, 255, 0)),
-                            ColorSequenceKeypoint.new(0.67, Color3.fromRGB(0, 127, 255)),
-                            ColorSequenceKeypoint.new(0.83, Color3.fromRGB(139, 0, 255)),
-                            ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 0, 255))
-                        })
+
+            S:AddToggle({
+                Title = "彩虹边框",
+                Default = true,
+                Callback = function(v)
+                    RainbowStroke.Transparency = v and 0 or 1
+                end
+            })
+
+            S:AddToggle({
+                Title = "彩虹标题",
+                Default = true,
+                Callback = function(v)
+                    if v then
+                        RunService.Heartbeat:Connect(function(delta)
+                            titleGradient.Rotation = (titleGradient.Rotation + 45 * delta) % 360
+                        end)
+                    else
+                        titleGradient.Rotation = 0
                     end
                 end
             })
-            
+
+            S:AddSection({
+                Name = "功能设置"
+            })
+
+            S:AddSlider({
+                Title = "背景透明度",
+                Description = "调整UI背景透明度",
+                Default = 3,
+                Min = 1,
+                Max = 100,
+                Callback = function(Value)
+                    MainFrame.BackgroundTransparency = (100 - Value) / 100
+                end
+            })
+
             S:AddDropdown({
                 Title = "字体选择",
-                Options = {"Gotham", "SourceSans", "Arial", "SciFi"},
+                Options = {"Gotham", "SourceSans", "Arial", "Code"},
                 Default = "Gotham",
                 Callback = function(State)
                     local fontMap = {
                         Gotham = Enum.Font.Gotham,
                         SourceSans = Enum.Font.SourceSans,
                         Arial = Enum.Font.Arial,
-                        SciFi = Enum.Font.SciFi
+                        Code = Enum.Font.Code
                     }
                     local newFont = fontMap[State] or Enum.Font.Gotham
                     
-                    -- 更新所有文本元素的字体
                     for _, instance in pairs(redzlib.Instances) do
                         if instance.Instance:IsA("TextLabel") or instance.Instance:IsA("TextButton") or instance.Instance:IsA("TextBox") then
                             instance.Instance.Font = newFont
@@ -2058,74 +2066,103 @@ function redzlib:MakeWindow(Configs)
                     end
                 end
             })
-            
+
             S:AddToggle({
-                Title = "彩虹标题",
-                Default = false,
+                Title = "显示图标",
+                Default = true,
                 Callback = function(v)
-                    if v then
-                        local t = 0
-                        RunService.Heartbeat:Connect(function()
-                            t = t + 0.05
-                            local r = math.sin(t) * 0.5 + 0.5
-                            local g = math.sin(t + 2) * 0.5 + 0.5
-                            local b = math.sin(t + 4) * 0.5 + 0.5
-                            Title.TextColor3 = Color3.new(r, g, b)
-                        end)
-                    else
-                        Title.TextColor3 = Theme["Color Text"]
+                    for _, tab in pairs(redzlib.Tabs) do
+                        if tab.TabInfo.Icon then
+                            local icon = tab.func.Cont:FindFirstChildWhichIsA("ImageLabel")
+                            if icon then
+                                icon.Visible = v
+                            end
+                        end
                     end
                 end
             })
-            
-            S:AddToggle({
-                Title = "彩虹副标题",
-                Default = false,
-                Callback = function(v)
-                    if v then
-                        local t = 0
-                        RunService.Heartbeat:Connect(function()
-                            t = t + 0.05
-                            local r = math.sin(t) * 0.5 + 0.5
-                            local g = math.sin(t + 2) * 0.5 + 0.5
-                            local b = math.sin(t + 4) * 0.5 + 0.5
-                            Title.SubTitle.TextColor3 = Color3.new(r, g, b)
-                        end)
-                    else
-                        Title.SubTitle.TextColor3 = Theme["Color Dark Text"]
-                    end
-                end
+
+            S:AddSection({
+                Name = "高级设置"
             })
-            
+
             S:AddSlider({
-                Title = "边框旋转速度",
-                Description = "调整边框渐变旋转速度",
-                Default = 40,
+                Title = "动画速度",
+                Description = "调整UI动画速度",
+                Default = 50,
                 Min = 10,
                 Max = 100,
                 Callback = function(Value)
-                    rotationSpeed = Value
+                    local speed = Value / 50
+                    TweenService = setmetatable({}, {
+                        __index = function(_, key)
+                            if key == "Create" then
+                                return function(_, tweenInfo, ...)
+                                    local newTweenInfo = TweenInfo.new(
+                                        tweenInfo.Time / speed,
+                                        tweenInfo.EasingStyle,
+                                        tweenInfo.EasingDirection,
+                                        tweenInfo.RepeatCount,
+                                        tweenInfo.Reverses,
+                                        tweenInfo.DelayTime
+                                    )
+                                    return game:GetService("TweenService"):Create(newTweenInfo, ...)
+                                end
+                            end
+                            return game:GetService("TweenService")[key]
+                        end
+                    })
                 end
             })
-            
-            S:AddButton({
-                Title = "重置设置",
-                Description = "恢复默认设置",
-                Callback = function()
-                    redzlib:SetTheme("BlueSilver")
-                    redzlib:SetScale(450)
-                    MainFrame.BackgroundTransparency = 0.03
-                    rotationSpeed = 40
+
+            S:AddDropdown({
+                Title = "边框颜色",
+                Options = {"蓝色", "绿色", "红色", "紫色", "橙色", "青色"},
+                Default = "蓝色",
+                Callback = function(State)
+                    local colorMap = {
+                        ["蓝色"] = Color3.fromRGB(0, 150, 255),
+                        ["绿色"] = Color3.fromRGB(0, 255, 0),
+                        ["红色"] = Color3.fromRGB(255, 0, 0),
+                        ["紫色"] = Color3.fromRGB(150, 0, 255),
+                        ["橙色"] = Color3.fromRGB(255, 150, 0),
+                        ["青色"] = Color3.fromRGB(0, 255, 255)
+                    }
+                    RainbowStroke.Color = colorMap[State] or Color3.fromRGB(0, 150, 255)
                 end
             })
         end
 
         -- 设置按钮点击事件
-        SettingsButton.Activated:Connect(function()
-            for _, container in pairs(ContainerList) do
-                container.Visible = false
+        local settingsOpen = false
+        SettingButton.Activated:Connect(function()
+            if settingsOpen then
+                -- 关闭设置
+                for _, container in pairs(ContainerList) do
+                    if container ~= SettingTab then
+                        container.Visible = false
+                    end
+                end
+                SettingTab.Visible = true
+                Window:SelectTab(SettingTab)
+            else
+                -- 打开设置
+                SettingTab.Visible = false
+                if Tab.Cont then
+                    Tab.Cont.Visible = true
+                    Window:SelectTab(Tab)
+                end
             end
-            SettingTab.Visible = true
+            settingsOpen = not settingsOpen
+        end)
+
+        -- 最小化时隐藏设置按钮
+        MainFrame:GetPropertyChangedSignal("Size"):Connect(function()
+            if Minimized then
+                SettingButton.Visible = false
+            else
+                SettingButton.Visible = true
+            end
         end)
 
         return Tab
