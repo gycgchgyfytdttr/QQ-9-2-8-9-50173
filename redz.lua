@@ -8,19 +8,153 @@ local Players = game:GetService("Players")
 local Player = Players.LocalPlayer
 local PlayerMouse = Player:GetMouse()
 
-local redzlib = {
+local bluezlib = {
     Themes = {
-        BlueSilver = {
+        OceanBlue = {
             ["Color Hub 1"] = ColorSequence.new({
-                ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 80, 120)),
-                ColorSequenceKeypoint.new(0.50, Color3.fromRGB(0, 150, 200)),
-                ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 80, 120))
+                ColorSequenceKeypoint.new(0.00, Color3.fromRGB(10, 20, 40)),
+                ColorSequenceKeypoint.new(0.50, Color3.fromRGB(20, 40, 80)),
+                ColorSequenceKeypoint.new(1.00, Color3.fromRGB(10, 20, 40))
             }),
-            ["Color Hub 2"] = Color3.fromRGB(25, 25, 35),
-            ["Color Stroke"] = Color3.fromRGB(100, 150, 200),
-            ["Color Theme"] = Color3.fromRGB(0, 162, 255),
-            ["Color Text"] = Color3.fromRGB(240, 240, 255),
-            ["Color Dark Text"] = Color3.fromRGB(180, 200, 220)
+            ["Color Hub 2"] = Color3.fromRGB(15, 30, 60),
+            ["Color Stroke"] = Color3.fromRGB(30, 60, 120),
+            ["Color Theme"] = Color3.fromRGB(0, 150, 255),
+            ["Color Text"] = Color3.fromRGB(200, 230, 255),
+            ["Color Dark Text"] = Color3.fromRGB(150, 180, 220)
+        },
+        DeepBlue = {
+            ["Color Hub 1"] = ColorSequence.new({
+                ColorSequenceKeypoint.new(0.00, Color3.fromRGB(15, 25, 45)),
+                ColorSequenceKeypoint.new(0.50, Color3.fromRGB(25, 45, 85)),
+                ColorSequenceKeypoint.new(1.00, Color3.fromRGB(15, 25, 45))
+            }),
+            ["Color Hub 2"] = Color3.fromRGB(20, 35, 65),
+            ["Color Stroke"] = Color3.fromRGB(40, 70, 130),
+            ["Color Theme"] = Color3.fromRGB(0, 120, 215),
+            ["Color Text"] = Color3.fromRGB(180, 210, 240),
+            ["Color Dark Text"] = Color3.fromRGB(130, 160, 200)
+        },
+        ElectricBlue = {
+            ["Color Hub 1"] = ColorSequence.new({
+                ColorSequenceKeypoint.new(0.00, Color3.fromRGB(5, 15, 35)),
+                ColorSequenceKeypoint.new(0.50, Color3.fromRGB(15, 35, 75)),
+                ColorSequenceKeypoint.new(1.00, Color3.fromRGB(5, 15, 35))
+            }),
+            ["Color Hub 2"] = Color3.fromRGB(10, 25, 55),
+            ["Color Stroke"] = Color3.fromRGB(20, 50, 110),
+            ["Color Theme"] = Color3.fromRGB(0, 180, 255),
+            ["Color Text"] = Color3.fromRGB(220, 240, 255),
+            ["Color Dark Text"] = Color3.fromRGB(170, 200, 230)
+        },
+        RoyalBlue = {
+            ["Color Hub 1"] = ColorSequence.new({
+                ColorSequenceKeypoint.new(0.00, Color3.fromRGB(20, 30, 50)),
+                ColorSequenceKeypoint.new(0.50, Color3.fromRGB(30, 50, 90)),
+                ColorSequenceKeypoint.new(1.00, Color3.fromRGB(20, 30, 50))
+            }),
+            ["Color Hub 2"] = Color3.fromRGB(25, 40, 70),
+            ["Color Stroke"] = Color3.fromRGB(50, 80, 140),
+            ["Color Theme"] = Color3.fromRGB(65, 105, 225),
+            ["Color Text"] = Color3.fromRGB(190, 210, 240),
+            ["Color Dark Text"] = Color3.fromRGB(140, 170, 210)
+        },
+        SkyBlue = {
+            ["Color Hub 1"] = ColorSequence.new({
+                ColorSequenceKeypoint.new(0.00, Color3.fromRGB(25, 40, 60)),
+                ColorSequenceKeypoint.new(0.50, Color3.fromRGB(35, 60, 100)),
+                ColorSequenceKeypoint.new(1.00, Color3.fromRGB(25, 40, 60))
+            }),
+            ["Color Hub 2"] = Color3.fromRGB(30, 50, 80),
+            ["Color Stroke"] = Color3.fromRGB(60, 100, 160),
+            ["Color Theme"] = Color3.fromRGB(135, 206, 235),
+            ["Color Text"] = Color3.fromRGB(210, 230, 250),
+            ["Color Dark Text"] = Color3.fromRGB(160, 190, 220)
+        },
+        MidnightBlue = {
+            ["Color Hub 1"] = ColorSequence.new({
+                ColorSequenceKeypoint.new(0.00, Color3.fromRGB(5, 10, 20)),
+                ColorSequenceKeypoint.new(0.50, Color3.fromRGB(15, 25, 45)),
+                ColorSequenceKeypoint.new(1.00, Color3.fromRGB(5, 10, 20))
+            }),
+            ["Color Hub 2"] = Color3.fromRGB(10, 15, 30),
+            ["Color Stroke"] = Color3.fromRGB(25, 40, 70),
+            ["Color Theme"] = Color3.fromRGB(25, 25, 112),
+            ["Color Text"] = Color3.fromRGB(170, 180, 210),
+            ["Color Dark Text"] = Color3.fromRGB(120, 130, 160)
+        },
+        NavyBlue = {
+            ["Color Hub 1"] = ColorSequence.new({
+                ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 0, 50)),
+                ColorSequenceKeypoint.new(0.50, Color3.fromRGB(0, 0, 80)),
+                ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 0, 50))
+            }),
+            ["Color Hub 2"] = Color3.fromRGB(0, 0, 65),
+            ["Color Stroke"] = Color3.fromRGB(0, 0, 100),
+            ["Color Theme"] = Color3.fromRGB(0, 0, 128),
+            ["Color Text"] = Color3.fromRGB(150, 170, 220),
+            ["Color Dark Text"] = Color3.fromRGB(100, 120, 170)
+        },
+        SteelBlue = {
+            ["Color Hub 1"] = ColorSequence.new({
+                ColorSequenceKeypoint.new(0.00, Color3.fromRGB(35, 45, 60)),
+                ColorSequenceKeypoint.new(0.50, Color3.fromRGB(45, 65, 95)),
+                ColorSequenceKeypoint.new(1.00, Color3.fromRGB(35, 45, 60))
+            }),
+            ["Color Hub 2"] = Color3.fromRGB(40, 55, 75),
+            ["Color Stroke"] = Color3.fromRGB(70, 90, 120),
+            ["Color Theme"] = Color3.fromRGB(70, 130, 180),
+            ["Color Text"] = Color3.fromRGB(200, 220, 240),
+            ["Color Dark Text"] = Color3.fromRGB(150, 170, 190)
+        },
+        CyanBlue = {
+            ["Color Hub 1"] = ColorSequence.new({
+                ColorSequenceKeypoint.new(0.00, Color3.fromRGB(10, 30, 40)),
+                ColorSequenceKeypoint.new(0.50, Color3.fromRGB(20, 50, 70)),
+                ColorSequenceKeypoint.new(1.00, Color3.fromRGB(10, 30, 40))
+            }),
+            ["Color Hub 2"] = Color3.fromRGB(15, 40, 55),
+            ["Color Stroke"] = Color3.fromRGB(30, 70, 90),
+            ["Color Theme"] = Color3.fromRGB(0, 200, 255),
+            ["Color Text"] = Color3.fromRGB(180, 230, 255),
+            ["Color Dark Text"] = Color3.fromRGB(130, 180, 205)
+        },
+        TealBlue = {
+            ["Color Hub 1"] = ColorSequence.new({
+                ColorSequenceKeypoint.new(0.00, Color3.fromRGB(10, 40, 40)),
+                ColorSequenceKeypoint.new(0.50, Color3.fromRGB(20, 60, 70)),
+                ColorSequenceKeypoint.new(1.00, Color3.fromRGB(10, 40, 40))
+            }),
+            ["Color Hub 2"] = Color3.fromRGB(15, 50, 55),
+            ["Color Stroke"] = Color3.fromRGB(30, 80, 90),
+            ["Color Theme"] = Color3.fromRGB(0, 180, 200),
+            ["Color Text"] = Color3.fromRGB(170, 220, 230),
+            ["Color Dark Text"] = Color3.fromRGB(120, 170, 180)
+        },
+        IceBlue = {
+            ["Color Hub 1"] = ColorSequence.new({
+                ColorSequenceKeypoint.new(0.00, Color3.fromRGB(30, 50, 70)),
+                ColorSequenceKeypoint.new(0.50, Color3.fromRGB(40, 70, 100)),
+                ColorSequenceKeypoint.new(1.00, Color3.fromRGB(30, 50, 70))
+            }),
+            ["Color Hub 2"] = Color3.fromRGB(35, 60, 85),
+            ["Color Stroke"] = Color3.fromRGB(60, 100, 140),
+            ["Color Theme"] = Color3.fromRGB(175, 220, 255),
+            ["Color Text"] = Color3.fromRGB(220, 240, 255),
+            ["Color Dark Text"] = Color3.fromRGB(170, 200, 220)
+        },
+        GradientBlue = {
+            ["Color Hub 1"] = ColorSequence.new({
+                ColorSequenceKeypoint.new(0.00, Color3.fromRGB(10, 20, 50)),
+                ColorSequenceKeypoint.new(0.25, Color3.fromRGB(20, 40, 90)),
+                ColorSequenceKeypoint.new(0.50, Color3.fromRGB(30, 60, 130)),
+                ColorSequenceKeypoint.new(0.75, Color3.fromRGB(20, 40, 90)),
+                ColorSequenceKeypoint.new(1.00, Color3.fromRGB(10, 20, 50))
+            }),
+            ["Color Hub 2"] = Color3.fromRGB(20, 40, 80),
+            ["Color Stroke"] = Color3.fromRGB(40, 80, 160),
+            ["Color Theme"] = Color3.fromRGB(0, 150, 255),
+            ["Color Text"] = Color3.fromRGB(200, 230, 255),
+            ["Color Dark Text"] = Color3.fromRGB(150, 180, 220)
         }
     },
     Info = {
@@ -29,7 +163,7 @@ local redzlib = {
     Save = {
         UISize = {550, 380},
         TabSize = 160,
-        Theme = "BlueSilver"
+        Theme = "OceanBlue"
     },
     Settings = {},
     Connection = {},
@@ -44,12 +178,13 @@ local redzlib = {
 local ViewportSize = workspace.CurrentCamera.ViewportSize
 local UIScale = ViewportSize.Y / 450
 
-local Settings = redzlib.Settings
-local Flags = redzlib.Flags
+local Settings = bluezlib.Settings
+local Flags = bluezlib.Flags
 
+-- 基础函数定义
 local SetProps, SetChildren, InsertTheme, Create do
     InsertTheme = function(Instance, Type)
-        table.insert(redzlib.Instances, {
+        table.insert(bluezlib.Instances, {
             Instance = Instance,
             Type = Type
         })
@@ -98,16 +233,17 @@ local SetProps, SetChildren, InsertTheme, Create do
             local decode = HttpService:JSONDecode(readfile(file))
             
             if type(decode) == "table" then
-                if rawget(decode, "UISize") then redzlib.Save["UISize"] = decode["UISize"] end
-                if rawget(decode, "TabSize") then redzlib.Save["TabSize"] = decode["TabSize"] end
-                if rawget(decode, "Theme") and VerifyTheme(decode["Theme"]) then redzlib.Save["Theme"] = decode["Theme"] end
+                if rawget(decode, "UISize") then bluezlib.Save["UISize"] = decode["UISize"] end
+                if rawget(decode, "TabSize") then bluezlib.Save["TabSize"] = decode["TabSize"] end
+                if rawget(decode, "Theme") and VerifyTheme(decode["Theme"]) then bluezlib.Save["Theme"] = decode["Theme"] end
             end
         end
     end
     
-    pcall(Save, "redz library V5.json")
+    pcall(Save, "bluez library V5.json")
 end
 
+-- 功能函数
 local Funcs = {} do
     function Funcs:InsertCallback(tab, func)
         if type(func) == "function" then
@@ -165,7 +301,8 @@ local Funcs = {} do
     end
 end
 
-local Connections, Connection = {}, redzlib.Connection do
+-- 连接管理
+local Connections, Connection = {}, bluezlib.Connection do
     local function NewConnectionList(List)
         if type(List) ~= "table" then return end
         
@@ -208,6 +345,7 @@ local Connections, Connection = {}, redzlib.Connection do
     NewConnectionList({"FlagsChanged", "ThemeChanged", "FileSaved", "ThemeChanging", "OptionAdded"})
 end
 
+-- 标志管理
 local GetFlag, SetFlag, CheckFlag do
     CheckFlag = function(Name)
         return type(Name) == "string" and Flags[Name] ~= nil
@@ -244,8 +382,9 @@ local GetFlag, SetFlag, CheckFlag do
     end)
 end
 
+-- 创建主屏幕GUI
 local ScreenGui = Create("ScreenGui", CoreGui, {
-    Name = "redz Library V5",
+    Name = "Bluez Library V5",
 }, {
     Create("UIScale", {
         Scale = UIScale,
@@ -258,6 +397,7 @@ if ScreenFind and ScreenFind ~= ScreenGui then
     ScreenFind:Destroy()
 end
 
+-- 辅助函数
 local function GetStr(val)
     if type(val) == "function" then
         return val()
@@ -272,7 +412,7 @@ local function ConnectSave(Instance, func)
             end
         end
         func()
-    end)
+    end
 end
 
 local function CreateTween(Configs)
@@ -328,7 +468,7 @@ local function MakeDrag(Instance)
 end
 
 local function VerifyTheme(Theme)
-    for name,_ in pairs(redzlib.Themes) do
+    for name,_ in pairs(bluezlib.Themes) do
         if name == Theme then
             return true
         end
@@ -342,17 +482,20 @@ local function SaveJson(FileName, save)
     end
 end
 
-local Theme = redzlib.Themes[redzlib.Save.Theme]
+-- 设置当前主题
+local Theme = bluezlib.Themes[bluezlib.Save.Theme]
 
+-- 元素创建系统
 local function AddEle(Name, Func)
-    redzlib.Elements[Name] = Func
+    bluezlib.Elements[Name] = Func
 end
 
 local function Make(Ele, Instance, props, ...)
-    local Element = redzlib.Elements[Ele](Instance, props, ...)
+    local Element = bluezlib.Elements[Ele](Instance, props, ...)
     return Element
 end
 
+-- 基础元素
 AddEle("Corner", function(parent, CornerRadius)
     local New = SetProps(Create("UICorner", parent, {
         CornerRadius = CornerRadius or UDim.new(0, 7)
@@ -399,6 +542,7 @@ AddEle("Gradient", function(parent, props, ...)
     return New
 end)
 
+-- 按钮框架
 local function ButtonFrame(Instance, Title, Description, HolderSize)
     local TitleL = InsertTheme(Create("TextLabel", {
         Font = Enum.Font.GothamMedium,
@@ -480,6 +624,7 @@ local function ButtonFrame(Instance, Title, Description, HolderSize)
     return Frame, Label
 end
 
+-- 获取颜色属性
 local function GetColor(Instance)
     if Instance:IsA("Frame") then
         return "BackgroundColor3"
@@ -495,8 +640,8 @@ local function GetColor(Instance)
     return ""
 end
 
--- /////////// --
-function redzlib:GetIcon(index)
+-- 库函数
+function bluezlib:GetIcon(index)
     if type(index) ~= "string" or index:find("rbxassetid://") or #index == 0 then
         return index
     end
@@ -519,15 +664,15 @@ function redzlib:GetIcon(index)
     return firstMatch or index
 end
 
-function redzlib:SetTheme(NewTheme)
+function bluezlib:SetTheme(NewTheme)
     if not VerifyTheme(NewTheme) then return end
     
-    redzlib.Save.Theme = NewTheme
-    SaveJson("redz library V5.json", redzlib.Save)
-    Theme = redzlib.Themes[NewTheme]
+    bluezlib.Save.Theme = NewTheme
+    SaveJson("bluez library V5.json", bluezlib.Save)
+    Theme = bluezlib.Themes[NewTheme]
     
     Connection:FireConnection("ThemeChanged", NewTheme)
-    table.foreach(redzlib.Instances, function(_,Val)
+    table.foreach(bluezlib.Instances, function(_,Val)
         if Val.Type == "Gradient" then
             Val.Instance.Color = Theme["Color Hub 1"]
         elseif Val.Type == "Frame" then
@@ -546,14 +691,15 @@ function redzlib:SetTheme(NewTheme)
     end)
 end
 
-function redzlib:SetScale(NewScale)
+function bluezlib:SetScale(NewScale)
     NewScale = ViewportSize.Y / math.clamp(NewScale, 300, 2000)
     UIScale, ScreenGui.Scale.Scale = NewScale, NewScale
 end
 
-function redzlib:MakeWindow(Configs)
-    local WTitle = Configs[1] or Configs.Name or Configs.Title or "redz Library V5"
-    local WMiniText = Configs[2] or Configs.SubTitle or "by : redz9999"
+-- 主窗口创建
+function bluezlib:MakeWindow(Configs)
+    local WTitle = Configs[1] or Configs.Name or Configs.Title or "Bluez Library V5"
+    local WMiniText = Configs[2] or Configs.SubTitle or "by : Bluez9999"
     
     Settings.ScriptFile = Configs[3] or Configs.SaveFolder or false
     
@@ -573,9 +719,9 @@ function redzlib:MakeWindow(Configs)
         end
     end;LoadFile()
     
-    local currentTheme = redzlib.Themes[redzlib.Save.Theme]
+    local currentTheme = bluezlib.Themes[bluezlib.Save.Theme]
 
-    local UISizeX, UISizeY = unpack(redzlib.Save.UISize)
+    local UISizeX, UISizeY = unpack(bluezlib.Save.UISize)
     local MainFrame = Create("ImageButton", ScreenGui, {
         Size = UDim2.fromOffset(UISizeX, UISizeY),
         Position = UDim2.new(0.5, -UISizeX/2, 0.5, -UISizeY/2),
@@ -584,6 +730,7 @@ function redzlib:MakeWindow(Configs)
         Name = "Hub"
     })
 
+    -- 创建动态渐变背景
     local bgGradient = Create("UIGradient", MainFrame)
     bgGradient.Color = currentTheme["Color Hub 1"]
     bgGradient.Rotation = 45
@@ -591,42 +738,34 @@ function redzlib:MakeWindow(Configs)
     MakeDrag(MainFrame)
 
     local MainCorner = Create("UICorner", MainFrame, {
-        CornerRadius = UDim.new(0, 6)
+        CornerRadius = UDim.new(0, 10)
     })
 
+    -- 创建动态彩虹边框
     local RainbowStroke = Create("UIStroke", MainFrame, {
-        Thickness = 1.5,
+        Thickness = 2,
         ApplyStrokeMode = "Border",
-        Transparency = 0.5,
+        Transparency = 0.3,
         Color = currentTheme["Color Theme"] 
     })
 
     local RainbowGradient = Create("UIGradient", RainbowStroke, {
         Color = ColorSequence.new({
-            ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 255, 0)),
-            ColorSequenceKeypoint.new(0.25, Color3.fromRGB(200, 200, 200)),
-            ColorSequenceKeypoint.new(0.50, Color3.fromRGB(0, 255, 0)),
-            ColorSequenceKeypoint.new(0.75, Color3.fromRGB(200, 200, 200)),
-            ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 255, 0))
+            ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 150, 255)),
+            ColorSequenceKeypoint.new(0.25, Color3.fromRGB(0, 200, 255)),
+            ColorSequenceKeypoint.new(0.50, Color3.fromRGB(100, 150, 255)),
+            ColorSequenceKeypoint.new(0.75, Color3.fromRGB(0, 100, 200)),
+            ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 150, 255))
         }),
         Rotation = 0
     })
 
-    local rotationSpeed = 40 
+    -- 动态边框效果
+    local rotationSpeed = 30
     RunService.Heartbeat:Connect(function(deltaTime)
         RainbowGradient.Rotation = (RainbowGradient.Rotation + rotationSpeed * deltaTime) % 360
     end)
 
-    function ApplyTheme(frame)
-        for _, child in ipairs(frame:GetDescendants()) do
-            if child:IsA("TextLabel") or child:IsA("TextButton") or child:IsA("TextBox") then
-                child.TextColor3 = currentTheme["Color Text"]
-            elseif child:IsA("Frame") or child:IsA("ScrollingFrame") then
-                child.BackgroundColor3 = currentTheme["Color Hub 2"]
-            end
-        end
-    end
-    
     local Components = Create("Folder", MainFrame, {
         Name = "Components"
     })
@@ -636,21 +775,22 @@ function redzlib:MakeWindow(Configs)
     })
     
     local TopBar = Create("Frame", Components, {
-        Size = UDim2.new(1, 0, 0, 28),
+        Size = UDim2.new(1, 0, 0, 35),
         BackgroundTransparency = 1,
         Name = "Top Bar"
     })
     
+    -- 创建彩虹渐变标题
     local Title = InsertTheme(Create("TextLabel", TopBar, {
         Position = UDim2.new(0, 15, 0.5),
         AnchorPoint = Vector2.new(0, 0.5),
         AutomaticSize = "XY",
         Text = WTitle,
         TextXAlignment = "Left",
-        TextSize = 12,
+        TextSize = 14,
         TextColor3 = Color3.new(1, 1, 1),
         BackgroundTransparency = 1,
-        Font = Enum.Font.GothamMedium,
+        Font = Enum.Font.GothamBold,
         Name = "Title",
         ZIndex = 2
     }, {
@@ -664,41 +804,42 @@ function redzlib:MakeWindow(Configs)
             BackgroundTransparency = 1,
             TextXAlignment = "Left",
             TextYAlignment = "Bottom",
-            TextSize = 8,
+            TextSize = 10,
             Font = Enum.Font.Gotham,
             Name = "SubTitle"
         }), "DarkText")
     }), "Text")
 
+    -- 标题彩虹渐变效果
     local titleGradient = Create("UIGradient", Title, {
         Color = ColorSequence.new({
-            ColorSequenceKeypoint.new(0.0, Color3.fromRGB(0, 200, 255)),
-            ColorSequenceKeypoint.new(0.25, Color3.fromRGB(0, 150, 200)),
-            ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 100, 255)),
-            ColorSequenceKeypoint.new(0.75, Color3.fromRGB(100, 150, 255)),
-            ColorSequenceKeypoint.new(1.0, Color3.fromRGB(0, 200, 255))
+            ColorSequenceKeypoint.new(0.0, Color3.fromRGB(0, 150, 255)),
+            ColorSequenceKeypoint.new(0.25, Color3.fromRGB(0, 200, 255)),
+            ColorSequenceKeypoint.new(0.5, Color3.fromRGB(100, 150, 255)),
+            ColorSequenceKeypoint.new(0.75, Color3.fromRGB(0, 100, 200)),
+            ColorSequenceKeypoint.new(1.0, Color3.fromRGB(0, 150, 255))
         }),
         Rotation = 0
     })
 
     local titleGlow = Create("UIStroke", Title, {
         Color = Color3.fromRGB(0, 150, 255),
-        Thickness = 1.2,
-        Transparency = 0.8
+        Thickness = 1.5,
+        Transparency = 0.7
     })
 
+    -- 标题动态效果
     local lightAngle = 0
     RunService.Heartbeat:Connect(function(delta)
-        titleGradient.Rotation = (titleGradient.Rotation + 45 * delta) % 360
+        titleGradient.Rotation = (titleGradient.Rotation + 30 * delta) % 360
         
-        lightAngle = (lightAngle + delta * 60) % 360
+        lightAngle = (lightAngle + delta * 45) % 360
         local light = math.sin(math.rad(lightAngle)) * 0.2 + 0.8
-        titleGlow.Transparency = 0.3 + (1 - light) * 0.5
+        titleGlow.Transparency = 0.5 + (1 - light) * 0.3
     end)
-
     
     local MainScroll = InsertTheme(Create("ScrollingFrame", Components, {
-        Size = UDim2.new(0, redzlib.Save.TabSize, 1, -TopBar.Size.Y.Offset),
+        Size = UDim2.new(0, bluezlib.Save.TabSize, 1, -TopBar.Size.Y.Offset),
         ScrollBarImageColor3 = Theme["Color Theme"],
         Position = UDim2.new(0, 0, 1, 0),
         AnchorPoint = Vector2.new(0, 1),
@@ -761,14 +902,14 @@ function redzlib:MakeWindow(Configs)
     
     ConnectSave(ControlSize1, function()
         if not Minimized then
-            redzlib.Save.UISize = {MainFrame.Size.X.Offset, MainFrame.Size.Y.Offset}
-            SaveJson("redz library V5.json", redzlib.Save)
+            bluezlib.Save.UISize = {MainFrame.Size.X.Offset, MainFrame.Size.Y.Offset}
+            SaveJson("bluez library V5.json", bluezlib.Save)
         end
     end)
     
     ConnectSave(ControlSize2, function()
-        redzlib.Save.TabSize = MainScroll.Size.X.Offset
-        SaveJson("redz library V5.json", redzlib.Save)
+        bluezlib.Save.TabSize = MainScroll.Size.X.Offset
+        SaveJson("bluez library V5.json", bluezlib.Save)
     end)
     
     local ButtonsFolder = Create("Folder", TopBar, {
@@ -776,7 +917,7 @@ function redzlib:MakeWindow(Configs)
     })
     
     local CloseButton = Create("ImageButton", {
-        Size = UDim2.new(0, 14, 0, 14),
+        Size = UDim2.new(0, 16, 0, 16),
         Position = UDim2.new(1, -10, 0.5),
         AnchorPoint = Vector2.new(1, 0.5),
         BackgroundTransparency = 1,
@@ -791,30 +932,225 @@ function redzlib:MakeWindow(Configs)
         Name = "Minimize"
     })
 
-    local SettingButton = SetProps(CloseButton:Clone(), {
+    -- 添加设置按钮
+    local SettingsButton = SetProps(CloseButton:Clone(), {
         Position = UDim2.new(1, -60, 0.5),
         Image = "rbxassetid://10734950309",
-        Name = "Settings"
+        Name = "Settings",
+        Visible = true
     })
     
     SetChildren(ButtonsFolder, {
         CloseButton,
         MinimizeButton,
-        SettingButton
+        SettingsButton
     })
     
     local Minimized, SaveSize, WaitClick
     local Window, FirstTab = {}, false
 
+    -- 设置容器
+    local SettingContainer = InsertTheme(Create("ScrollingFrame", {
+        Size = UDim2.new(1, 0, 1, 0),
+        Position = UDim2.new(0, 0, 1),
+        AnchorPoint = Vector2.new(0, 1),
+        ScrollBarThickness = 1.5,
+        BackgroundTransparency = 1,
+        ScrollBarImageTransparency = 0.2,
+        ScrollBarImageColor3 = Theme["Color Theme"],
+        AutomaticCanvasSize = "Y",
+        ScrollingDirection = "Y",
+        BorderSizePixel = 0,
+        CanvasSize = UDim2.new(),
+        Name = "SettingsContainer",
+        Visible = false
+    }, {
+        Create("UIPadding", {
+            PaddingLeft = UDim.new(0, 10),
+            PaddingRight = UDim.new(0, 10),
+            PaddingTop = UDim.new(0, 10),
+            PaddingBottom = UDim.new(0, 10)
+        }), Create("UIListLayout", {
+            Padding = UDim.new(0, 5)
+        })
+    }), "ScrollBar")
+    
+    SettingContainer.Parent = Containers
+
+    -- 设置功能
+    local function CreateSettings()
+        local S = {}
+        
+        -- UI 主题设置
+        S:AddSection({
+            Title = "UI 主题设置"
+        })
+        
+        S:AddDropdown({
+            Title = "选择 UI 主题",
+            Options = {"OceanBlue", "DeepBlue", "ElectricBlue", "RoyalBlue", "SkyBlue", "MidnightBlue", "NavyBlue", "SteelBlue", "CyanBlue", "TealBlue", "IceBlue", "GradientBlue"},
+            Default = bluezlib.Save.Theme,
+            Callback = function(Value)
+                bluezlib:SetTheme(Value)
+            end
+        })
+        
+        -- UI 外观设置
+        S:AddSection({
+            Title = "UI 外观设置"
+        })
+        
+        S:AddSlider({
+            Title = "UI 大小",
+            Description = "调整整个UI的大小",
+            Default = 450,
+            Min = 300,
+            Max = 800,
+            Callback = function(Value)
+                bluezlib:SetScale(Value)
+            end
+        })
+        
+        S:AddSlider({
+            Title = "UI 透明度",
+            Description = "调整UI背景透明度",
+            Default = 0.03,
+            Min = 0,
+            Max = 1,
+            Callback = function(Value)
+                MainFrame.BackgroundTransparency = Value
+            end
+        })
+        
+        S:AddSlider({
+            Title = "边框粗细",
+            Description = "调整UI边框粗细",
+            Default = 2,
+            Min = 1,
+            Max = 5,
+            Callback = function(Value)
+                RainbowStroke.Thickness = Value
+            end
+        })
+        
+        -- 字体设置
+        S:AddSection({
+            Title = "字体设置"
+        })
+        
+        S:AddDropdown({
+            Title = "标题字体",
+            Options = {"GothamBold", "SourceSansBold", "Arial", "SciFi"},
+            Default = "GothamBold",
+            Callback = function(Value)
+                Title.Font = Enum.Font[Value]
+            end
+        })
+        
+        S:AddDropdown({
+            Title = "正文字体",
+            Options = {"Gotham", "SourceSans", "Arial", "Code"},
+            Default = "Gotham",
+            Callback = function(Value)
+                -- 这里需要遍历所有文本元素来更改字体
+            end
+        })
+        
+        -- 颜色设置
+        S:AddSection({
+            Title = "颜色设置"
+        })
+        
+        S:AddToggle({
+            Title = "彩虹标题",
+            Description = "启用标题彩虹渐变效果",
+            Default = true,
+            Callback = function(Value)
+                if Value then
+                    titleGradient.Enabled = true
+                else
+                    titleGradient.Enabled = false
+                    Title.TextColor3 = Theme["Color Text"]
+                end
+            end
+        })
+        
+        S:AddToggle({
+            Title = "动态边框",
+            Description = "启用动态彩虹边框效果",
+            Default = true,
+            Callback = function(Value)
+                if Value then
+                    RainbowStroke.Transparency = 0.3
+                else
+                    RainbowStroke.Transparency = 1
+                end
+            end
+        })
+        
+        -- 其他设置
+        S:AddSection({
+            Title = "其他设置"
+        })
+        
+        S:AddToggle({
+            Title = "显示水印",
+            Description = "显示UI库水印信息",
+            Default = true,
+            Callback = function(Value)
+                Title.Visible = Value
+            end
+        })
+        
+        S:AddButton({
+            Title = "重置设置",
+            Description = "恢复所有设置为默认值",
+            Callback = function()
+                bluezlib:SetTheme("OceanBlue")
+                bluezlib:SetScale(450)
+                MainFrame.BackgroundTransparency = 0.03
+                RainbowStroke.Thickness = 2
+                titleGradient.Enabled = true
+                RainbowStroke.Transparency = 0.3
+                Title.Visible = true
+            end
+        })
+        
+        return S
+    end
+
+    -- 设置按钮点击事件
+    local SettingsVisible = false
+    SettingsButton.Activated:Connect(function()
+        SettingsVisible = not SettingsVisible
+        
+        if SettingsVisible then
+            -- 隐藏其他容器，显示设置容器
+            for _, child in pairs(Containers:GetChildren()) do
+                if child:IsA("ScrollingFrame") and child ~= SettingContainer then
+                    child.Visible = false
+                end
+            end
+            
+            SettingContainer.Visible = true
+            if not SettingContainer:FindFirstChild("SettingsContent") then
+                CreateSettings()
+            end
+        else
+            SettingContainer.Visible = false
+        end
+    end)
+
+    -- 窗口控制函数
     function Window:CloseBtn()
         local Dialog = Window:Dialog({
-            Title = "Xi Pro",
-            Text = "你想要关闭脚本吗？",
+            Title = "Bluez Library",
+            Text = "确定要关闭脚本吗？",
             Options = {
                 {"确认", function()
                     ScreenGui:Destroy()
                 end},
-                {"反回"}
+                {"取消"}
             }
         })
     end
@@ -831,10 +1167,20 @@ function redzlib:MakeWindow(Configs)
             Minimized = false
         else
             SaveSize = MainFrame.Size
+            SavePosition = MainFrame.Position
+            
             MinimizeButton.Image = "rbxassetid://10734924532"
             ControlSize1.Visible = false
             ControlSize2.Visible = false
-            CreateTween({MainFrame, "Size", UDim2.fromOffset(MainFrame.Size.X.Offset, 28), 0.25, true})
+            
+            local screenWidth = workspace.CurrentCamera.ViewportSize.X
+            local newPosition = UDim2.new(
+                0.5, -100,  
+                0, 10       
+            )
+            
+            CreateTween({MainFrame, "Size", UDim2.fromOffset(200, 35), 0.25}) 
+            CreateTween({MainFrame, "Position", newPosition, 0.25, true})
             Minimized = true
         end
         
@@ -843,35 +1189,6 @@ function redzlib:MakeWindow(Configs)
 
     function Window:Minimize()
         MainFrame.Visible = not MainFrame.Visible
-    end
-
-    function Window:AddMinimizeButton(Configs)
-        local Button = MakeDrag(Create("ImageButton", ScreenGui, {
-            Size = UDim2.fromOffset(35, 35),
-            Position = UDim2.fromScale(0.15, 0.15),
-            BackgroundTransparency = 1,
-            BackgroundColor3 = Theme["Color Hub 2"],
-            AutoButtonColor = false
-        }))
-        
-        local Stroke, Corner
-        if Configs.Corner then
-            Corner = Make("Corner", Button)
-            SetProps(Corner, Configs.Corner)
-        end
-        if Configs.Stroke then
-            Stroke = Make("Stroke", Button)
-            SetProps(Stroke, Configs.Corner)
-        end
-        
-        SetProps(Button, Configs.Button)
-        Button.Activated:Connect(Window.Minimize)
-        
-        return {
-            Stroke = Stroke,
-            Corner = Corner,
-            Button = Button
-        }
     end
 
     function Window:Set(Val1, Val2)
@@ -883,6 +1200,7 @@ function redzlib:MakeWindow(Configs)
         end
     end
 
+    -- 对话框功能
     function Window:Dialog(Configs)
         if MainFrame:FindFirstChild("Dialog") then return end
         if Minimized then
@@ -990,25 +1308,26 @@ function redzlib:MakeWindow(Configs)
 
     function Window:SelectTab(TabSelect)
         if type(TabSelect) == "number" then
-            redzlib.Tabs[TabSelect].func:Enable()
+            bluezlib.Tabs[TabSelect].func:Enable()
         else
-            for _,Tab in pairs(redzlib.Tabs) do
+            for _,Tab in pairs(bluezlib.Tabs) do
                 if Tab.Cont == TabSelect.Cont then
                     Tab.func:Enable()
                 end
             end
         end
     end
-    
-    local ContainerList = {}
-    local SettingTab
 
+    -- 标签页容器
+    local ContainerList = {}
+    
+    -- 创建标签页的方法
     function Window:MakeTab(paste, Configs)
         if type(paste) == "table" then Configs = paste end
         local TName = Configs[1] or Configs.Title or "Tab!"
         local TIcon = Configs[2] or Configs.Icon or ""
         
-        TIcon = redzlib:GetIcon(TIcon)
+        TIcon = bluezlib:GetIcon(TIcon)
         if not TIcon:find("rbxassetid://") or TIcon:gsub("rbxassetid://", ""):len() < 6 then
             TIcon = false
         end
@@ -1084,7 +1403,7 @@ function redzlib:MakeWindow(Configs)
             end
             Container.Parent = Containers
             Container.Size = UDim2.new(1, 0, 1, 150)
-            table.foreach(redzlib.Tabs, function(_,Tab)
+            table.foreach(bluezlib.Tabs, function(_,Tab)
                 if Tab.Cont ~= Container then
                     Tab.func:Disable()
                 end
@@ -1099,7 +1418,7 @@ function redzlib:MakeWindow(Configs)
         
         FirstTab = true
         local Tab = {}
-        table.insert(redzlib.Tabs, {TabInfo = {Name = TName, Icon = TIcon}, func = Tab, Cont = Container})
+        table.insert(bluezlib.Tabs, {TabInfo = {Name = TName, Icon = TIcon}, func = Tab, Cont = Container})
         Tab.Cont = Container
         
         function Tab:Disable()
@@ -1118,6 +1437,7 @@ function redzlib:MakeWindow(Configs)
         end
         function Tab:Destroy() TabSelect:Destroy() Container:Destroy() end
         
+        -- 添加各种UI元素的方法
         function Tab:AddSection(Configs)
             local SectionName = type(Configs) == "string" and Configs or Configs[1] or Configs.Name or Configs.Title or Configs.Section
             
@@ -1140,7 +1460,7 @@ function redzlib:MakeWindow(Configs)
             }), "Text")
             
             local Section = {}
-            table.insert(redzlib.Options, {type = "Section", Name = SectionName, func = Section})
+            table.insert(bluezlib.Options, {type = "Section", Name = SectionName, func = Section})
             function Section:Visible(Bool)
                 if Bool == nil then SectionFrame.Visible = not SectionFrame.Visible return end
                 SectionFrame.Visible = Bool
@@ -1155,7 +1475,7 @@ function redzlib:MakeWindow(Configs)
             end
             return Section
         end
-
+        
         function Tab:AddParagraph(Configs)
             local PName = Configs[1] or Configs.Title or "Paragraph"
             local PDesc = Configs[2] or Configs.Text or ""
@@ -1181,7 +1501,7 @@ function redzlib:MakeWindow(Configs)
             end
             return Paragraph
         end
-
+        
         function Tab:AddButton(Configs)
             local BName = Configs[1] or Configs.Name or Configs.Title or "Button!"
             local BDescription = Configs.Desc or Configs.Description or ""
@@ -1217,7 +1537,7 @@ function redzlib:MakeWindow(Configs)
             end
             return Button
         end
-
+        
         function Tab:AddToggle(Configs)
             local TName = Configs[1] or Configs.Name or Configs.Title or "Toggle"
             local TDesc = Configs.Desc or Configs.Description or ""
@@ -1293,7 +1613,7 @@ function redzlib:MakeWindow(Configs)
             end
             return Toggle
         end
-
+        
         function Tab:AddDropdown(Configs)
             local DName = Configs[1] or Configs.Name or Configs.Title or "Dropdown"
             local DDesc = Configs.Desc or Configs.Description or ""
@@ -1638,7 +1958,7 @@ function redzlib:MakeWindow(Configs)
             end
             return Dropdown
         end
-
+        
         function Tab:AddSlider(Configs)
             local SName = Configs[1] or Configs.Name or Configs.Title or "Slider!"
             local SDesc = Configs.Desc or Configs.Description or ""
@@ -1773,7 +2093,7 @@ function redzlib:MakeWindow(Configs)
             function Slider:Destroy() Button:Destroy() end
             return Slider
         end
-
+        
         function Tab:AddTextBox(Configs)
             local TName = Configs[1] or Configs.Name or Configs.Title or "Text Box"
             local TDesc = Configs.Desc or Configs.Description or ""
@@ -1840,7 +2160,7 @@ function redzlib:MakeWindow(Configs)
             function TextBox:Destroy() Button:Destroy() end
             return TextBox
         end
-
+        
         function Tab:AddDiscordInvite(Configs)
             local Title = Configs[1] or Configs.Name or Configs.Title or "Discord"
             local Desc = Configs.Desc or Configs.Description or ""
@@ -1936,241 +2256,15 @@ function redzlib:MakeWindow(Configs)
             function DiscordInvite:Visible(...) Funcs:ToggleVisible(InviteHolder, ...) end
             return DiscordInvite
         end
-
-        -- 创建设置标签页
-        if not SettingTab then
-            SettingTab = InsertTheme(Create("ScrollingFrame", {
-                Size = UDim2.new(1, 0, 1, 0),
-                Position = UDim2.new(0, 0, 1),
-                AnchorPoint = Vector2.new(0, 1),
-                ScrollBarThickness = 1.5,
-                BackgroundTransparency = 1,
-                ScrollBarImageTransparency = 0.2,
-                ScrollBarImageColor3 = Theme["Color Theme"],
-                AutomaticCanvasSize = "Y",
-                ScrollingDirection = "Y",
-                BorderSizePixel = 0,
-                CanvasSize = UDim2.new(),
-                Name = "SettingsTab",
-                Visible = false
-            }, {
-                Create("UIPadding", {
-                    PaddingLeft = UDim.new(0, 10),
-                    PaddingRight = UDim.new(0, 10),
-                    PaddingTop = UDim.new(0, 10),
-                    PaddingBottom = UDim.new(0, 10)
-                }), Create("UIListLayout", {
-                    Padding = UDim.new(0, 5)
-                })
-            }), "ScrollBar")
-            SettingTab.Parent = Containers
-            table.insert(ContainerList, SettingTab)
-
-            -- 添加设置选项
-            local S = {}
-            function S:AddSection(Configs)
-                return Tab:AddSection(Configs)
-            end
-
-            function S:AddToggle(Configs)
-                return Tab:AddToggle(Configs)
-            end
-
-            function S:AddSlider(Configs)
-                return Tab:AddSlider(Configs)
-            end
-
-            function S:AddDropdown(Configs)
-                return Tab:AddDropdown(Configs)
-            end
-
-            -- 添加设置选项
-            S:AddSection({
-                Name = "UI 设置"
-            })
-
-            S:AddSlider({
-                Title = "UI 大小",
-                Description = "调整UI整体大小",
-                Default = 450,
-                Min = 300,
-                Max = 800,
-                Callback = function(Value)
-                    redzlib:SetScale(Value)
-                end
-            })
-
-            S:AddDropdown({
-                Title = "UI 主题",
-                Options = {"BlueSilver"},
-                Default = "BlueSilver",
-                Callback = function(State)
-                    redzlib:SetTheme(State)
-                end
-            })
-
-            S:AddToggle({
-                Title = "彩虹边框",
-                Default = true,
-                Callback = function(v)
-                    RainbowStroke.Transparency = v and 0 or 1
-                end
-            })
-
-            S:AddToggle({
-                Title = "彩虹标题",
-                Default = true,
-                Callback = function(v)
-                    if v then
-                        RunService.Heartbeat:Connect(function(delta)
-                            titleGradient.Rotation = (titleGradient.Rotation + 45 * delta) % 360
-                        end)
-                    else
-                        titleGradient.Rotation = 0
-                    end
-                end
-            })
-
-            S:AddSection({
-                Name = "功能设置"
-            })
-
-            S:AddSlider({
-                Title = "背景透明度",
-                Description = "调整UI背景透明度",
-                Default = 3,
-                Min = 1,
-                Max = 100,
-                Callback = function(Value)
-                    MainFrame.BackgroundTransparency = (100 - Value) / 100
-                end
-            })
-
-            S:AddDropdown({
-                Title = "字体选择",
-                Options = {"Gotham", "SourceSans", "Arial", "Code"},
-                Default = "Gotham",
-                Callback = function(State)
-                    local fontMap = {
-                        Gotham = Enum.Font.Gotham,
-                        SourceSans = Enum.Font.SourceSans,
-                        Arial = Enum.Font.Arial,
-                        Code = Enum.Font.Code
-                    }
-                    local newFont = fontMap[State] or Enum.Font.Gotham
-                    
-                    for _, instance in pairs(redzlib.Instances) do
-                        if instance.Instance:IsA("TextLabel") or instance.Instance:IsA("TextButton") or instance.Instance:IsA("TextBox") then
-                            instance.Instance.Font = newFont
-                        end
-                    end
-                end
-            })
-
-            S:AddToggle({
-                Title = "显示图标",
-                Default = true,
-                Callback = function(v)
-                    for _, tab in pairs(redzlib.Tabs) do
-                        if tab.TabInfo.Icon then
-                            local icon = tab.func.Cont:FindFirstChildWhichIsA("ImageLabel")
-                            if icon then
-                                icon.Visible = v
-                            end
-                        end
-                    end
-                end
-            })
-
-            S:AddSection({
-                Name = "高级设置"
-            })
-
-            S:AddSlider({
-                Title = "动画速度",
-                Description = "调整UI动画速度",
-                Default = 50,
-                Min = 10,
-                Max = 100,
-                Callback = function(Value)
-                    local speed = Value / 50
-                    TweenService = setmetatable({}, {
-                        __index = function(_, key)
-                            if key == "Create" then
-                                return function(_, tweenInfo, ...)
-                                    local newTweenInfo = TweenInfo.new(
-                                        tweenInfo.Time / speed,
-                                        tweenInfo.EasingStyle,
-                                        tweenInfo.EasingDirection,
-                                        tweenInfo.RepeatCount,
-                                        tweenInfo.Reverses,
-                                        tweenInfo.DelayTime
-                                    )
-                                    return game:GetService("TweenService"):Create(newTweenInfo, ...)
-                                end
-                            end
-                            return game:GetService("TweenService")[key]
-                        end
-                    })
-                end
-            })
-
-            S:AddDropdown({
-                Title = "边框颜色",
-                Options = {"蓝色", "绿色", "红色", "紫色", "橙色", "青色"},
-                Default = "蓝色",
-                Callback = function(State)
-                    local colorMap = {
-                        ["蓝色"] = Color3.fromRGB(0, 150, 255),
-                        ["绿色"] = Color3.fromRGB(0, 255, 0),
-                        ["红色"] = Color3.fromRGB(255, 0, 0),
-                        ["紫色"] = Color3.fromRGB(150, 0, 255),
-                        ["橙色"] = Color3.fromRGB(255, 150, 0),
-                        ["青色"] = Color3.fromRGB(0, 255, 255)
-                    }
-                    RainbowStroke.Color = colorMap[State] or Color3.fromRGB(0, 150, 255)
-                end
-            })
-        end
-
-        -- 设置按钮点击事件
-        local settingsOpen = false
-        SettingButton.Activated:Connect(function()
-            if settingsOpen then
-                -- 关闭设置
-                for _, container in pairs(ContainerList) do
-                    if container ~= SettingTab then
-                        container.Visible = false
-                    end
-                end
-                SettingTab.Visible = true
-                Window:SelectTab(SettingTab)
-            else
-                -- 打开设置
-                SettingTab.Visible = false
-                if Tab.Cont then
-                    Tab.Cont.Visible = true
-                    Window:SelectTab(Tab)
-                end
-            end
-            settingsOpen = not settingsOpen
-        end)
-
-        -- 最小化时隐藏设置按钮
-        MainFrame:GetPropertyChangedSignal("Size"):Connect(function()
-            if Minimized then
-                SettingButton.Visible = false
-            else
-                SettingButton.Visible = true
-            end
-        end)
-
+        
         return Tab
     end
     
+    -- 按钮事件连接
     CloseButton.Activated:Connect(Window.CloseBtn)
     MinimizeButton.Activated:Connect(Window.MinimizeBtn)
+    
     return Window
 end
 
-return redzlib
+return bluezlib
