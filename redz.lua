@@ -198,135 +198,117 @@ Icons = loadstring(game:HttpGet("https://raw.githubusercontent.com/atoyayaya/RED
 }
 
 -- 彩虹边框渐变预设
-splib.RainbowBorders = {
-	Rainbow = {
-		Name = "彩虹",
-		Gradient = ColorSequence.new({
-			ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
-			ColorSequenceKeypoint.new(0.16, Color3.fromRGB(255, 165, 0)),
-			ColorSequenceKeypoint.new(0.33, Color3.fromRGB(255, 255, 0)),
-			ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 255, 0)),
-			ColorSequenceKeypoint.new(0.66, Color3.fromRGB(0, 0, 255)),
-			ColorSequenceKeypoint.new(0.83, Color3.fromRGB(75, 0, 130)),
-			ColorSequenceKeypoint.new(1, Color3.fromRGB(238, 130, 238))
-		})
-	},
-	BlueRed = {
-		Name = "蓝红渐变",
-		Gradient = ColorSequence.new({
-			ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 0, 255)),
-			ColorSequenceKeypoint.new(0.5, Color3.fromRGB(128, 0, 128)),
-			ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 0))
-		})
-	},
-	CyanPink = {
-		Name = "青粉渐变",
-		Gradient = ColorSequence.new({
-			ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 255, 255)),
-			ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 105, 180)),
-			ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 20, 147))
-		})
-	},
-	Ocean = {
-		Name = "海洋渐变",
-		Gradient = ColorSequence.new({
-			ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 105, 148)),
-			ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 168, 255)),
-			ColorSequenceKeypoint.new(1, Color3.fromRGB(100, 210, 255))
-		})
-	},
-	Sunset = {
-		Name = "日落渐变",
-		Gradient = ColorSequence.new({
-			ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 69, 0)),
-			ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 140, 0)),
-			ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 215, 0))
-		})
-	},
-	Forest = {
-		Name = "森林渐变",
-		Gradient = ColorSequence.new({
-			ColorSequenceKeypoint.new(0, Color3.fromRGB(34, 139, 34)),
-			ColorSequenceKeypoint.new(0.5, Color3.fromRGB(50, 205, 50)),
-			ColorSequenceKeypoint.new(1, Color3.fromRGB(144, 238, 144))
-		})
-	},
-	PurpleDream = {
-		Name = "紫色梦境",
-		Gradient = ColorSequence.new({
-			ColorSequenceKeypoint.new(0, Color3.fromRGB(75, 0, 130)),
-			ColorSequenceKeypoint.new(0.5, Color3.fromRGB(138, 43, 226)),
-			ColorSequenceKeypoint.new(1, Color3.fromRGB(186, 85, 211))
-		})
-	},
-	Fire = {
-		Name = "火焰渐变",
-		Gradient = ColorSequence.new({
-			ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
-			ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 140, 0)),
-			ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 255, 0))
-		})
-	},
-	Ice = {
-		Name = "冰霜渐变",
-		Gradient = ColorSequence.new({
-			ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 191, 255)),
-			ColorSequenceKeypoint.new(0.5, Color3.fromRGB(135, 206, 250)),
-			ColorSequenceKeypoint.new(1, Color3.fromRGB(240, 248, 255))
-		})
-	},
-	Neon = {
-		Name = "霓虹渐变",
-		Gradient = ColorSequence.new({
-			ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 255)),
-			ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 255, 255)),
-			ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 255, 0))
-		})
-	},
-	Gold = {
-		Name = "黄金渐变",
-		Gradient = ColorSequence.new({
-			ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 215, 0)),
-			ColorSequenceKeypoint.new(0.5, Color3.fromRGB(218, 165, 32)),
-			ColorSequenceKeypoint.new(1, Color3.fromRGB(184, 134, 11))
-		})
-	},
-	Silver = {
-		Name = "白银渐变",
-		Gradient = ColorSequence.new({
-			ColorSequenceKeypoint.new(0, Color3.fromRGB(192, 192, 192)),
-			ColorSequenceKeypoint.new(0.5, Color3.fromRGB(211, 211, 211)),
-			ColorSequenceKeypoint.new(1, Color3.fromRGB(169, 169, 169))
-		})
-	},
-	Ruby = {
-		Name = "红宝石",
-		Gradient = ColorSequence.new({
-			ColorSequenceKeypoint.new(0, Color3.fromRGB(220, 20, 60)),
-			ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 0, 0)),
-			ColorSequenceKeypoint.new(1, Color3.fromRGB(178, 34, 34))
-		})
-	},
-	Emerald = {
-		Name = "翡翠渐变",
-		Gradient = ColorSequence.new({
-			ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 100, 0)),
-			ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 128, 0)),
-			ColorSequenceKeypoint.new(1, Color3.fromRGB(50, 205, 50))
-		})
-	},
-	Sapphire = {
-		Name = "蓝宝石",
-		Gradient = ColorSequence.new({
-			ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 0, 139)),
-			ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 0, 205)),
-			ColorSequenceKeypoint.new(1, Color3.fromRGB(65, 105, 225))
-		})
-	}
+splib.BorderGradients = {
+    Rainbow = {
+        Color = ColorSequence.new({
+            ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
+            ColorSequenceKeypoint.new(0.16, Color3.fromRGB(255, 165, 0)),
+            ColorSequenceKeypoint.new(0.33, Color3.fromRGB(255, 255, 0)),
+            ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 255, 0)),
+            ColorSequenceKeypoint.new(0.66, Color3.fromRGB(0, 0, 255)),
+            ColorSequenceKeypoint.new(0.83, Color3.fromRGB(75, 0, 130)),
+            ColorSequenceKeypoint.new(1, Color3.fromRGB(238, 130, 238))
+        })
+    },
+    BlueRed = {
+        Color = ColorSequence.new({
+            ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 0, 255)),
+            ColorSequenceKeypoint.new(0.5, Color3.fromRGB(128, 0, 128)),
+            ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 0))
+        })
+    },
+    Ocean = {
+        Color = ColorSequence.new({
+            ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 255, 255)),
+            ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 150, 200)),
+            ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 100, 255))
+        })
+    },
+    Sunset = {
+        Color = ColorSequence.new({
+            ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
+            ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 165, 0)),
+            ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 255, 0))
+        })
+    },
+    Forest = {
+        Color = ColorSequence.new({
+            ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 255, 0)),
+            ColorSequenceKeypoint.new(0.5, Color3.fromRGB(50, 205, 50)),
+            ColorSequenceKeypoint.new(1, Color3.fromRGB(34, 139, 34))
+        })
+    },
+    PurplePink = {
+        Color = ColorSequence.new({
+            ColorSequenceKeypoint.new(0, Color3.fromRGB(128, 0, 128)),
+            ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 105, 180)),
+            ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 192, 203))
+        })
+    },
+    Gold = {
+        Color = ColorSequence.new({
+            ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 215, 0)),
+            ColorSequenceKeypoint.new(0.5, Color3.fromRGB(218, 165, 32)),
+            ColorSequenceKeypoint.new(1, Color3.fromRGB(184, 134, 11))
+        })
+    },
+    Ice = {
+        Color = ColorSequence.new({
+            ColorSequenceKeypoint.new(0, Color3.fromRGB(173, 216, 230)),
+            ColorSequenceKeypoint.new(0.5, Color3.fromRGB(135, 206, 250)),
+            ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 191, 255))
+        })
+    },
+    Fire = {
+        Color = ColorSequence.new({
+            ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
+            ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 140, 0)),
+            ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 255, 0))
+        })
+    },
+    Neon = {
+        Color = ColorSequence.new({
+            ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 255)),
+            ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 255, 255)),
+            ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 255, 0))
+        })
+    },
+    Pastel = {
+        Color = ColorSequence.new({
+            ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 182, 193)),
+            ColorSequenceKeypoint.new(0.5, Color3.fromRGB(221, 160, 221)),
+            ColorSequenceKeypoint.new(1, Color3.fromRGB(173, 216, 230))
+        })
+    },
+    Earth = {
+        Color = ColorSequence.new({
+            ColorSequenceKeypoint.new(0, Color3.fromRGB(139, 69, 19)),
+            ColorSequenceKeypoint.new(0.5, Color3.fromRGB(160, 82, 45)),
+            ColorSequenceKeypoint.new(1, Color3.fromRGB(210, 180, 140))
+        })
+    },
+    Galaxy = {
+        Color = ColorSequence.new({
+            ColorSequenceKeypoint.new(0, Color3.fromRGB(25, 25, 112)),
+            ColorSequenceKeypoint.new(0.5, Color3.fromRGB(138, 43, 226)),
+            ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 20, 147))
+        })
+    },
+    Candy = {
+        Color = ColorSequence.new({
+            ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 105, 180)),
+            ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 215, 0)),
+            ColorSequenceKeypoint.new(1, Color3.fromRGB(50, 205, 50))
+        })
+    },
+    Midnight = {
+        Color = ColorSequence.new({
+            ColorSequenceKeypoint.new(0, Color3.fromRGB(25, 25, 112)),
+            ColorSequenceKeypoint.new(0.5, Color3.fromRGB(72, 61, 139)),
+            ColorSequenceKeypoint.new(1, Color3.fromRGB(106, 90, 205))
+        })
+    }
 }
-
--- 设置默认彩虹边框
-splib.Save.RainbowBorder = splib.Save.RainbowBorder or "BlueRed"
 
 -- ok this is redz lib v5 but now its for sp cuz its has edited in full! and  big improvent and added more functions by sp to contact the the dev discord @nadermohamed22
 
@@ -595,9 +577,10 @@ splib.Save = {
   UISize  = saved.UISize  or splib.Save.UISize,
   TabSize = saved.TabSize or splib.Save.TabSize,
   Theme   = saved.Theme   or splib.Save.Theme,
-  RainbowBorder = saved.RainbowBorder or splib.Save.RainbowBorder
 }
 
+-- 添加边框渐变保存
+splib.Save.BorderGradient = saved.BorderGradient or "Rainbow"
 
 local ScreenGui = Create("ScreenGui", CoreGui, {
 	Name = "sp Library",
@@ -897,6 +880,7 @@ Make("Corner", bindBox, UDim.new(0.25, 0))
 
     return Frame, Label, bindBox, ColorBox
 end
+
 local function GetColor(Instance)
 	if not Instance then return nil end
 
@@ -971,26 +955,35 @@ function splib:SetScale(NewScale)
 	UIScale, ScreenGui.Scale.Scale = NewScale, NewScale
 end
 
--- 新增彩虹边框设置功能
-function splib:SetRainbowBorder(BorderName)
-	if not splib.RainbowBorders[BorderName] then return end
-	
-	splib.Save.RainbowBorder = BorderName
-	SaveJson("sp library.json", splib.Save)
-	
-	-- 更新所有彩虹边框
-	table.foreach(splib.Instances, function(_,Val)
-		if Val.Type == "RainbowBorder" then
-			Val.Instance.Color = splib.RainbowBorders[BorderName].Gradient
-		end
-	end)
+-- 新增边框渐变设置函数
+function splib:SetBorderGradient(gradientName)
+    if splib.BorderGradients[gradientName] then
+        splib.Save.BorderGradient = gradientName
+        SaveJson("sp library.json", splib.Save)
+        
+        -- 更新所有边框渐变
+        for _, instance in pairs(splib.Instances) do
+            if instance.Type == "BorderGradient" then
+                instance.Instance.Color = splib.BorderGradients[gradientName].Color
+            end
+        end
+        
+        return true
+    end
+    return false
+end
+
+function splib:GetCurrentBorderGradient()
+    return splib.Save.BorderGradient
 end
 
 local SaveChangesEnabled = true
 
 function splib:MakeWindow(Configs)
-    local WTitle     = Configs[1] or Configs.Name or Configs.Title or "SP Lib v2"
-    local WMiniText  = Configs[2] or Configs.SubTitle or Configs.SubName or "by : SP Hub"
+
+    local ToggleIcon = tostring(Configs.ToggleIcon or "rbxassetid://83114982417764")
+    local WTitle     = Configs[1] or Configs.Name or Configs.Title or ""
+    local WMiniText  = Configs[2] or Configs.SubTitle or Configs.SubName or "By: Q3E4"
 
     Settings.ScriptFile = Configs[3] or Configs.ConfigFolder or Configs.SaveFolder or false
 
@@ -1080,16 +1073,6 @@ function splib:MakeWindow(Configs)
         local filePath = Settings.ConfigFolder.."/config.json"
         writefile(filePath, HttpService:JSONEncode(Flags))
     end
-    Window.SomeToggle.Changed:Connect(function(val)
-        Flags.SomeToggle = val
-        saveSettings()
-    end)
-
-    if SaveConfig then
-        Window.CloseButton.MouseButton1Click:Connect(function()
-            saveSettings()
-        end)
-    end
 
     return Window
 end
@@ -1107,7 +1090,7 @@ end
 	
     local MainCorner = Make("Corner", MainFrame, UDim.new(0, 10))
 	
-	-- 添加彩虹边框
+	-- 创建彩虹边框
 	local RainbowBorder = Create("Frame", MainFrame, {
 		Name = "RainbowBorder",
 		Size = UDim2.new(1, 8, 1, 8),
@@ -1119,21 +1102,16 @@ end
 	
 	local RainbowCorner = Make("Corner", RainbowBorder, UDim.new(0, 14))
 	
-	local RainbowGradient = Create("UIGradient", RainbowBorder, {
-		Rotation = 0,
-		Color = splib.RainbowBorders[splib.Save.RainbowBorder].Gradient
+	-- 创建边框渐变
+	local BorderGradient = Create("UIGradient", RainbowBorder, {
+		Rotation = 0
 	})
-	InsertTheme(RainbowGradient, "RainbowBorder")
+	InsertTheme(BorderGradient, "BorderGradient")
 	
-	-- 彩虹边框动画
-	spawn(function()
-		local rotationSpeed = 35
-		while wait() do
-			RainbowGradient.Rotation = (RainbowGradient.Rotation + rotationSpeed * 0.1) % 360
-		end
-	end)
+	-- 设置初始边框渐变
+	BorderGradient.Color = splib.BorderGradients[splib.Save.BorderGradient or "Rainbow"].Color
 
-	local Components = Create("Folder", MainFrame, {
+    local Components = Create("Folder", MainFrame, {
 		Name = "Components"
 	})
 	
@@ -1228,7 +1206,6 @@ end
 		BackgroundTransparency = 1,
 		Name = "Control Tab Size"
 	}))
-
 
 local function ControlSize()
     local Pos1, Pos2 = ControlSize1.Position, ControlSize2.Position
@@ -1325,7 +1302,6 @@ ConnectSave(ControlSize2, function()
     splib.Save.TabSize = MainScroll.Size.X.Offset
     SaveJson("sp library.json", splib.Save)
 end)
-
 
 	local ButtonsFolder = Create("Folder", TopBar, {
 		Name = "Buttons"
@@ -1477,7 +1453,6 @@ local function ToggleUI()
     end
 end
 
-
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
     if gameProcessed then return end
     if input.KeyCode == Enum.KeyCode.RightShift then
@@ -1516,7 +1491,6 @@ holdBar.BackgroundColor3 = Color3.fromRGB(0, 162, 255)
 holdBar.BorderSizePixel = 0
 local HoCorner = Instance.new("UICorner", holdBar)
 HoCorner.CornerRadius = UDim.new(0, 14)
-
 
 local originalPosition = T.Position
 
@@ -2401,7 +2375,6 @@ end)
 
 table.insert(bindConnections, inputConnection)
 
-
     UserInputService.InputEnded:Connect(function(input)
         if state.Hold and input.KeyCode == state.Value then
             Holding = false
@@ -2540,7 +2513,6 @@ function Tab:AddImageLabel(Configs)
     return ImageLabelObj
 end
 
-
 function Tab:AddParagraph(...)
     local args = {...}
 
@@ -2583,6 +2555,7 @@ function Tab:AddParagraph(...)
 
     return Paragraph
 end
+
 function Tab:AddButton(Configs)
 			local BName = Configs[1] or Configs.Name or Configs.Title or "Button!"
 			local BDescription = Configs.Desc or Configs.Description or ""
@@ -2753,6 +2726,7 @@ function splib:ClearAllToggles()
         end
     end
 end
+
 		function Tab:AddDropdown(Configs)
 			local DName = Configs[1] or Configs.Name or Configs.Title or "Dropdown"
 			local DDesc = Configs.Desc or Configs.Description or ""
@@ -2942,7 +2916,6 @@ end
 				local MultiSelect = DMultiSelect
 				local Options = {}
 
-
                 local InitialSelection = saved or Default[1]
 				Selected = MultiSelect and {} or InitialSelection
 if MultiSelect then
@@ -2959,7 +2932,6 @@ end
 					SaveDropdownFlag(Flag, MultiSelect and Selected or tostring(Selected))
 					Funcs:FireCallback(Callback, Selected)
 				end
-
 
 	local function UpdateLabel()
 		if MultiSelect then
@@ -3278,6 +3250,7 @@ end
  
 			return Dropdown
 		end
+
 local SlidersFile = "sliders.json"
 local function SaveSliderFlag(flag, value)
     local data = {}
@@ -3311,6 +3284,7 @@ local function LoadSliderFlag(flag)
     end
     return nil
 end
+
 function Tab:AddSlider(Configs)
     local SName = Configs[1] or Configs.Name or Configs.Title or "Slider"
     local SDesc = Configs.Desc or Configs.ValueName or Configs.Description or ""
@@ -3331,7 +3305,6 @@ function Tab:AddSlider(Configs)
     if type(Default) ~= "number" then
         Default = (Min + Max) / 2
     end
-
 
     if Configs.IsMobile and not isMobile then return nil end
     if Configs.IsPC and not isPC then return nil end
@@ -3468,6 +3441,7 @@ end)
     function Slider:Destroy() Button:Destroy() end
     return Slider
 end
+
 local TextBoxesFile = "textboxes.json"
 local function SaveTextBoxFlag(flag, value)
     local data = {}
@@ -3501,6 +3475,7 @@ local function LoadTextBoxFlag(flag)
     end
     return nil
 end
+
 function Tab:AddTextbox(Configs)
     local TName = Configs[1] or Configs.Name or Configs.Title or "Text Box"
     local TDesc = Configs.Desc or Configs.Description or ""
@@ -3616,6 +3591,7 @@ updateSelectedFrame2Size()
 
     return TextBox
 end
+
 local ColorPickersFile = "colorpickers.json"
 local function SaveColorPickerFlag(flag, color: Color3)
 	local data = {}
@@ -3656,6 +3632,7 @@ local function LoadColorPickerFlag(flag): Color3?
 	end
 	return nil
 end
+
 function Tab:AddColorpicker(Configs)
     local TName    = Configs[1] or Configs.Name or Configs.Title or "Color Picker"
     local TDesc    = Configs.Desc or Configs.Description or ""
@@ -3725,7 +3702,6 @@ local CloseButton = Create("TextButton", CustomColorFrame, {
 })
 Make("Corner", CloseButton, UDim.new(0, 4))
 Make("Stroke", CloseButton)
-
 
 local ColorCodeBox = Create("TextBox", CustomColorFrame, {
     Name = "ColorCodeBox",
@@ -4226,6 +4202,7 @@ function Colorpicker:Callback(fn)
 end
     return Colorpicker
 end
+
 		function Tab:AddDiscordInvite(Configs)
 			local Title = Configs[1] or Configs.Name or Configs.Title or "Discord"
 			local Desc = Configs.Desc or Configs.Description or ""
@@ -4339,37 +4316,32 @@ end
     ScreenFind:Destroy()
 end
 
+-- 边框渐变动画
+spawn(function()
+    local rotationSpeed = 35
+    while wait() do
+        BorderGradient.Rotation = (BorderGradient.Rotation + rotationSpeed * 0.1) % 360
+    end
+end)
+
 -- 设置选项卡
-local SettingTab
-
 Tab:AddSection({
-    Name = "UI Settings",
-    __force_container = SettingTab
-})
-
--- 彩虹边框设置
-Tab:AddDropdown({
-    Name = "彩虹边框",
-    Options = {"Rainbow", "BlueRed", "CyanPink", "Ocean", "Sunset", "Forest", "PurpleDream", "Fire", "Ice", "Neon", "Gold", "Silver", "Ruby", "Emerald", "Sapphire"},
-    Default = splib.Save.RainbowBorder or "BlueRed",
-    Callback = function(selectedBorder)
-        splib:SetRainbowBorder(selectedBorder)
-    end,
+    Name = "UI 设置",
     __force_container = SettingTab
 })
 
 Tab:AddDropdown({
-    Name     = "UI Size",
-    Options  = {"Small", "Medium", "Large"},
-    Default  = "Medium",
+    Name     = "UI 大小设置",
+    Options  = {"小", "中", "大"},
+    Default  = "中",
     Flag = "UISize",
     Callback = function(v)
         local offset = isMobile and -200 or 0
-        if v == "Small" then
+        if v == "小" then
             splib:SetScale(700 + offset)
-        elseif v == "Medium" then
+        elseif v == "中" then
             splib:SetScale(600 + offset)
-        elseif v == "Large" then
+        elseif v == "大" then
             splib:SetScale(500 + offset)
         end
     end,
@@ -4377,7 +4349,7 @@ Tab:AddDropdown({
 })
 
 Tab:AddDropdown({
-    Name = "UI Theme",
+    Name = "UI 主题",
     Options = {"Red", "Darker", "Dark", "Purple","NeonBlue", "Sunset", "Ocean", "RoseGold", "Matrix", "Green", "Orange", "Pink", "Gold", "Cyan"},
     Default = splib.Save.Theme or "Pink",
     Callback = function(selectedTheme)
@@ -4388,8 +4360,19 @@ Tab:AddDropdown({
     __force_container = SettingTab
 })
 
+-- 新增边框渐变设置
+Tab:AddDropdown({
+    Name = "边框渐变样式",
+    Options = {"Rainbow", "BlueRed", "Ocean", "Sunset", "Forest", "PurplePink", "Gold", "Ice", "Fire", "Neon", "Pastel", "Earth", "Galaxy", "Candy", "Midnight"},
+    Default = splib.Save.BorderGradient or "Rainbow",
+    Callback = function(selectedGradient)
+        splib:SetBorderGradient(selectedGradient)
+    end,
+    __force_container = SettingTab
+})
+
 Tab:AddToggle({
-  Name = "UI Button Protection",
+  Name = "UI按扭图标",
   Default = true,
   Flag = "UIProtection",
   Callback = function(enabled)
@@ -4404,7 +4387,7 @@ Tab:AddToggle({
 })
 
 Tab:AddToggle({
-    Name = "Sidebar Hover Expand",
+    Name = "侧边栏悬停拓展",
     Flag = "SidebarHover",
     Default = true,
     IsPC = true,
@@ -4420,7 +4403,7 @@ Tab:AddToggle({
 })
 
 Tab:AddSection({
-    Name = "UI Effects",
+    Name = "UI",
     __force_container = SettingTab
 })
 
@@ -4455,7 +4438,7 @@ task.spawn(function()
 end)
 
 Tab:AddToggle({
-    Name = "Rainbow Border",
+    Name = "彩虹边框",
     Flag = "RainbowMainFrame",
     Default = Settings.RainbowMainFrameDefault,
     Callback = function(enabled)
@@ -4489,9 +4472,8 @@ task.spawn(function()
     end
 end)
 
-
 Tab:AddToggle({
-    Name = "Rainbow Title",
+    Name = "彩虹字体",
     Flag = "RainbowTitle",
     Default = Settings.RainbowTitleDefault,
     Callback = function(enabled)
@@ -4504,7 +4486,7 @@ Tab:AddToggle({
 })
 
 Tab:AddToggle({
-    Name = "Rainbow SubTitle",
+    Name = "彩虹小标题",
     Flag = "RainbowSubTitle",
     Default = Settings.RainbowSubTitleDefault,
     Callback = function(enabled)
@@ -4521,6 +4503,7 @@ Tab:AddToggle({
 	MinimizeButton.Activated:Connect(Window.MinimizeBtn)
 	return Window
 end
+
 function splib:Destroy()
     for _, conn in ipairs(self.bindConnections or {}) do
         if typeof(conn) == "RBXScriptConnection" and conn.Connected then
