@@ -848,7 +848,7 @@ function splib:MakeWindow(Configs)
 
     local ToggleIcon = tostring(Configs.ToggleIcon or "rbxassetid://83114982417764")
     local WTitle     = Configs[1] or Configs.Name or Configs.Title or ""
-    local WMiniText  = Configs[2] or Configs.SubTitle or Configs.SubName or "By: Q3E4"
+    local WMiniText  = Configs[2] or Configs.SubTitle or Configs.SubName or "by:神青[DE]"
 
 
 function splib:MakeWindow(Configs)
@@ -4196,25 +4196,9 @@ end
     splib:ClearAllBinds()
     ScreenFind:Destroy()
 end
-
--- local SettingTab
-
 Tab:AddSection({
     Name = "UI 设置",
     __force_container = SettingTab
-})
-
-Tab:AddImageLabel({
-    Title = "DE HUB",
-    Desc = "v2.0.0",
-    Image = "rbxassetid://8834748103",
-    Rainbow = true
-})
-Tab:AddDiscordInvite({
-    Title = "加入我们的Discord",
-    Desc = "获取最新更新和支持",
-    Logo = "rbxassetid://8834748103",
-    Invite = "https://discord.gg/example"
 })
 
 Tab:AddDropdown({
