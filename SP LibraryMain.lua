@@ -197,6 +197,7 @@ local splib = {
 Icons = loadstring(game:HttpGet("https://raw.githubusercontent.com/atoyayaya/REDz-ui/refs/heads/main/REDzIcon"))()
 }
 
+
 -- ok this is redz lib v5 but now its for sp cuz its has edited in full! and  big improvent and added more functions by sp to contact the the dev discord @nadermohamed22
 
 local isMobile = UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled
@@ -442,6 +443,8 @@ local GetFlag, SetFlag, CheckFlag do
 			db=true;task.wait(0.1);db=false
 			
 			local Success, Encoded = pcall(function()
+				-- local _Flags = {}
+				-- for _,Flag in pairs(Flags) do _Flags[_] = Flag.Value end
 				return HttpService:JSONEncode(Flags)
 			end)
 			
@@ -465,6 +468,7 @@ splib.Save = {
   TabSize = saved.TabSize or splib.Save.TabSize,
   Theme   = saved.Theme   or splib.Save.Theme,
 }
+
 
 local ScreenGui = Create("ScreenGui", CoreGui, {
 	Name = "sp Library",
@@ -841,6 +845,14 @@ end
 local SaveChangesEnabled = true
 
 function splib:MakeWindow(Configs)
+
+    local ToggleIcon = tostring(Configs.ToggleIcon or "rbxassetid://83114982417764")
+    local WTitle     = Configs[1] or Configs.Name or Configs.Title or ""
+    local WMiniText  = Configs[2] or Configs.SubTitle or Configs.SubName or "By: Q3E4"
+
+
+function splib:MakeWindow(Configs)
+
     local WTitle     = Configs[1] or Configs.Name or Configs.Title or "SP Lib v2"
     local WMiniText  = Configs[2] or Configs.SubTitle or Configs.SubName or "by : SP Hub"
 
@@ -863,83 +875,41 @@ function splib:MakeWindow(Configs)
     Configs.IntroText = Configs.IntroText or "SP Lib v2"
     Configs.IntroIcon = Configs.IntroIcon or "rbxassetid://8834748103"
 
-    -- 动态启动动画
     local function LoadSequence()
-        -- 创建启动界面
-        local IntroFrame = Create("Frame", ScreenGui, {
-            Size = UDim2.new(1, 0, 1, 0),
-            BackgroundColor3 = Color3.fromRGB(0, 0, 0),
-            BackgroundTransparency = 0,
-            ZIndex = 100
-        })
-        
-        local Logo = Create("ImageLabel", IntroFrame, {
-            AnchorPoint = Vector2.new(0.5, 0.5),
-            Position = UDim2.new(0.5, 0, 0.4, 0),
-            Size = UDim2.new(0, 80, 0, 80),
-            Image = Configs.IntroIcon,
-            BackgroundTransparency = 1,
-            ImageTransparency = 1,
-            ZIndex = 101
-        })
-        
-        local Title = Create("TextLabel", IntroFrame, {
-            AnchorPoint = Vector2.new(0.5, 0.5),
-            Position = UDim2.new(0.5, 0, 0.6, 0),
-            Size = UDim2.new(0, 0, 0, 40),
-            Text = Configs.IntroText,
-            TextColor3 = Color3.fromRGB(255, 255, 255),
-            Font = Enum.Font.GothamBold,
-            TextSize = 24,
-            BackgroundTransparency = 1,
-            TextTransparency = 1,
-            ZIndex = 101
-        })
-        
-        -- 动画序列
-        local sequence = coroutine.create(function()
-            -- 淡入Logo
-            TweenService:Create(Logo, TweenInfo.new(0.8, Enum.EasingStyle.Quint), {ImageTransparency = 0}):Play()
-            wait(0.5)
-            
-            -- Logo弹跳效果
-            TweenService:Create(Logo, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = UDim2.new(0, 100, 0, 100)}):Play()
-            wait(0.4)
-            TweenService:Create(Logo, TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.In), {Size = UDim2.new(0, 90, 0, 90)}):Play()
-            wait(0.3)
-            
-            -- 标题展开
-            TweenService:Create(Title, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {
-                Size = UDim2.new(0, 200, 0, 40),
-                TextTransparency = 0
-            }):Play()
-            wait(1)
-            
-            -- 标题彩虹效果
-            local titleRainbow = coroutine.create(function()
-                while Title.Parent do
-                    local t = tick() * 0.8
-                    local r = math.sin(t) * 0.5 + 0.5
-                    local g = math.sin(t + 2) * 0.5 + 0.5
-                    local b = math.sin(t + 4) * 0.5 + 0.5
-                    Title.TextColor3 = Color3.new(r, g, b)
-                    wait()
-                end
-            end)
-            coroutine.resume(titleRainbow)
-            
-            wait(1.5)
-            
-            -- 淡出启动界面
-            TweenService:Create(IntroFrame, TweenInfo.new(0.8, Enum.EasingStyle.Quint), {BackgroundTransparency = 1}):Play()
-            TweenService:Create(Logo, TweenInfo.new(0.8, Enum.EasingStyle.Quint), {ImageTransparency = 1}):Play()
-            TweenService:Create(Title, TweenInfo.new(0.8, Enum.EasingStyle.Quint), {TextTransparency = 1}):Play()
-            
-            wait(1)
-            IntroFrame:Destroy()
-        end)
-        
-        coroutine.resume(sequence)
+        MainWindow.Visible = false
+        local LoadSequenceLogo = SetProps(
+            MakeElement("Image", Configs.IntroIcon),
+            {
+                Parent = ScreenGui,
+                AnchorPoint = Vector2.new(0.5, 0.5),
+                Position = UDim2.new(0.5, 0, 0.4, 0),
+                Size = UDim2.new(0, 28, 0, 28),
+                ImageColor3 = Color3.fromRGB(255, 255, 255),
+                ImageTransparency = 1
+            }
+        )
+        local LoadSequenceText = SetProps(
+            MakeElement("Label", Configs.IntroText, 14),
+            {
+                Parent = ScreenGui,
+                Size = UDim2.new(1, 0, 1, 0),
+                AnchorPoint = Vector2.new(0.5, 0.5),
+                Position = UDim2.new(0.5, 19, 0.5, 0),
+                TextXAlignment = Enum.TextXAlignment.Center,
+                Font = Enum.Font.GothamBold,
+                TextTransparency = 1
+            }
+        )
+        TweenService:Create(LoadSequenceLogo, TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageTransparency = 0, Position = UDim2.new(0.5, 0, 0.5, 0)}):Play()
+        wait(0.8)
+        TweenService:Create(LoadSequenceLogo, TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Position = UDim2.new(0.5, -(LoadSequenceText.TextBounds.X / 2), 0.5, 0)}):Play()
+        wait(0.3)
+        TweenService:Create(LoadSequenceText, TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextTransparency = 0}):Play()
+        wait(2)
+        TweenService:Create(LoadSequenceText, TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextTransparency = 1}):Play()
+        MainWindow.Visible = true
+        LoadSequenceLogo:Destroy()
+        LoadSequenceText:Destroy()
     end
 
     if Configs.IntroEnabled then
@@ -959,6 +929,7 @@ function splib:MakeWindow(Configs)
         end
     end; LoadFile()
 
+   
     if HidePremium then
         for _, el in ipairs(Window:GetPremiumElements()) do
             el.Visible = false
@@ -973,6 +944,10 @@ function splib:MakeWindow(Configs)
         local filePath = Settings.ConfigFolder.."/config.json"
         writefile(filePath, HttpService:JSONEncode(Flags))
     end
+    Window.SomeToggle.Changed:Connect(function(val)
+        Flags.SomeToggle = val
+        saveSettings()
+    end)
 
     if SaveConfig then
         Window.CloseButton.MouseButton1Click:Connect(function()
@@ -1068,6 +1043,25 @@ end
 		})
 	}), "ScrollBar")
 
+--[[
+ local SearchBox = Create("TextBox", MainScroll, {
+    Size = UDim2.new(1, 0, 0, 24),
+    Position = UDim2.new(0, 0, 0, 0),
+    BackgroundColor3 = Color3.fromRGB(13, 13, 13),
+    PlaceholderText = "Search",
+    Text = "",
+    TextXAlignment = Enum.TextXAlignment.Left,
+    TextTruncate = Enum.TextTruncate.AtEnd,
+    TextColor3 = Color3.fromRGB(255, 255, 255),
+    ClearTextOnFocus = false,
+    Font = Enum.Font.Gotham,
+    TextSize = 10,
+    TextWrapped = false,
+})
+Make("Corner", SearchBox)
+]]
+
+
 	local Containers = Create("Frame", Components, {
 		Size = UDim2.new(1, -MainScroll.Size.X.Offset, 1, -TopBar.Size.Y.Offset),
 		AnchorPoint = Vector2.new(1, 1),
@@ -1092,6 +1086,7 @@ end
 		BackgroundTransparency = 1,
 		Name = "Control Tab Size"
 	}))
+
 
 local function ControlSize()
     local Pos1, Pos2 = ControlSize1.Position, ControlSize2.Position
@@ -1189,6 +1184,7 @@ ConnectSave(ControlSize2, function()
     SaveJson("sp library.json", splib.Save)
 end)
 
+
 	local ButtonsFolder = Create("Folder", TopBar, {
 		Name = "Buttons"
 	})
@@ -1248,8 +1244,13 @@ end
     ScreenGui:Destroy()
 end)
 
-	local ContainerList = {}
-	
+SettingButton.MouseButton1Click:Connect(function()
+	for _, container in ipairs(ContainerList) do
+		container.Visible = false
+	end
+	SettingTab.Visible = true
+end)
+
 	function Window:MinimizeBtn()
 		if WaitClick then return end
 		WaitClick = true
@@ -1306,7 +1307,7 @@ end)
 local tweenInfoHideUI = TweenInfo.new(0.4, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
 
 local OriginalPos = MainFrame.Position
-local UIHidden = false
+local UIVisibleed = true
 
 local function ToggleUI()
     UIHidden = not UIHidden
@@ -1333,6 +1334,7 @@ local function ToggleUI()
         ):Play()
     end
 end
+
 
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
     if gameProcessed then return end
@@ -1372,6 +1374,7 @@ holdBar.BackgroundColor3 = Color3.fromRGB(0, 162, 255)
 holdBar.BorderSizePixel = 0
 local HoCorner = Instance.new("UICorner", holdBar)
 HoCorner.CornerRadius = UDim.new(0, 14)
+
 
 local originalPosition = T.Position
 
@@ -1634,34 +1637,7 @@ end)
 			end
 		end
 	end
-
-    local SettingTab = InsertTheme(Create("ScrollingFrame", {
-        Size = UDim2.new(1, 0, 1, 0),
-        Position = UDim2.new(0, 0, 1),
-        AnchorPoint = Vector2.new(0, 1),
-        ScrollBarThickness = 1.5,
-        BackgroundTransparency = 1,
-        ScrollBarImageTransparency = 0.2,
-        ScrollBarImageColor3 = Theme["Color Theme"],
-        AutomaticCanvasSize = "Y",
-        ScrollingDirection = "Y",
-        BorderSizePixel = 0,
-        CanvasSize = UDim2.new(),
-        Name = "SettingsTab"
-    }, {
-        Create("UIPadding", {
-            PaddingLeft = UDim.new(0, 10),
-            PaddingRight = UDim.new(0, 10),
-            PaddingTop = UDim.new(0, 10),
-            PaddingBottom = UDim.new(0, 10)
-        }),
-        Create("UIListLayout", {
-            Padding = UDim.new(0, 5)
-        })
-    }), "ScrollBar")
-
-    table.insert(ContainerList, SettingTab)
-
+    local ContainerList = {}
 function Window:MakeTab(paste, Configs)
 		if type(paste) == "table" then Configs = paste end
 		local TName = Configs[1] or Configs.Title or Configs.Name or "Tab!"
@@ -1714,6 +1690,31 @@ function Window:MakeTab(paste, Configs)
 			BackgroundTransparency = FirstTab and 1 or 0
 		}), "Theme")Make("Corner", Selected, UDim.new(0.5, 0))
 
+ local SettingTab = InsertTheme(Create("ScrollingFrame", {
+    Size = UDim2.new(1, 0, 1, 0),
+    Position = UDim2.new(0, 0, 1),
+    AnchorPoint = Vector2.new(0, 1),
+    ScrollBarThickness = 1.5,
+    BackgroundTransparency = 1,
+    ScrollBarImageTransparency = 0.2,
+    ScrollBarImageColor3 = Theme["Color Theme"],
+    AutomaticCanvasSize = "Y",
+    ScrollingDirection = "Y",
+    BorderSizePixel = 0,
+    CanvasSize = UDim2.new(),
+    Name = "SettingsTab"
+}, {
+    Create("UIPadding", {
+        PaddingLeft = UDim.new(0, 10),
+        PaddingRight = UDim.new(0, 10),
+        PaddingTop = UDim.new(0, 10),
+        PaddingBottom = UDim.new(0, 10)
+    }),
+    Create("UIListLayout", {
+        Padding = UDim.new(0, 5)
+    })
+}), "ScrollBar")
+
 		local Container = InsertTheme(Create("ScrollingFrame", {
 			Size = UDim2.new(1, 0, 1, 0),
 			Position = UDim2.new(0, 0, 1),
@@ -1738,6 +1739,7 @@ function Window:MakeTab(paste, Configs)
 			})
 		}), "ScrollBar")
 
+		table.insert(ContainerList, SettingTab)
 		table.insert(ContainerList, Container)
 		
 		if not FirstTab then Container.Parent = Containers end
@@ -1770,7 +1772,41 @@ function Window:MakeTab(paste, Configs)
         FirstTab = true
 		table.insert(splib.Tabs, {TabInfo = {Name = TName, Icon = TIcon}, func = Tab, Cont = Container})
 		Tab.Cont = Container
+		if not table.find(ContainerList, SettingTab) then
+    table.insert(ContainerList, SettingTab)
+end
 
+local SettingTabHandler = {
+    Enabled = false
+}
+
+function SettingTabHandler:Enable()
+    if SettingTab.Parent then return end
+    for _, Frame in pairs(ContainerList) do
+        if Frame:IsA("ScrollingFrame") and Frame ~= SettingTab then
+            Frame.Parent = nil
+        end
+    end
+    SettingTab.Parent = Containers
+    SettingTab.Size = UDim2.new(1, 0, 1, 150)
+    table.foreach(splib.Tabs, function(_, tab)
+        if tab.Cont ~= SettingTab then
+            tab.func:Disable()
+        end
+    end)
+
+    SettingTabHandler.Enabled = true
+    CreateTween({SettingTab, "Size", UDim2.new(1, 0, 1, 0), 0.5})
+end
+
+function SettingTabHandler:Disable()
+    SettingTabHandler.Enabled = false
+    SettingTab.Parent = nil
+end
+
+SettingButton.MouseButton1Click:Connect(function()
+    SettingTabHandler:Enable()
+end)
 		function Tab:Disable()
 		  self.Enabled = false
 			Container.Parent = nil
@@ -2223,6 +2259,7 @@ end)
 
 table.insert(bindConnections, inputConnection)
 
+
     UserInputService.InputEnded:Connect(function(input)
         if state.Hold and input.KeyCode == state.Value then
             Holding = false
@@ -2361,6 +2398,7 @@ function Tab:AddImageLabel(Configs)
     return ImageLabelObj
 end
 
+
 function Tab:AddParagraph(...)
     local args = {...}
 
@@ -2403,7 +2441,6 @@ function Tab:AddParagraph(...)
 
     return Paragraph
 end
-
 function Tab:AddButton(Configs)
 			local BName = Configs[1] or Configs.Name or Configs.Title or "Button!"
 			local BDescription = Configs.Desc or Configs.Description or ""
@@ -2574,7 +2611,6 @@ function splib:ClearAllToggles()
         end
     end
 end
-
 		function Tab:AddDropdown(Configs)
 			local DName = Configs[1] or Configs.Name or Configs.Title or "Dropdown"
 			local DDesc = Configs.Desc or Configs.Description or ""
@@ -2764,6 +2800,7 @@ end
 				local MultiSelect = DMultiSelect
 				local Options = {}
 
+
                 local InitialSelection = saved or Default[1]
 				Selected = MultiSelect and {} or InitialSelection
 if MultiSelect then
@@ -2780,6 +2817,7 @@ end
 					SaveDropdownFlag(Flag, MultiSelect and Selected or tostring(Selected))
 					Funcs:FireCallback(Callback, Selected)
 				end
+
 
 	local function UpdateLabel()
 		if MultiSelect then
@@ -3098,7 +3136,6 @@ end
  
 			return Dropdown
 		end
-
 local SlidersFile = "sliders.json"
 local function SaveSliderFlag(flag, value)
     local data = {}
@@ -3132,7 +3169,6 @@ local function LoadSliderFlag(flag)
     end
     return nil
 end
-
 function Tab:AddSlider(Configs)
     local SName = Configs[1] or Configs.Name or Configs.Title or "Slider"
     local SDesc = Configs.Desc or Configs.ValueName or Configs.Description or ""
@@ -3154,8 +3190,9 @@ function Tab:AddSlider(Configs)
         Default = (Min + Max) / 2
     end
 
+
     if Configs.IsMobile and not isMobile then return nil end
-    if Configs.IsPC     and not isPC     then return nil end
+    if Configs.IsPC and not isPC then return nil end
 
     local Button, LabelFunc = ButtonFrame(Container, SName, SDesc, UDim2.new(1, -20))
     local SliderHolder = Create("TextButton", Button, {
@@ -3289,7 +3326,6 @@ end)
     function Slider:Destroy() Button:Destroy() end
     return Slider
 end
-
 local TextBoxesFile = "textboxes.json"
 local function SaveTextBoxFlag(flag, value)
     local data = {}
@@ -3323,7 +3359,6 @@ local function LoadTextBoxFlag(flag)
     end
     return nil
 end
-
 function Tab:AddTextbox(Configs)
     local TName = Configs[1] or Configs.Name or Configs.Title or "Text Box"
     local TDesc = Configs.Desc or Configs.Description or ""
@@ -3439,7 +3474,6 @@ updateSelectedFrame2Size()
 
     return TextBox
 end
-
 local ColorPickersFile = "colorpickers.json"
 local function SaveColorPickerFlag(flag, color: Color3)
 	local data = {}
@@ -3480,7 +3514,6 @@ local function LoadColorPickerFlag(flag): Color3?
 	end
 	return nil
 end
-
 function Tab:AddColorpicker(Configs)
     local TName    = Configs[1] or Configs.Name or Configs.Title or "Color Picker"
     local TDesc    = Configs.Desc or Configs.Description or ""
@@ -3550,6 +3583,7 @@ local CloseButton = Create("TextButton", CustomColorFrame, {
 })
 Make("Corner", CloseButton, UDim.new(0, 4))
 Make("Stroke", CloseButton)
+
 
 local ColorCodeBox = Create("TextBox", CustomColorFrame, {
     Name = "ColorCodeBox",
@@ -3980,7 +4014,6 @@ lastActionTime = tick()
         end)
     end
 end
-
 ColorBox.Activated:Connect(function()
         if isCooldown then return end
         isCooldown = true
@@ -4050,7 +4083,6 @@ function Colorpicker:Callback(fn)
 end
     return Colorpicker
 end
-
 		function Tab:AddDiscordInvite(Configs)
 			local Title = Configs[1] or Configs.Name or Configs.Title or "Discord"
 			local Desc = Configs.Desc or Configs.Description or ""
@@ -4164,14 +4196,33 @@ end
     ScreenFind:Destroy()
 end
 
--- 设置标签内容
-local savedSize = "中"
+-- 创建信息标签页
+local InfoTab = Window:AddTab("个人信息")
+
+-- 添加个人信息标签
+InfoTab:AddLabel("您的用户名: "..game.Players.LocalPlayer.Name)
+InfoTab:AddLabel("您的名称: "..game.Players.LocalPlayer.DisplayName)
+InfoTab:AddLabel("您的语言: "..game.Players.LocalPlayer.LocaleId)
+InfoTab:AddLabel("您的国家: "..game:GetService("LocalizationService"):GetCountryRegionForPlayerAsync(game.Players.LocalPlayer))
+InfoTab:AddLabel("您的账户年龄(天): "..game.Players.LocalPlayer.AccountAge)
+InfoTab:AddLabel("您的账户年龄(年): "..math.floor(game.Players.LocalPlayer.AccountAge/365*100)/100)
+InfoTab:AddLabel("您使用的注入器："..identifyexecutor())
+InfoTab:AddLabel("您当前的服务器ID: "..game.PlaceId)
+
+-- 添加更多信息
+InfoTab:AddLabel("游戏名称: "..game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name)
+InfoTab:AddLabel("FPS: "..math.floor(1/game:GetService("RunService").RenderStepped:Wait()))
+InfoTab:AddLabel("Ping: "..math.floor(game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValue()).."ms")
+
+-- 创建设置标签页
+local SettingTab = Window:AddTab("UI 设置")
 
 Tab:AddSection({
     Name = "UI 设置",
     __force_container = SettingTab
 })
 
+-- 1. UI 大小设置
 Tab:AddDropdown({
     Name     = "UI 大小设置",
     Options  = {"小", "中", "大"},
@@ -4190,6 +4241,7 @@ Tab:AddDropdown({
     __force_container = SettingTab
 })
 
+-- 2. UI 主题设置
 Tab:AddDropdown({
     Name = "UI 主题",
     Options = {"Red", "Darker", "Dark", "Purple","NeonBlue", "Sunset", "Ocean", "RoseGold", "Matrix", "Green", "Orange", "Pink", "Gold", "Cyan"},
@@ -4202,6 +4254,7 @@ Tab:AddDropdown({
     __force_container = SettingTab
 })
 
+-- 3. UI 按钮图标保护
 Tab:AddToggle({
   Name = "UI按扭图标",
   Default = true,
@@ -4217,6 +4270,7 @@ Tab:AddToggle({
     __force_container = SettingTab
 })
 
+-- 4. 侧边栏悬停拓展
 Tab:AddToggle({
     Name = "侧边栏悬停拓展",
     Flag = "SidebarHover",
@@ -4229,6 +4283,142 @@ Tab:AddToggle({
         else
             disableSidebarHover()
         end
+    end,
+    __force_container = SettingTab
+})
+
+-- 5. 背景模糊效果
+Tab:AddToggle({
+    Name = "背景模糊效果",
+    Flag = "BackgroundBlur",
+    Default = false,
+    Callback = function(enabled)
+        if enabled then
+            -- 启用背景模糊
+            local blur = Instance.new("BlurEffect")
+            blur.Size = 10
+            blur.Parent = game:GetService("Lighting")
+        else
+            -- 禁用背景模糊
+            for _, effect in pairs(game:GetService("Lighting"):GetChildren()) do
+                if effect:IsA("BlurEffect") then
+                    effect:Destroy()
+                end
+            end
+        end
+    end,
+    __force_container = SettingTab
+})
+
+-- 6. 界面透明度
+Tab:AddSlider({
+    Name = "界面透明度",
+    Min = 0,
+    Max = 1,
+    Default = 0,
+    Flag = "UITransparency",
+    Callback = function(value)
+        MainFrame.BackgroundTransparency = value
+    end,
+    __force_container = SettingTab
+})
+
+-- 7. 界面圆角大小
+Tab:AddSlider({
+    Name = "界面圆角大小",
+    Min = 0,
+    Max = 20,
+    Default = 8,
+    Flag = "UICorner",
+    Callback = function(value)
+        local corner = MainFrame:FindFirstChildOfClass("UICorner")
+        if corner then
+            corner.CornerRadius = UDim.new(0, value)
+        end
+    end,
+    __force_container = SettingTab
+})
+
+-- 8. 标题栏显示
+Tab:AddToggle({
+    Name = "显示标题栏",
+    Flag = "ShowTitleBar",
+    Default = true,
+    Callback = function(enabled)
+        Title.Visible = enabled
+    end,
+    __force_container = SettingTab
+})
+
+-- 9. 水印显示
+Tab:AddToggle({
+    Name = "显示水印",
+    Flag = "ShowWatermark",
+    Default = true,
+    Callback = function(enabled)
+        -- 水印显示逻辑
+    end,
+    __force_container = SettingTab
+})
+
+-- 10. 按键提示
+Tab:AddToggle({
+    Name = "显示按键提示",
+    Flag = "ShowKeybinds",
+    Default = true,
+    Callback = function(enabled)
+        -- 按键提示显示逻辑
+    end,
+    __force_container = SettingTab
+})
+
+-- 11. 动画效果
+Tab:AddToggle({
+    Name = "启用动画效果",
+    Flag = "EnableAnimations",
+    Default = true,
+    Callback = function(enabled)
+        -- 动画效果开关逻辑
+    end,
+    __force_container = SettingTab
+})
+
+-- 12. 声音反馈
+Tab:AddToggle({
+    Name = "启用声音反馈",
+    Flag = "EnableSounds",
+    Default = false,
+    Callback = function(enabled)
+        -- 声音反馈开关逻辑
+    end,
+    __force_container = SettingTab
+})
+
+-- 13. 自动保存设置
+Tab:AddToggle({
+    Name = "自动保存设置",
+    Flag = "AutoSave",
+    Default = true,
+    Callback = function(enabled)
+        splib.Save.AutoSave = enabled
+    end,
+    __force_container = SettingTab
+})
+
+-- 14. 重置所有设置
+Tab:AddButton({
+    Name = "重置所有设置",
+    Callback = function()
+        splib:ResetAllSettings()
+    end,
+    __force_container = SettingTab
+})
+
+-- 15. 关闭UI按钮
+Tab:AddButton({
+    Name = "关闭UI",
+    Callback = function()
+        Window:Minimize()
     end,
     __force_container = SettingTab
 })
@@ -4303,6 +4493,7 @@ task.spawn(function()
     end
 end)
 
+
 Tab:AddToggle({
     Name = "彩虹字体",
     Flag = "RainbowTitle",
@@ -4329,260 +4520,11 @@ Tab:AddToggle({
     __force_container = SettingTab
 })
 
--- 新增设置功能
-Tab:AddSection({
-    Name = "高级设置",
-    __force_container = SettingTab
-})
-
-Tab:AddToggle({
-    Name = "自动保存设置",
-    Flag = "AutoSave",
-    Default = true,
-    Callback = function(enabled)
-        SaveChangesEnabled = enabled
-        if enabled then
-            splib:MakeNotification({
-                Name = "设置已保存",
-                Content = "您的设置已自动保存",
-                Time = 3
-            })
-        end
-    end,
-    __force_container = SettingTab
-})
-
-Tab:AddToggle({
-    Name = "显示FPS计数器",
-    Flag = "ShowFPS",
-    Default = false,
-    Callback = function(enabled)
-        if enabled then
-            -- 创建FPS计数器
-            local fpsFrame = Create("Frame", ScreenGui, {
-                Size = UDim2.new(0, 80, 0, 30),
-                Position = UDim2.new(0, 10, 0, 10),
-                BackgroundColor3 = Color3.fromRGB(0, 0, 0),
-                BackgroundTransparency = 0.3,
-                Visible = true
-            })
-            Make("Corner", fpsFrame)
-            
-            local fpsLabel = Create("TextLabel", fpsFrame, {
-                Size = UDim2.new(1, 0, 1, 0),
-                Text = "FPS: 60",
-                TextColor3 = Color3.fromRGB(255, 255, 255),
-                BackgroundTransparency = 1,
-                Font = Enum.Font.GothamBold,
-                TextSize = 14
-            })
-            
-            local fps = 0
-            local lastTime = tick()
-            local frameCount = 0
-            
-            game:GetService("RunService").RenderStepped:Connect(function()
-                frameCount = frameCount + 1
-                local currentTime = tick()
-                if currentTime - lastTime >= 1 then
-                    fps = math.floor(frameCount / (currentTime - lastTime))
-                    frameCount = 0
-                    lastTime = currentTime
-                    fpsLabel.Text = "FPS: " .. fps
-                end
-            end)
-            
-            Flags["FPSFrame"] = fpsFrame
-        else
-            if Flags["FPSFrame"] then
-                Flags["FPSFrame"]:Destroy()
-                Flags["FPSFrame"] = nil
-            end
-        end
-    end,
-    __force_container = SettingTab
-})
-
-Tab:AddToggle({
-    Name = "水波纹点击效果",
-    Flag = "RippleEffect",
-    Default = true,
-    Callback = function(enabled)
-        if enabled then
-            -- 水波纹效果实现
-            local function createRippleEffect(button)
-                button.MouseButton1Down:Connect(function(x, y)
-                    local ripple = Create("Frame", button, {
-                        BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-                        BackgroundTransparency = 0.8,
-                        Size = UDim2.new(0, 0, 0, 0),
-                        Position = UDim2.new(0, x, 0, y),
-                        AnchorPoint = Vector2.new(0.5, 0.5),
-                        ZIndex = 10
-                    })
-                    Make("Corner", ripple, UDim.new(1, 0))
-                    
-                    local goalSize = math.max(button.AbsoluteSize.X, button.AbsoluteSize.Y) * 1.5
-                    TweenService:Create(ripple, TweenInfo.new(0.5), {
-                        Size = UDim2.new(0, goalSize, 0, goalSize),
-                        BackgroundTransparency = 1
-                    }):Play()
-                    
-                    delay(0.5, function()
-                        ripple:Destroy()
-                    end)
-                end)
-            end
-            
-            -- 为所有按钮添加水波纹效果
-            for _, tab in pairs(splib.Tabs) do
-                if tab.func and tab.func.Cont then
-                    for _, child in pairs(tab.func.Cont:GetDescendants()) do
-                        if child:IsA("TextButton") and child.Name == "Option" then
-                            createRippleEffect(child)
-                        end
-                    end
-                end
-            end
-        end
-    end,
-    __force_container = SettingTab
-})
-
-Tab:AddButton({
-    Name = "重置所有设置",
-    Description = "这将重置所有UI设置到默认值",
-    Callback = function()
-        local dialog = Window:Dialog({
-            Title = "确认重置",
-            Text = "您确定要重置所有设置吗？此操作不可撤销。",
-            Options = {
-                {Name = "取消", Callback = function() end},
-                {Name = "确认重置", Callback = function()
-                    -- 重置所有设置
-                    splib:SetTheme("Red")
-                    splib:SetScale(600)
-                    SaveChangesEnabled = true
-                    
-                    -- 重置所有开关状态
-                    for _, toggle in pairs(Toggles) do
-                        if toggle.object and type(toggle.object.Set) == "function" then
-                            toggle.object:Set(toggle.default)
-                        end
-                    end
-                    
-                    splib:MakeNotification({
-                        Name = "设置已重置",
-                        Content = "所有设置已恢复默认值",
-                        Time = 3
-                    })
-                end}
-            }
-        })
-    end,
-    __force_container = SettingTab
-})
-
-Tab:AddButton({
-    Name = "导出设置",
-    Description = "导出当前UI设置到剪贴板",
-    Callback = function()
-        local settingsData = {
-            Theme = splib.Save.Theme,
-            UISize = splib.Save.UISize,
-            TabSize = splib.Save.TabSize,
-            Flags = Flags
-        }
-        
-        local json = HttpService:JSONEncode(settingsData)
-        setclipboard(json)
-        
-        splib:MakeNotification({
-            Name = "设置已导出",
-            Content = "UI设置已复制到剪贴板",
-            Time = 3
-        })
-    end,
-    __force_container = SettingTab
-})
-
-Tab:AddButton({
-    Name = "导入设置",
-    Description = "从剪贴板导入UI设置",
-    Callback = function()
-        local clipboardText = tostring(getclipboard())
-        local success, data = pcall(function()
-            return HttpService:JSONDecode(clipboardText)
-        end)
-        
-        if success and type(data) == "table" then
-            if data.Theme then
-                splib:SetTheme(data.Theme)
-            end
-            if data.UISize then
-                splib.Save.UISize = data.UISize
-                MainFrame.Size = UDim2.fromOffset(data.UISize[1], data.UISize[2])
-            end
-            if data.TabSize then
-                splib.Save.TabSize = data.TabSize
-                MainScroll.Size = UDim2.new(0, data.TabSize, 1, -TopBar.Size.Y.Offset)
-            end
-            
-            splib:MakeNotification({
-                Name = "设置已导入",
-                Content = "UI设置已从剪贴板导入",
-                Time = 3
-            })
-        else
-            splib:MakeNotification({
-                Name = "导入失败",
-                Content = "剪贴板中没有有效的设置数据",
-                Time = 3
-            })
-        end
-    end,
-    __force_container = SettingTab
-})
-
--- 设置标签切换功能
-local SettingTabHandler = {
-    Enabled = false
-}
-
-function SettingTabHandler:Enable()
-    if SettingTab.Parent then return end
-    for _, Frame in pairs(ContainerList) do
-        if Frame:IsA("ScrollingFrame") and Frame ~= SettingTab then
-            Frame.Parent = nil
-        end
-    end
-    SettingTab.Parent = Containers
-    SettingTab.Size = UDim2.new(1, 0, 1, 150)
-    table.foreach(splib.Tabs, function(_, tab)
-        if tab.Cont ~= SettingTab then
-            tab.func:Disable()
-        end
-    end)
-
-    SettingTabHandler.Enabled = true
-    CreateTween({SettingTab, "Size", UDim2.new(1, 0, 1, 0), 0.5})
-end
-
-function SettingTabHandler:Disable()
-    SettingTabHandler.Enabled = false
-    SettingTab.Parent = nil
-end
-
-SettingButton.MouseButton1Click:Connect(function()
-    SettingTabHandler:Enable()
-end)
-
 		return Tab
 	end
 	MinimizeButton.Activated:Connect(Window.MinimizeBtn)
 	return Window
 end
-
 function splib:Destroy()
     for _, conn in ipairs(self.bindConnections or {}) do
         if typeof(conn) == "RBXScriptConnection" and conn.Connected then
