@@ -4014,6 +4014,7 @@ lastActionTime = tick()
         end)
     end
 end
+
 ColorBox.Activated:Connect(function()
         if isCooldown then return end
         isCooldown = true
@@ -4196,33 +4197,13 @@ end
     ScreenFind:Destroy()
 end
 
--- 创建信息标签页
-local InfoTab = Window:AddTab("个人信息")
-
--- 添加个人信息标签
-InfoTab:AddLabel("您的用户名: "..game.Players.LocalPlayer.Name)
-InfoTab:AddLabel("您的名称: "..game.Players.LocalPlayer.DisplayName)
-InfoTab:AddLabel("您的语言: "..game.Players.LocalPlayer.LocaleId)
-InfoTab:AddLabel("您的国家: "..game:GetService("LocalizationService"):GetCountryRegionForPlayerAsync(game.Players.LocalPlayer))
-InfoTab:AddLabel("您的账户年龄(天): "..game.Players.LocalPlayer.AccountAge)
-InfoTab:AddLabel("您的账户年龄(年): "..math.floor(game.Players.LocalPlayer.AccountAge/365*100)/100)
-InfoTab:AddLabel("您使用的注入器："..identifyexecutor())
-InfoTab:AddLabel("您当前的服务器ID: "..game.PlaceId)
-
--- 添加更多信息
-InfoTab:AddLabel("游戏名称: "..game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name)
-InfoTab:AddLabel("FPS: "..math.floor(1/game:GetService("RunService").RenderStepped:Wait()))
-InfoTab:AddLabel("Ping: "..math.floor(game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValue()).."ms")
-
--- 创建设置标签页
-local SettingTab = Window:AddTab("UI 设置")
+-- local SettingTab
 
 Tab:AddSection({
     Name = "UI 设置",
     __force_container = SettingTab
 })
 
--- 1. UI 大小设置
 Tab:AddDropdown({
     Name     = "UI 大小设置",
     Options  = {"小", "中", "大"},
@@ -4241,7 +4222,6 @@ Tab:AddDropdown({
     __force_container = SettingTab
 })
 
--- 2. UI 主题设置
 Tab:AddDropdown({
     Name = "UI 主题",
     Options = {"Red", "Darker", "Dark", "Purple","NeonBlue", "Sunset", "Ocean", "RoseGold", "Matrix", "Green", "Orange", "Pink", "Gold", "Cyan"},
@@ -4254,7 +4234,238 @@ Tab:AddDropdown({
     __force_container = SettingTab
 })
 
--- 3. UI 按钮图标保护
+-- 在设置选项卡中添加以下新功能：
+
+-- 添加UI不透明度控制
+Tab:AddSlider({
+    Name = "UI 不透明度",
+    Min = 0,
+    Max = 1,
+    Default = 0.97,
+    Increment = 0.01,
+    Flag = "UIOpacity",
+    Callback = function(value)
+        MainFrame.BackgroundTransparency = 1 - value
+    end,
+    __force_container = SettingTab
+})
+
+-- 添加UI圆角控制
+Tab:AddSlider({
+    Name = "UI 圆角大小",
+    Min = 0,
+    Max = 20,
+    Default = 10,
+    Increment = 1,
+    Flag = "UICorner",
+    Callback = function(value)
+        MainCorner.CornerRadius = UDim.new(0, value)
+    end,
+    __force_container = SettingTab
+})
+
+-- 添加背景模糊效果
+Tab:AddToggle({
+    Name = "背景模糊效果",
+    Flag = "BackgroundBlur",
+    Default = false,
+    Callback = function(enabled)
+        if enabled then
+            if not ScreenGui:FindFirstChild("BackgroundBlur") then
+                local blur = Instance.new("BlurEffect")
+                blur.Name = "BackgroundBlur"
+                blur.Size = 10
+                blur.Parent = ScreenGui
+            end
+            ScreenGui.BackgroundBlur.Enabled = true
+        else
+            if ScreenGui:FindFirstChild("BackgroundBlur") then
+                ScreenGui.BackgroundBlur.Enabled = false
+            end
+        end
+    end,
+    __force_container = SettingTab
+})
+
+-- 添加UI动画速度控制
+Tab:AddSlider({
+    Name = "动画速度",
+    Min = 0.1,
+    Max = 2,
+    Default = 1,
+    Increment = 0.1,
+    Flag = "AnimationSpeed",
+    Callback = function(value)
+        -- 这里可以设置全局动画速度倍数
+        getgenv().SPLibAnimationSpeed = value
+    end,
+    __force_container = SettingTab
+})
+
+-- 添加字体大小控制
+Tab:AddDropdown({
+    Name = "字体大小",
+    Options = {"小", "中", "大"},
+    Default = "中",
+    Flag = "FontSize",
+    Callback = function(size)
+        local sizes = {
+            ["小"] = 10,
+            ["中"] = 12,
+            ["大"] = 14
+        }
+        local newSize = sizes[size] or 12
+        
+        -- 更新所有文本元素的字体大小
+        for _, instanceData in pairs(splib.Instances) do
+            if instanceData.Instance:IsA("TextLabel") or 
+               instanceData.Instance:IsA("TextButton") or 
+               instanceData.Instance:IsA("TextBox") then
+                instanceData.Instance.TextSize = newSize
+            end
+        end
+    end,
+    __force_container = SettingTab
+})
+
+-- 添加UI位置重置按钮
+Tab:AddButton({
+    Name = "重置UI位置",
+    Callback = function()
+        MainFrame.Position = UDim2.new(0.5, -splib.Save.UISize[1]/2, 0.5, -splib.Save.UISize[2]/2)
+        T.Position = originalPosition
+    end,
+    __force_container = SettingTab
+})
+
+-- 添加自动保存设置
+Tab:AddToggle({
+    Name = "自动保存设置",
+    Flag = "AutoSaveSettings",
+    Default = true,
+    Callback = function(enabled)
+        splib.Flags.AutoSaveSettings = {Value = enabled, Save = true}
+    end,
+    __force_container = SettingTab
+})
+
+-- 添加UI缩放动画
+Tab:AddToggle({
+    Name = "UI缩放动画",
+    Flag = "UIScaleAnimation",
+    Default = true,
+    Callback = function(enabled)
+        if enabled then
+            ScreenGui.Scale.TweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+        else
+            ScreenGui.Scale.TweenInfo = TweenInfo.new(0)
+        end
+    end,
+    __force_container = SettingTab
+})
+
+-- 添加主题预览功能
+Tab:AddButton({
+    Name = "主题预览",
+    Callback = function()
+        local themes = {"Red", "Darker", "Dark", "Purple", "Green", "Orange", "Pink", "Gold", "Cyan"}
+        local currentIndex = table.find(themes, splib.Save.Theme) or 1
+        
+        local function previewNextTheme()
+            currentIndex = currentIndex + 1
+            if currentIndex > #themes then currentIndex = 1 end
+            
+            local nextTheme = themes[currentIndex]
+            splib:SetTheme(nextTheme)
+            
+            -- 3秒后恢复原主题
+            task.delay(3, function()
+                if splib.Save.Theme == nextTheme then -- 如果用户没有选择新主题
+                    splib:SetTheme(splib.Save.Theme)
+                end
+            end)
+        end
+        
+        previewNextTheme()
+    end,
+    __force_container = SettingTab
+})
+
+-- 添加FPS显示
+Tab:AddToggle({
+    Name = "显示FPS",
+    Flag = "ShowFPS",
+    Default = false,
+    Callback = function(enabled)
+        if enabled then
+            if not ScreenGui:FindFirstChild("FPSLabel") then
+                local fpsLabel = Create("TextLabel", ScreenGui, {
+                    Name = "FPSLabel",
+                    Text = "FPS: 60",
+                    TextColor3 = Color3.fromRGB(255, 255, 255),
+                    BackgroundColor3 = Color3.fromRGB(0, 0, 0),
+                    BackgroundTransparency = 0.5,
+                    Size = UDim2.new(0, 80, 0, 20),
+                    Position = UDim2.new(0, 10, 0, 10),
+                    TextSize = 12,
+                    Font = Enum.Font.GothamBold
+                })
+                Make("Corner", fpsLabel, UDim.new(0, 5))
+                
+                local frameCount = 0
+                local lastTime = tick()
+                
+                RunService.Heartbeat:Connect(function()
+                    frameCount = frameCount + 1
+                    local currentTime = tick()
+                    if currentTime - lastTime >= 1 then
+                        fpsLabel.Text = "FPS: " .. frameCount
+                        frameCount = 0
+                        lastTime = currentTime
+                    end
+                end)
+            end
+            ScreenGui.FPSLabel.Visible = true
+        else
+            if ScreenGui:FindFirstChild("FPSLabel") then
+                ScreenGui.FPSLabel.Visible = false
+            end
+        end
+    end,
+    __force_container = SettingTab
+})
+
+-- 添加UI声音效果
+Tab:AddToggle({
+    Name = "UI声音效果",
+    Flag = "UISoundEffects",
+    Default = false,
+    Callback = function(enabled)
+        if enabled then
+            -- 这里可以添加点击声音效果
+            getgenv().SPLibSoundEffects = true
+        else
+            getgenv().SPLibSoundEffects = false
+        end
+    end,
+    __force_container = SettingTab
+})
+
+-- 添加一键隐藏所有通知
+Tab:AddButton({
+    Name = "清除所有通知",
+    Callback = function()
+        if splib.NotificationHolder then
+            for _, notification in pairs(splib.NotificationHolder:GetChildren()) do
+                if notification:IsA("Frame") then
+                    notification:Destroy()
+                end
+            end
+        end
+    end,
+    __force_container = SettingTab
+})
+
 Tab:AddToggle({
   Name = "UI按扭图标",
   Default = true,
@@ -4270,7 +4481,6 @@ Tab:AddToggle({
     __force_container = SettingTab
 })
 
--- 4. 侧边栏悬停拓展
 Tab:AddToggle({
     Name = "侧边栏悬停拓展",
     Flag = "SidebarHover",
@@ -4283,142 +4493,6 @@ Tab:AddToggle({
         else
             disableSidebarHover()
         end
-    end,
-    __force_container = SettingTab
-})
-
--- 5. 背景模糊效果
-Tab:AddToggle({
-    Name = "背景模糊效果",
-    Flag = "BackgroundBlur",
-    Default = false,
-    Callback = function(enabled)
-        if enabled then
-            -- 启用背景模糊
-            local blur = Instance.new("BlurEffect")
-            blur.Size = 10
-            blur.Parent = game:GetService("Lighting")
-        else
-            -- 禁用背景模糊
-            for _, effect in pairs(game:GetService("Lighting"):GetChildren()) do
-                if effect:IsA("BlurEffect") then
-                    effect:Destroy()
-                end
-            end
-        end
-    end,
-    __force_container = SettingTab
-})
-
--- 6. 界面透明度
-Tab:AddSlider({
-    Name = "界面透明度",
-    Min = 0,
-    Max = 1,
-    Default = 0,
-    Flag = "UITransparency",
-    Callback = function(value)
-        MainFrame.BackgroundTransparency = value
-    end,
-    __force_container = SettingTab
-})
-
--- 7. 界面圆角大小
-Tab:AddSlider({
-    Name = "界面圆角大小",
-    Min = 0,
-    Max = 20,
-    Default = 8,
-    Flag = "UICorner",
-    Callback = function(value)
-        local corner = MainFrame:FindFirstChildOfClass("UICorner")
-        if corner then
-            corner.CornerRadius = UDim.new(0, value)
-        end
-    end,
-    __force_container = SettingTab
-})
-
--- 8. 标题栏显示
-Tab:AddToggle({
-    Name = "显示标题栏",
-    Flag = "ShowTitleBar",
-    Default = true,
-    Callback = function(enabled)
-        Title.Visible = enabled
-    end,
-    __force_container = SettingTab
-})
-
--- 9. 水印显示
-Tab:AddToggle({
-    Name = "显示水印",
-    Flag = "ShowWatermark",
-    Default = true,
-    Callback = function(enabled)
-        -- 水印显示逻辑
-    end,
-    __force_container = SettingTab
-})
-
--- 10. 按键提示
-Tab:AddToggle({
-    Name = "显示按键提示",
-    Flag = "ShowKeybinds",
-    Default = true,
-    Callback = function(enabled)
-        -- 按键提示显示逻辑
-    end,
-    __force_container = SettingTab
-})
-
--- 11. 动画效果
-Tab:AddToggle({
-    Name = "启用动画效果",
-    Flag = "EnableAnimations",
-    Default = true,
-    Callback = function(enabled)
-        -- 动画效果开关逻辑
-    end,
-    __force_container = SettingTab
-})
-
--- 12. 声音反馈
-Tab:AddToggle({
-    Name = "启用声音反馈",
-    Flag = "EnableSounds",
-    Default = false,
-    Callback = function(enabled)
-        -- 声音反馈开关逻辑
-    end,
-    __force_container = SettingTab
-})
-
--- 13. 自动保存设置
-Tab:AddToggle({
-    Name = "自动保存设置",
-    Flag = "AutoSave",
-    Default = true,
-    Callback = function(enabled)
-        splib.Save.AutoSave = enabled
-    end,
-    __force_container = SettingTab
-})
-
--- 14. 重置所有设置
-Tab:AddButton({
-    Name = "重置所有设置",
-    Callback = function()
-        splib:ResetAllSettings()
-    end,
-    __force_container = SettingTab
-})
-
--- 15. 关闭UI按钮
-Tab:AddButton({
-    Name = "关闭UI",
-    Callback = function()
-        Window:Minimize()
     end,
     __force_container = SettingTab
 })
