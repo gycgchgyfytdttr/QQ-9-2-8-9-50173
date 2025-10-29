@@ -197,133 +197,6 @@ local splib = {
 Icons = loadstring(game:HttpGet("https://raw.githubusercontent.com/atoyayaya/REDz-ui/refs/heads/main/REDzIcon"))()
 }
 
--- 新增边框渐变颜色选项
-splib.BorderGradients = {
-    ["GreenSilver"] = ColorSequence.new({
-        ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 255, 0)),
-        ColorSequenceKeypoint.new(0.50, Color3.fromRGB(255, 255, 255)),
-        ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 255, 0))
-    }),
-    ["Rainbow"] = ColorSequence.new({
-        ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 0, 0)),
-        ColorSequenceKeypoint.new(0.16, Color3.fromRGB(255, 165, 0)),
-        ColorSequenceKeypoint.new(0.33, Color3.fromRGB(255, 255, 0)),
-        ColorSequenceKeypoint.new(0.50, Color3.fromRGB(0, 255, 0)),
-        ColorSequenceKeypoint.new(0.66, Color3.fromRGB(0, 0, 255)),
-        ColorSequenceKeypoint.new(0.83, Color3.fromRGB(75, 0, 130)),
-        ColorSequenceKeypoint.new(1.00, Color3.fromRGB(238, 130, 238))
-    }),
-    ["Ocean"] = ColorSequence.new({
-        ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 150, 255)),
-        ColorSequenceKeypoint.new(0.50, Color3.fromRGB(0, 255, 255)),
-        ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 150, 255))
-    }),
-    ["Sunset"] = ColorSequence.new({
-        ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 0, 0)),
-        ColorSequenceKeypoint.new(0.50, Color3.fromRGB(255, 165, 0)),
-        ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 192, 203))
-    }),
-    ["Neon"] = ColorSequence.new({
-        ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 0, 255)),
-        ColorSequenceKeypoint.new(0.50, Color3.fromRGB(0, 255, 255)),
-        ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 0, 255))
-    }),
-    ["Fire"] = ColorSequence.new({
-        ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 0, 0)),
-        ColorSequenceKeypoint.new(0.50, Color3.fromRGB(255, 255, 0)),
-        ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 0, 0))
-    }),
-    ["Ice"] = ColorSequence.new({
-        ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 255, 255)),
-        ColorSequenceKeypoint.new(0.50, Color3.fromRGB(255, 255, 255)),
-        ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 255, 255))
-    }),
-    ["Forest"] = ColorSequence.new({
-        ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 100, 0)),
-        ColorSequenceKeypoint.new(0.50, Color3.fromRGB(34, 139, 34)),
-        ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 100, 0))
-    }),
-    ["Galaxy"] = ColorSequence.new({
-        ColorSequenceKeypoint.new(0.00, Color3.fromRGB(75, 0, 130)),
-        ColorSequenceKeypoint.new(0.50, Color3.fromRGB(255, 0, 255)),
-        ColorSequenceKeypoint.new(1.00, Color3.fromRGB(75, 0, 130))
-    }),
-    ["Gold"] = ColorSequence.new({
-        ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 215, 0)),
-        ColorSequenceKeypoint.new(0.50, Color3.fromRGB(255, 255, 255)),
-        ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 215, 0))
-    }),
-    ["Silver"] = ColorSequence.new({
-        ColorSequenceKeypoint.new(0.00, Color3.fromRGB(192, 192, 192)),
-        ColorSequenceKeypoint.new(0.50, Color3.fromRGB(255, 255, 255)),
-        ColorSequenceKeypoint.new(1.00, Color3.fromRGB(192, 192, 192))
-    }),
-    ["Crystal"] = ColorSequence.new({
-        ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 255, 255)),
-        ColorSequenceKeypoint.new(0.50, Color3.fromRGB(255, 0, 255)),
-        ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 255, 255))
-    }),
-    ["Lava"] = ColorSequence.new({
-        ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 0, 0)),
-        ColorSequenceKeypoint.new(0.50, Color3.fromRGB(255, 140, 0)),
-        ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 0, 0))
-    }),
-    ["Emerald"] = ColorSequence.new({
-        ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 255, 0)),
-        ColorSequenceKeypoint.new(0.50, Color3.fromRGB(0, 255, 127)),
-        ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 255, 0))
-    }),
-    ["Ruby"] = ColorSequence.new({
-        ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 0, 0)),
-        ColorSequenceKeypoint.new(0.50, Color3.fromRGB(255, 105, 180)),
-        ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 0, 0))
-    })
-}
-
--- 新增文字渐变颜色选项
-splib.TextGradients = {
-    ["Rainbow"] = ColorSequence.new({
-        ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 0, 0)),
-        ColorSequenceKeypoint.new(0.16, Color3.fromRGB(255, 165, 0)),
-        ColorSequenceKeypoint.new(0.33, Color3.fromRGB(255, 255, 0)),
-        ColorSequenceKeypoint.new(0.50, Color3.fromRGB(0, 255, 0)),
-        ColorSequenceKeypoint.new(0.66, Color3.fromRGB(0, 0, 255)),
-        ColorSequenceKeypoint.new(0.83, Color3.fromRGB(75, 0, 130)),
-        ColorSequenceKeypoint.new(1.00, Color3.fromRGB(238, 130, 238))
-    }),
-    ["Gold"] = ColorSequence.new({
-        ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 215, 0)),
-        ColorSequenceKeypoint.new(0.50, Color3.fromRGB(255, 255, 0)),
-        ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 215, 0))
-    }),
-    ["Silver"] = ColorSequence.new({
-        ColorSequenceKeypoint.new(0.00, Color3.fromRGB(192, 192, 192)),
-        ColorSequenceKeypoint.new(0.50, Color3.fromRGB(255, 255, 255)),
-        ColorSequenceKeypoint.new(1.00, Color3.fromRGB(192, 192, 192))
-    }),
-    ["Neon"] = ColorSequence.new({
-        ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 0, 255)),
-        ColorSequenceKeypoint.new(0.50, Color3.fromRGB(0, 255, 255)),
-        ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 0, 255))
-    }),
-    ["Fire"] = ColorSequence.new({
-        ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 0, 0)),
-        ColorSequenceKeypoint.new(0.50, Color3.fromRGB(255, 255, 0)),
-        ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 0, 0))
-    }),
-    ["Ice"] = ColorSequence.new({
-        ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 255, 255)),
-        ColorSequenceKeypoint.new(0.50, Color3.fromRGB(255, 255, 255)),
-        ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 255, 255))
-    })
-}
-
--- 新增边框和文字渐变设置
-splib.Save.BorderGradient = "GreenSilver"
-splib.Save.TextGradient = "Rainbow"
-splib.Save.BorderSpeed = 35
-splib.Save.TextSpeed = 25
-
 -- ok this is redz lib v5 but now its for sp cuz its has edited in full! and  big improvent and added more functions by sp to contact the the dev discord @nadermohamed22
 
 local isMobile = UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled
@@ -591,12 +464,7 @@ splib.Save = {
   UISize  = saved.UISize  or splib.Save.UISize,
   TabSize = saved.TabSize or splib.Save.TabSize,
   Theme   = saved.Theme   or splib.Save.Theme,
-  BorderGradient = saved.BorderGradient or "GreenSilver",
-  TextGradient = saved.TextGradient or "Rainbow",
-  BorderSpeed = saved.BorderSpeed or 35,
-  TextSpeed = saved.TextSpeed or 25
 }
-
 
 local ScreenGui = Create("ScreenGui", CoreGui, {
 	Name = "sp Library",
@@ -896,7 +764,6 @@ Make("Corner", bindBox, UDim.new(0.25, 0))
 
     return Frame, Label, bindBox, ColorBox
 end
-
 local function GetColor(Instance)
 	if not Instance then return nil end
 
@@ -996,41 +863,83 @@ function splib:MakeWindow(Configs)
     Configs.IntroText = Configs.IntroText or "SP Lib v2"
     Configs.IntroIcon = Configs.IntroIcon or "rbxassetid://8834748103"
 
+    -- 动态启动动画
     local function LoadSequence()
-        MainWindow.Visible = false
-        local LoadSequenceLogo = SetProps(
-            MakeElement("Image", Configs.IntroIcon),
-            {
-                Parent = ScreenGui,
-                AnchorPoint = Vector2.new(0.5, 0.5),
-                Position = UDim2.new(0.5, 0, 0.4, 0),
-                Size = UDim2.new(0, 28, 0, 28),
-                ImageColor3 = Color3.fromRGB(255, 255, 255),
-                ImageTransparency = 1
-            }
-        )
-        local LoadSequenceText = SetProps(
-            MakeElement("Label", Configs.IntroText, 14),
-            {
-                Parent = ScreenGui,
-                Size = UDim2.new(1, 0, 1, 0),
-                AnchorPoint = Vector2.new(0.5, 0.5),
-                Position = UDim2.new(0.5, 19, 0.5, 0),
-                TextXAlignment = Enum.TextXAlignment.Center,
-                Font = Enum.Font.GothamBold,
-                TextTransparency = 1
-            }
-        )
-        TweenService:Create(LoadSequenceLogo, TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageTransparency = 0, Position = UDim2.new(0.5, 0, 0.5, 0)}):Play()
-        wait(0.8)
-        TweenService:Create(LoadSequenceLogo, TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Position = UDim2.new(0.5, -(LoadSequenceText.TextBounds.X / 2), 0.5, 0)}):Play()
-        wait(0.3)
-        TweenService:Create(LoadSequenceText, TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextTransparency = 0}):Play()
-        wait(2)
-        TweenService:Create(LoadSequenceText, TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextTransparency = 1}):Play()
-        MainWindow.Visible = true
-        LoadSequenceLogo:Destroy()
-        LoadSequenceText:Destroy()
+        -- 创建启动界面
+        local IntroFrame = Create("Frame", ScreenGui, {
+            Size = UDim2.new(1, 0, 1, 0),
+            BackgroundColor3 = Color3.fromRGB(0, 0, 0),
+            BackgroundTransparency = 0,
+            ZIndex = 100
+        })
+        
+        local Logo = Create("ImageLabel", IntroFrame, {
+            AnchorPoint = Vector2.new(0.5, 0.5),
+            Position = UDim2.new(0.5, 0, 0.4, 0),
+            Size = UDim2.new(0, 80, 0, 80),
+            Image = Configs.IntroIcon,
+            BackgroundTransparency = 1,
+            ImageTransparency = 1,
+            ZIndex = 101
+        })
+        
+        local Title = Create("TextLabel", IntroFrame, {
+            AnchorPoint = Vector2.new(0.5, 0.5),
+            Position = UDim2.new(0.5, 0, 0.6, 0),
+            Size = UDim2.new(0, 0, 0, 40),
+            Text = Configs.IntroText,
+            TextColor3 = Color3.fromRGB(255, 255, 255),
+            Font = Enum.Font.GothamBold,
+            TextSize = 24,
+            BackgroundTransparency = 1,
+            TextTransparency = 1,
+            ZIndex = 101
+        })
+        
+        -- 动画序列
+        local sequence = coroutine.create(function()
+            -- 淡入Logo
+            TweenService:Create(Logo, TweenInfo.new(0.8, Enum.EasingStyle.Quint), {ImageTransparency = 0}):Play()
+            wait(0.5)
+            
+            -- Logo弹跳效果
+            TweenService:Create(Logo, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = UDim2.new(0, 100, 0, 100)}):Play()
+            wait(0.4)
+            TweenService:Create(Logo, TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.In), {Size = UDim2.new(0, 90, 0, 90)}):Play()
+            wait(0.3)
+            
+            -- 标题展开
+            TweenService:Create(Title, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {
+                Size = UDim2.new(0, 200, 0, 40),
+                TextTransparency = 0
+            }):Play()
+            wait(1)
+            
+            -- 标题彩虹效果
+            local titleRainbow = coroutine.create(function()
+                while Title.Parent do
+                    local t = tick() * 0.8
+                    local r = math.sin(t) * 0.5 + 0.5
+                    local g = math.sin(t + 2) * 0.5 + 0.5
+                    local b = math.sin(t + 4) * 0.5 + 0.5
+                    Title.TextColor3 = Color3.new(r, g, b)
+                    wait()
+                end
+            end)
+            coroutine.resume(titleRainbow)
+            
+            wait(1.5)
+            
+            -- 淡出启动界面
+            TweenService:Create(IntroFrame, TweenInfo.new(0.8, Enum.EasingStyle.Quint), {BackgroundTransparency = 1}):Play()
+            TweenService:Create(Logo, TweenInfo.new(0.8, Enum.EasingStyle.Quint), {ImageTransparency = 1}):Play()
+            TweenService:Create(Title, TweenInfo.new(0.8, Enum.EasingStyle.Quint), {TextTransparency = 1}):Play()
+            
+            wait(1)
+            IntroFrame:Destroy()
+        end)
+        
+        coroutine.resume(sequence)
     end
 
     if Configs.IntroEnabled then
@@ -1050,7 +959,6 @@ function splib:MakeWindow(Configs)
         end
     end; LoadFile()
 
-   
     if HidePremium then
         for _, el in ipairs(Window:GetPremiumElements()) do
             el.Visible = false
@@ -1065,10 +973,6 @@ function splib:MakeWindow(Configs)
         local filePath = Settings.ConfigFolder.."/config.json"
         writefile(filePath, HttpService:JSONEncode(Flags))
     end
-    Window.SomeToggle.Changed:Connect(function(val)
-        Flags.SomeToggle = val
-        saveSettings()
-    end)
 
     if SaveConfig then
         Window.CloseButton.MouseButton1Click:Connect(function()
@@ -1092,23 +996,8 @@ end
 	
     local MainCorner = Make("Corner", MainFrame, UDim.new(0, 10))
 	
-	-- 创建渐变边框
-	local BorderFrame = Create("Frame", MainFrame, {
-		Name = "BorderFrame",
-		Size = UDim2.new(1, 8, 1, 8),
-		Position = UDim2.new(0, -4, 0, -4),
-		BackgroundTransparency = 0,
-		BorderSizePixel = 0,
-		ZIndex = 0
-	})
-	
-	local BorderCorner = Make("Corner", BorderFrame, UDim.new(0, 12))
-	local BorderGradient = Create("UIGradient", BorderFrame, {
-		Color = splib.BorderGradients[splib.Save.BorderGradient] or splib.BorderGradients["GreenSilver"],
-		Rotation = 0
-	})
 
-    local Components = Create("Folder", MainFrame, {
+	local Components = Create("Folder", MainFrame, {
 		Name = "Components"
 	})
 	
@@ -1154,16 +1043,6 @@ end
 		}), "DarkText")
 	}), "Text")
 
-	-- 为标题和副标题添加渐变效果
-	local TitleGradient = Create("UIGradient", Title, {
-		Color = splib.TextGradients[splib.Save.TextGradient] or splib.TextGradients["Rainbow"],
-		Rotation = 0
-	})
-	
-	local SubTitleGradient = Create("UIGradient", Title.SubTitle, {
-		Color = splib.TextGradients[splib.Save.TextGradient] or splib.TextGradients["Rainbow"],
-		Rotation = 0
-	})
 	
 	local MainScroll = InsertTheme(Create("ScrollingFrame", Components, {
 		Size = UDim2.new(0, splib.Save.TabSize, 1, -TopBar.Size.Y.Offset),
@@ -1334,14 +1213,6 @@ local SettingButton = SetProps(CloseButton:Clone(), {
     Visible = EnableSetting
 })
 
-local InfoButton = SetProps(CloseButton:Clone(), {
-    Position = UDim2.new(1, -85, 0.5),
-    Size = UDim2.new(0, 14, 0, 14),
-    Image = "rbxassetid://10734924532",
-    Name = "Info",
-    Visible = true
-})
-
 	local MinimizeButton = SetProps(CloseButton:Clone(), {
 		Position = UDim2.new(1, -35, 0.5),
 		Image = "rbxassetid://10734896206",
@@ -1351,8 +1222,7 @@ local InfoButton = SetProps(CloseButton:Clone(), {
 	SetChildren(ButtonsFolder, {
 		CloseButton,
 		MinimizeButton,
-        SettingButton,
-        InfoButton
+        SettingButton
 	})
 	
 	local Minimized, SaveSize, WaitClick
@@ -1379,22 +1249,7 @@ end
 end)
 
 	local ContainerList = {}
-	local SettingTab, InfoTab
-
-SettingButton.MouseButton1Click:Connect(function()
-	for _, container in ipairs(ContainerList) do
-		container.Visible = false
-	end
-	SettingTab.Visible = true
-end)
-
-InfoButton.MouseButton1Click:Connect(function()
-	for _, container in ipairs(ContainerList) do
-		container.Visible = false
-	end
-	InfoTab.Visible = true
-end)
-
+	
 	function Window:MinimizeBtn()
 		if WaitClick then return end
 		WaitClick = true
@@ -1451,7 +1306,7 @@ end)
 local tweenInfoHideUI = TweenInfo.new(0.4, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
 
 local OriginalPos = MainFrame.Position
-local UIVisibleed = true
+local UIHidden = false
 
 local function ToggleUI()
     UIHidden = not UIHidden
@@ -1780,21 +1635,32 @@ end)
 		end
 	end
 
-    -- 边框和文字渐变动画
-    local borderAnimation = task.spawn(function()
-        while BorderGradient and BorderGradient.Parent do
-            BorderGradient.Rotation = (BorderGradient.Rotation + splib.Save.BorderSpeed * 0.1) % 360
-            task.wait()
-        end
-    end)
+    local SettingTab = InsertTheme(Create("ScrollingFrame", {
+        Size = UDim2.new(1, 0, 1, 0),
+        Position = UDim2.new(0, 0, 1),
+        AnchorPoint = Vector2.new(0, 1),
+        ScrollBarThickness = 1.5,
+        BackgroundTransparency = 1,
+        ScrollBarImageTransparency = 0.2,
+        ScrollBarImageColor3 = Theme["Color Theme"],
+        AutomaticCanvasSize = "Y",
+        ScrollingDirection = "Y",
+        BorderSizePixel = 0,
+        CanvasSize = UDim2.new(),
+        Name = "SettingsTab"
+    }, {
+        Create("UIPadding", {
+            PaddingLeft = UDim.new(0, 10),
+            PaddingRight = UDim.new(0, 10),
+            PaddingTop = UDim.new(0, 10),
+            PaddingBottom = UDim.new(0, 10)
+        }),
+        Create("UIListLayout", {
+            Padding = UDim.new(0, 5)
+        })
+    }), "ScrollBar")
 
-    local textAnimation = task.spawn(function()
-        while TitleGradient and TitleGradient.Parent do
-            TitleGradient.Rotation = (TitleGradient.Rotation + splib.Save.TextSpeed * 0.1) % 360
-            SubTitleGradient.Rotation = (SubTitleGradient.Rotation + splib.Save.TextSpeed * 0.1) % 360
-            task.wait()
-        end
-    end)
+    table.insert(ContainerList, SettingTab)
 
 function Window:MakeTab(paste, Configs)
 		if type(paste) == "table" then Configs = paste end
@@ -1848,56 +1714,6 @@ function Window:MakeTab(paste, Configs)
 			BackgroundTransparency = FirstTab and 1 or 0
 		}), "Theme")Make("Corner", Selected, UDim.new(0.5, 0))
 
-        SettingTab = InsertTheme(Create("ScrollingFrame", {
-            Size = UDim2.new(1, 0, 1, 0),
-            Position = UDim2.new(0, 0, 1),
-            AnchorPoint = Vector2.new(0, 1),
-            ScrollBarThickness = 1.5,
-            BackgroundTransparency = 1,
-            ScrollBarImageTransparency = 0.2,
-            ScrollBarImageColor3 = Theme["Color Theme"],
-            AutomaticCanvasSize = "Y",
-            ScrollingDirection = "Y",
-            BorderSizePixel = 0,
-            CanvasSize = UDim2.new(),
-            Name = "SettingsTab"
-        }, {
-            Create("UIPadding", {
-                PaddingLeft = UDim.new(0, 10),
-                PaddingRight = UDim.new(0, 10),
-                PaddingTop = UDim.new(0, 10),
-                PaddingBottom = UDim.new(0, 10)
-            }),
-            Create("UIListLayout", {
-                Padding = UDim.new(0, 5)
-            })
-        }), "ScrollBar")
-
-        InfoTab = InsertTheme(Create("ScrollingFrame", {
-            Size = UDim2.new(1, 0, 1, 0),
-            Position = UDim2.new(0, 0, 1),
-            AnchorPoint = Vector2.new(0, 1),
-            ScrollBarThickness = 1.5,
-            BackgroundTransparency = 1,
-            ScrollBarImageTransparency = 0.2,
-            ScrollBarImageColor3 = Theme["Color Theme"],
-            AutomaticCanvasSize = "Y",
-            ScrollingDirection = "Y",
-            BorderSizePixel = 0,
-            CanvasSize = UDim2.new(),
-            Name = "InfoTab"
-        }, {
-            Create("UIPadding", {
-                PaddingLeft = UDim.new(0, 10),
-                PaddingRight = UDim.new(0, 10),
-                PaddingTop = UDim.new(0, 10),
-                PaddingBottom = UDim.new(0, 10)
-            }),
-            Create("UIListLayout", {
-                Padding = UDim.new(0, 5)
-            })
-        }), "ScrollBar")
-
 		local Container = InsertTheme(Create("ScrollingFrame", {
 			Size = UDim2.new(1, 0, 1, 0),
 			Position = UDim2.new(0, 0, 1),
@@ -1922,8 +1738,6 @@ function Window:MakeTab(paste, Configs)
 			})
 		}), "ScrollBar")
 
-		table.insert(ContainerList, SettingTab)
-		table.insert(ContainerList, InfoTab)
 		table.insert(ContainerList, Container)
 		
 		if not FirstTab then Container.Parent = Containers end
@@ -1956,70 +1770,6 @@ function Window:MakeTab(paste, Configs)
         FirstTab = true
 		table.insert(splib.Tabs, {TabInfo = {Name = TName, Icon = TIcon}, func = Tab, Cont = Container})
 		Tab.Cont = Container
-
-local SettingTabHandler = {
-    Enabled = false
-}
-
-function SettingTabHandler:Enable()
-    if SettingTab.Parent then return end
-    for _, Frame in pairs(ContainerList) do
-        if Frame:IsA("ScrollingFrame") and Frame ~= SettingTab then
-            Frame.Parent = nil
-        end
-    end
-    SettingTab.Parent = Containers
-    SettingTab.Size = UDim2.new(1, 0, 1, 150)
-    table.foreach(splib.Tabs, function(_, tab)
-        if tab.Cont ~= SettingTab then
-            tab.func:Disable()
-        end
-    end)
-
-    SettingTabHandler.Enabled = true
-    CreateTween({SettingTab, "Size", UDim2.new(1, 0, 1, 0), 0.5})
-end
-
-function SettingTabHandler:Disable()
-    SettingTabHandler.Enabled = false
-    SettingTab.Parent = nil
-end
-
-local InfoTabHandler = {
-    Enabled = false
-}
-
-function InfoTabHandler:Enable()
-    if InfoTab.Parent then return end
-    for _, Frame in pairs(ContainerList) do
-        if Frame:IsA("ScrollingFrame") and Frame ~= InfoTab then
-            Frame.Parent = nil
-        end
-    end
-    InfoTab.Parent = Containers
-    InfoTab.Size = UDim2.new(1, 0, 1, 150)
-    table.foreach(splib.Tabs, function(_, tab)
-        if tab.Cont ~= InfoTab then
-            tab.func:Disable()
-        end
-    end)
-
-    InfoTabHandler.Enabled = true
-    CreateTween({InfoTab, "Size", UDim2.new(1, 0, 1, 0), 0.5})
-end
-
-function InfoTabHandler:Disable()
-    InfoTabHandler.Enabled = false
-    InfoTab.Parent = nil
-end
-
-SettingButton.MouseButton1Click:Connect(function()
-    SettingTabHandler:Enable()
-end)
-
-InfoButton.MouseButton1Click:Connect(function()
-    InfoTabHandler:Enable()
-end)
 
 		function Tab:Disable()
 		  self.Enabled = false
@@ -3014,7 +2764,6 @@ end
 				local MultiSelect = DMultiSelect
 				local Options = {}
 
-
                 local InitialSelection = saved or Default[1]
 				Selected = MultiSelect and {} or InitialSelection
 if MultiSelect then
@@ -3031,7 +2780,6 @@ end
 					SaveDropdownFlag(Flag, MultiSelect and Selected or tostring(Selected))
 					Funcs:FireCallback(Callback, Selected)
 				end
-
 
 	local function UpdateLabel()
 		if MultiSelect then
@@ -3350,6 +3098,7 @@ end
  
 			return Dropdown
 		end
+
 local SlidersFile = "sliders.json"
 local function SaveSliderFlag(flag, value)
     local data = {}
@@ -3383,6 +3132,7 @@ local function LoadSliderFlag(flag)
     end
     return nil
 end
+
 function Tab:AddSlider(Configs)
     local SName = Configs[1] or Configs.Name or Configs.Title or "Slider"
     local SDesc = Configs.Desc or Configs.ValueName or Configs.Description or ""
@@ -3404,9 +3154,8 @@ function Tab:AddSlider(Configs)
         Default = (Min + Max) / 2
     end
 
-
     if Configs.IsMobile and not isMobile then return nil end
-    if Configs.IsPC and not isPC then return nil end
+    if Configs.IsPC     and not isPC     then return nil end
 
     local Button, LabelFunc = ButtonFrame(Container, SName, SDesc, UDim2.new(1, -20))
     local SliderHolder = Create("TextButton", Button, {
@@ -3540,6 +3289,7 @@ end)
     function Slider:Destroy() Button:Destroy() end
     return Slider
 end
+
 local TextBoxesFile = "textboxes.json"
 local function SaveTextBoxFlag(flag, value)
     local data = {}
@@ -3573,6 +3323,7 @@ local function LoadTextBoxFlag(flag)
     end
     return nil
 end
+
 function Tab:AddTextbox(Configs)
     local TName = Configs[1] or Configs.Name or Configs.Title or "Text Box"
     local TDesc = Configs.Desc or Configs.Description or ""
@@ -3688,6 +3439,7 @@ updateSelectedFrame2Size()
 
     return TextBox
 end
+
 local ColorPickersFile = "colorpickers.json"
 local function SaveColorPickerFlag(flag, color: Color3)
 	local data = {}
@@ -3728,6 +3480,7 @@ local function LoadColorPickerFlag(flag): Color3?
 	end
 	return nil
 end
+
 function Tab:AddColorpicker(Configs)
     local TName    = Configs[1] or Configs.Name or Configs.Title or "Color Picker"
     local TDesc    = Configs.Desc or Configs.Description or ""
@@ -4297,6 +4050,7 @@ function Colorpicker:Callback(fn)
 end
     return Colorpicker
 end
+
 		function Tab:AddDiscordInvite(Configs)
 			local Title = Configs[1] or Configs.Name or Configs.Title or "Discord"
 			local Desc = Configs.Desc or Configs.Description or ""
@@ -4411,6 +4165,8 @@ end
 end
 
 -- 设置标签内容
+local savedSize = "中"
+
 Tab:AddSection({
     Name = "UI 设置",
     __force_container = SettingTab
@@ -4419,7 +4175,7 @@ Tab:AddSection({
 Tab:AddDropdown({
     Name     = "UI 大小设置",
     Options  = {"小", "中", "大"},
-    Default  = "中",
+    Default  = savedSize,
     Flag = "UISize",
     Callback = function(v)
         local offset = isMobile and -200 or 0
@@ -4441,59 +4197,6 @@ Tab:AddDropdown({
     Callback = function(selectedTheme)
         splib:SetTheme(selectedTheme)
         splib.Save.Theme = selectedTheme
-        SaveJson("sp library.json", splib.Save)
-    end,
-    __force_container = SettingTab
-})
-
--- 新增边框渐变设置
-Tab:AddDropdown({
-    Name = "边框渐变颜色",
-    Options = {"GreenSilver", "Rainbow", "Ocean", "Sunset", "Neon", "Fire", "Ice", "Forest", "Galaxy", "Gold", "Silver", "Crystal", "Lava", "Emerald", "Ruby"},
-    Default = splib.Save.BorderGradient or "GreenSilver",
-    Callback = function(selectedGradient)
-        splib.Save.BorderGradient = selectedGradient
-        BorderGradient.Color = splib.BorderGradients[selectedGradient] or splib.BorderGradients["GreenSilver"]
-        SaveJson("sp library.json", splib.Save)
-    end,
-    __force_container = SettingTab
-})
-
--- 新增文字渐变设置
-Tab:AddDropdown({
-    Name = "文字渐变颜色",
-    Options = {"Rainbow", "Gold", "Silver", "Neon", "Fire", "Ice"},
-    Default = splib.Save.TextGradient or "Rainbow",
-    Callback = function(selectedGradient)
-        splib.Save.TextGradient = selectedGradient
-        TitleGradient.Color = splib.TextGradients[selectedGradient] or splib.TextGradients["Rainbow"]
-        SubTitleGradient.Color = splib.TextGradients[selectedGradient] or splib.TextGradients["Rainbow"]
-        SaveJson("sp library.json", splib.Save)
-    end,
-    __force_container = SettingTab
-})
-
--- 新增边框速度设置
-Tab:AddSlider({
-    Name = "边框旋转速度",
-    Min = 10,
-    Max = 100,
-    Default = splib.Save.BorderSpeed or 35,
-    Callback = function(value)
-        splib.Save.BorderSpeed = value
-        SaveJson("sp library.json", splib.Save)
-    end,
-    __force_container = SettingTab
-})
-
--- 新增文字速度设置
-Tab:AddSlider({
-    Name = "文字旋转速度",
-    Min = 10,
-    Max = 100,
-    Default = splib.Save.TextSpeed or 25,
-    Callback = function(value)
-        splib.Save.TextSpeed = value
         SaveJson("sp library.json", splib.Save)
     end,
     __force_container = SettingTab
@@ -4626,78 +4329,253 @@ Tab:AddToggle({
     __force_container = SettingTab
 })
 
--- 信息标签内容
+-- 新增设置功能
 Tab:AddSection({
-    Name = "用户信息",
-    __force_container = InfoTab
+    Name = "高级设置",
+    __force_container = SettingTab
 })
 
--- 获取执行器信息
-local function identifyexecutor()
-    if syn then
-        return "Synapse X"
-    elseif PROTOSMASHER_LOADED then
-        return "ProtoSmasher"
-    elseif KRNL_LOADED then
-        return "Krnl"
-    elseif getexecutorname then
-        return getexecutorname()
-    elseif identifyexecutor then
-        return identifyexecutor()
-    else
-        return "未知执行器"
+Tab:AddToggle({
+    Name = "自动保存设置",
+    Flag = "AutoSave",
+    Default = true,
+    Callback = function(enabled)
+        SaveChangesEnabled = enabled
+        if enabled then
+            splib:MakeNotification({
+                Name = "设置已保存",
+                Content = "您的设置已自动保存",
+                Time = 3
+            })
+        end
+    end,
+    __force_container = SettingTab
+})
+
+Tab:AddToggle({
+    Name = "显示FPS计数器",
+    Flag = "ShowFPS",
+    Default = false,
+    Callback = function(enabled)
+        if enabled then
+            -- 创建FPS计数器
+            local fpsFrame = Create("Frame", ScreenGui, {
+                Size = UDim2.new(0, 80, 0, 30),
+                Position = UDim2.new(0, 10, 0, 10),
+                BackgroundColor3 = Color3.fromRGB(0, 0, 0),
+                BackgroundTransparency = 0.3,
+                Visible = true
+            })
+            Make("Corner", fpsFrame)
+            
+            local fpsLabel = Create("TextLabel", fpsFrame, {
+                Size = UDim2.new(1, 0, 1, 0),
+                Text = "FPS: 60",
+                TextColor3 = Color3.fromRGB(255, 255, 255),
+                BackgroundTransparency = 1,
+                Font = Enum.Font.GothamBold,
+                TextSize = 14
+            })
+            
+            local fps = 0
+            local lastTime = tick()
+            local frameCount = 0
+            
+            game:GetService("RunService").RenderStepped:Connect(function()
+                frameCount = frameCount + 1
+                local currentTime = tick()
+                if currentTime - lastTime >= 1 then
+                    fps = math.floor(frameCount / (currentTime - lastTime))
+                    frameCount = 0
+                    lastTime = currentTime
+                    fpsLabel.Text = "FPS: " .. fps
+                end
+            end)
+            
+            Flags["FPSFrame"] = fpsFrame
+        else
+            if Flags["FPSFrame"] then
+                Flags["FPSFrame"]:Destroy()
+                Flags["FPSFrame"] = nil
+            end
+        end
+    end,
+    __force_container = SettingTab
+})
+
+Tab:AddToggle({
+    Name = "水波纹点击效果",
+    Flag = "RippleEffect",
+    Default = true,
+    Callback = function(enabled)
+        if enabled then
+            -- 水波纹效果实现
+            local function createRippleEffect(button)
+                button.MouseButton1Down:Connect(function(x, y)
+                    local ripple = Create("Frame", button, {
+                        BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+                        BackgroundTransparency = 0.8,
+                        Size = UDim2.new(0, 0, 0, 0),
+                        Position = UDim2.new(0, x, 0, y),
+                        AnchorPoint = Vector2.new(0.5, 0.5),
+                        ZIndex = 10
+                    })
+                    Make("Corner", ripple, UDim.new(1, 0))
+                    
+                    local goalSize = math.max(button.AbsoluteSize.X, button.AbsoluteSize.Y) * 1.5
+                    TweenService:Create(ripple, TweenInfo.new(0.5), {
+                        Size = UDim2.new(0, goalSize, 0, goalSize),
+                        BackgroundTransparency = 1
+                    }):Play()
+                    
+                    delay(0.5, function()
+                        ripple:Destroy()
+                    end)
+                end)
+            end
+            
+            -- 为所有按钮添加水波纹效果
+            for _, tab in pairs(splib.Tabs) do
+                if tab.func and tab.func.Cont then
+                    for _, child in pairs(tab.func.Cont:GetDescendants()) do
+                        if child:IsA("TextButton") and child.Name == "Option" then
+                            createRippleEffect(child)
+                        end
+                    end
+                end
+            end
+        end
+    end,
+    __force_container = SettingTab
+})
+
+Tab:AddButton({
+    Name = "重置所有设置",
+    Description = "这将重置所有UI设置到默认值",
+    Callback = function()
+        local dialog = Window:Dialog({
+            Title = "确认重置",
+            Text = "您确定要重置所有设置吗？此操作不可撤销。",
+            Options = {
+                {Name = "取消", Callback = function() end},
+                {Name = "确认重置", Callback = function()
+                    -- 重置所有设置
+                    splib:SetTheme("Red")
+                    splib:SetScale(600)
+                    SaveChangesEnabled = true
+                    
+                    -- 重置所有开关状态
+                    for _, toggle in pairs(Toggles) do
+                        if toggle.object and type(toggle.object.Set) == "function" then
+                            toggle.object:Set(toggle.default)
+                        end
+                    end
+                    
+                    splib:MakeNotification({
+                        Name = "设置已重置",
+                        Content = "所有设置已恢复默认值",
+                        Time = 3
+                    })
+                end}
+            }
+        })
+    end,
+    __force_container = SettingTab
+})
+
+Tab:AddButton({
+    Name = "导出设置",
+    Description = "导出当前UI设置到剪贴板",
+    Callback = function()
+        local settingsData = {
+            Theme = splib.Save.Theme,
+            UISize = splib.Save.UISize,
+            TabSize = splib.Save.TabSize,
+            Flags = Flags
+        }
+        
+        local json = HttpService:JSONEncode(settingsData)
+        setclipboard(json)
+        
+        splib:MakeNotification({
+            Name = "设置已导出",
+            Content = "UI设置已复制到剪贴板",
+            Time = 3
+        })
+    end,
+    __force_container = SettingTab
+})
+
+Tab:AddButton({
+    Name = "导入设置",
+    Description = "从剪贴板导入UI设置",
+    Callback = function()
+        local clipboardText = tostring(getclipboard())
+        local success, data = pcall(function()
+            return HttpService:JSONDecode(clipboardText)
+        end)
+        
+        if success and type(data) == "table" then
+            if data.Theme then
+                splib:SetTheme(data.Theme)
+            end
+            if data.UISize then
+                splib.Save.UISize = data.UISize
+                MainFrame.Size = UDim2.fromOffset(data.UISize[1], data.UISize[2])
+            end
+            if data.TabSize then
+                splib.Save.TabSize = data.TabSize
+                MainScroll.Size = UDim2.new(0, data.TabSize, 1, -TopBar.Size.Y.Offset)
+            end
+            
+            splib:MakeNotification({
+                Name = "设置已导入",
+                Content = "UI设置已从剪贴板导入",
+                Time = 3
+            })
+        else
+            splib:MakeNotification({
+                Name = "导入失败",
+                Content = "剪贴板中没有有效的设置数据",
+                Time = 3
+            })
+        end
+    end,
+    __force_container = SettingTab
+})
+
+-- 设置标签切换功能
+local SettingTabHandler = {
+    Enabled = false
+}
+
+function SettingTabHandler:Enable()
+    if SettingTab.Parent then return end
+    for _, Frame in pairs(ContainerList) do
+        if Frame:IsA("ScrollingFrame") and Frame ~= SettingTab then
+            Frame.Parent = nil
+        end
     end
-end
-
--- 获取国家信息
-local function getCountryName(countryCode)
-    local countryNames = {
-        US = "美国",
-        CN = "中国",
-        JP = "日本",
-        KR = "韩国",
-        RU = "俄罗斯",
-        GB = "英国",
-        FR = "法国",
-        DE = "德国",
-        CA = "加拿大",
-        AU = "澳大利亚",
-        BR = "巴西",
-        IN = "印度",
-        MX = "墨西哥",
-        IT = "意大利",
-        ES = "西班牙"
-    }
-    return countryNames[countryCode] or countryCode
-end
-
--- 添加用户信息标签
-Tab:AddLabel("您的用户名: "..game.Players.LocalPlayer.Name, {__force_container = InfoTab})
-Tab:AddLabel("您的名称: "..game.Players.LocalPlayer.DisplayName, {__force_container = InfoTab})
-Tab:AddLabel("您的语言: "..game.Players.LocalPlayer.LocaleId, {__force_container = InfoTab})
-
--- 异步获取国家信息
-task.spawn(function()
-    local success, countryCode = pcall(function()
-        return game:GetService("LocalizationService"):GetCountryRegionForPlayerAsync(game.Players.LocalPlayer)
+    SettingTab.Parent = Containers
+    SettingTab.Size = UDim2.new(1, 0, 1, 150)
+    table.foreach(splib.Tabs, function(_, tab)
+        if tab.Cont ~= SettingTab then
+            tab.func:Disable()
+        end
     end)
-    if success and countryCode then
-        Tab:AddLabel("您的国家: "..getCountryName(countryCode), {__force_container = InfoTab})
-    else
-        Tab:AddLabel("您的国家: 未知", {__force_container = InfoTab})
-    end
+
+    SettingTabHandler.Enabled = true
+    CreateTween({SettingTab, "Size", UDim2.new(1, 0, 1, 0), 0.5})
+end
+
+function SettingTabHandler:Disable()
+    SettingTabHandler.Enabled = false
+    SettingTab.Parent = nil
+end
+
+SettingButton.MouseButton1Click:Connect(function()
+    SettingTabHandler:Enable()
 end)
-
-Tab:AddLabel("您的账户年龄(天): "..game.Players.LocalPlayer.AccountAge, {__force_container = InfoTab})
-Tab:AddLabel("您的账户年龄(年): "..string.format("%.2f", game.Players.LocalPlayer.AccountAge/365), {__force_container = InfoTab})
-Tab:AddLabel("您使用的注入器："..identifyexecutor(), {__force_container = InfoTab})
-Tab:AddLabel("您当前的服务器ID: "..game.PlaceId, {__force_container = InfoTab})
-
--- 添加更多信息标签
-Tab:AddLabel("游戏名称: "..game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name, {__force_container = InfoTab})
-Tab:AddLabel("FPS: "..math.floor(1/workspace:GetRealPhysicsFPS()), {__force_container = InfoTab})
-Tab:AddLabel("Ping: "..math.floor(game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValue()), {__force_container = InfoTab})
-Tab:AddLabel("内存使用: "..string.format("%.2f", game:GetService("Stats"):GetMemoryUsageMb()/1024).." GB", {__force_container = InfoTab})
 
 		return Tab
 	end
