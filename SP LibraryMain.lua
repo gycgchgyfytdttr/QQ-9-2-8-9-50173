@@ -4204,6 +4204,19 @@ Tab:AddSection({
     __force_container = SettingTab
 })
 
+Tab:AddImageLabel({
+    Title = "DE HUB",
+    Desc = "v2.0.0",
+    Image = "rbxassetid://8834748103",
+    Rainbow = true
+})
+Tab:AddDiscordInvite({
+    Title = "加入我们的Discord",
+    Desc = "获取最新更新和支持",
+    Logo = "rbxassetid://8834748103",
+    Invite = "https://discord.gg/example"
+})
+
 Tab:AddDropdown({
     Name     = "UI 大小设置",
     Options  = {"小", "中", "大"},
@@ -4230,81 +4243,6 @@ Tab:AddDropdown({
         splib:SetTheme(selectedTheme)
         splib.Save.Theme = selectedTheme
         SaveJson("sp library.json", splib.Save)
-    end,
-    __force_container = SettingTab
-})
-
-Tab:AddSlider({
-    Name = "边框厚度",
-    Min = 1,
-    Max = 10,
-    Default = 2,
-    Callback = function(value)
-        for _, instance in pairs(splib.Instances) do
-            if instance.Type == "Stroke" then
-                instance.Instance.Thickness = value
-            end
-        end
-    end,
-    __force_container = SettingTab
-})
-Tab:AddSlider({
-    Name = "圆角大小",
-    Min = 0,
-    Max = 20,
-    Default = 7,
-    Callback = function(value)
-        for _, obj in pairs(MainFrame:GetDescendants()) do
-            if obj:IsA("UICorner") then
-                obj.CornerRadius = UDim.new(0, value)
-            end
-        end
-    end,
-    __force_container = SettingTab
-})
-
-local blurEffect = Instance.new("BlurEffect")
-blurEffect.Size = 0
-blurEffect.Parent = game:GetService("Lighting")
-
-Tab:AddSlider({
-    Name = "背景模糊",
-    Min = 0,
-    Max = 20,
-    Default = 0,
-    Callback = function(value)
-        blurEffect.Size = value
-    end,
-    __force_container = SettingTab
-})
-
-Tab:AddToggle({
-    Name = "启用背景模糊",
-    Default = false,
-    Callback = function(enabled)
-        blurEffect.Enabled = enabled
-    end,
-    __force_container = SettingTab
-})
-Tab:AddButton({
-    Name = "重置UI位置",
-    Callback = function()
-        local originalPos = UDim2.new(0.5, -splib.Save.UISize[1]/2, 0.5, -splib.Save.UISize[2]/2)
-        CreateTween({
-            MainFrame, 
-            "Position", 
-            originalPos, 
-            0.5, 
-            Enum.EasingStyle.Quint
-        })
-        ControlSize1.Position = UDim2.fromOffset(splib.Save.UISize[1], splib.Save.UISize[2])
-        ControlSize2.Position = UDim2.new(0, splib.Save.TabSize, 1, 0)
-        
-        spLib:MakeNotification({
-            Name = "位置重置",
-            Content = "UI位置已重置到屏幕中心",
-            Time = 3
-        })
     end,
     __force_container = SettingTab
 })
@@ -4341,73 +4279,6 @@ Tab:AddDropdown({
     __force_container = SettingTab
 })
 
-Tab:AddSlider({
-    Name = "元素间距",
-    Min = 0,
-    Max = 15,
-    Default = 5,
-    Callback = function(value)
-        for _, obj in pairs(Container:GetDescendants()) do
-            if obj:IsA("UIListLayout") then
-                obj.Padding = UDim.new(0, value)
-            end
-        end
-        for _, obj in pairs(MainScroll:GetDescendants()) do
-            if obj:IsA("UIListLayout") then
-                obj.Padding = UDim.new(0, value)
-            end
-        end
-    end,
-    __force_container = SettingTab
-})
-
-Tab:AddSlider({
-    Name = "文本大小",
-    Min = 8,
-    Max = 16,
-    Default = 10,
-    Callback = function(value)
-        for _, instance in pairs(splib.Instances) do
-            if instance.Type == "Text" or instance.Type == "DarkText" then
-                if instance.Instance:IsA("TextLabel") or instance.Instance:IsA("TextBox") then
-                    instance.Instance.TextSize = value
-                end
-            end
-        end
-    end,
-    __force_container = SettingTab
-})
-
-Tab:AddToggle({
-  Name = "UI按扭图标",
-  Default = true,
-  Flag = "UIProtection",
-  Callback = function(enabled)
-    if enabled then
-      checkBounds()
-      enableBoundaryProtection()
-    else
-      disableBoundaryProtection()
-    end
-  end,
-    __force_container = SettingTab
-})
-Tab:AddSlider({
-    Name = "按钮透明度",
-    Min = 0,
-    Max = 1,
-    Default = 0,
-    Callback = function(value)
-      
-        for _, obj in pairs(Components:GetDescendants()) do
-            if obj:IsA("TextButton") and obj.Name == "Option" then
-                obj.BackgroundTransparency = value
-            end
-        end
-    end,
-    __force_container = SettingTab
-})
-
 Tab:AddDropdown({
     Name = "动画样式",
     Options = {"线性", "弹性", "弹跳", "回弹", "正弦"},
@@ -4430,19 +4301,127 @@ Tab:AddDropdown({
     end,
     __force_container = SettingTab
 })
-Tab:AddSlider({
-    Name = "图标大小",
-    Min = 10,
-    Max = 20,
-    Default = 13,
+
+Tab:AddDropdown({
+    Name = "背景图片",
+    Options = BackgroundOptions,
+    Default = "无背景",
+    Callback = function(selectedBackground)
+        if selectedBackground == "无背景" then
+        
+            for _, child in pairs(MainFrame:GetChildren()) do
+                if child:IsA("ImageLabel") then
+                    child:Destroy()
+                end
+            end
+        else
+          
+            local background = MainFrame:FindFirstChild("BackgroundImage")
+            if not background then
+                background = Create("ImageLabel", MainFrame, {
+                    Name = "BackgroundImage",
+                    Size = UDim2.new(1, 0, 1, 0),
+                    Position = UDim2.new(0, 0, 0, 0),
+                    BackgroundTransparency = 1,
+                    ZIndex = 0
+                })
+            end
+            background.Image = selectedBackground
+            background.ImageTransparency = 0.8 
+        end
+    end,
+    __force_container = SettingTab
+})
+Tab:AddDropdown({
+    Name = "边框厚度",
+    Options = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"},
+    Default = "2",
     Callback = function(value)
+        local thickness = tonumber(value)
+        for _, instance in pairs(splib.Instances) do
+            if instance.Type == "Stroke" then
+                instance.Instance.Thickness = thickness
+            end
+        end
+    end,
+    __force_container = SettingTab
+})
+Tab:AddDropdown({
+    Name = "圆角大小",
+    Options = {"0", "2", "4", "6", "7", "8", "10", "12", "14", "16", "18", "20"},
+    Default = "7",
+    Callback = function(value)
+        local radius = tonumber(value)
+        for _, obj in pairs(MainFrame:GetDescendants()) do
+            if obj:IsA("UICorner") then
+                obj.CornerRadius = UDim.new(0, radius)
+            end
+        end
+    end,
+    __force_container = SettingTab
+})
+Tab:AddDropdown({
+    Name = "元素间距",
+    Options = {"0", "2", "3", "4", "5", "6", "7", "8", "9", "10", "12", "15"},
+    Default = "5",
+    Callback = function(value)
+        local padding = tonumber(value)
+        for _, obj in pairs(Container:GetDescendants()) do
+            if obj:IsA("UIListLayout") then
+                obj.Padding = UDim.new(0, padding)
+            end
+        end
+        for _, obj in pairs(MainScroll:GetDescendants()) do
+            if obj:IsA("UIListLayout") then
+                obj.Padding = UDim.new(0, padding)
+            end
+        end
+    end,
+    __force_container = SettingTab
+})
+Tab:AddDropdown({
+    Name = "文本大小",
+    Options = {"8", "9", "10", "11", "12", "13", "14", "15", "16"},
+    Default = "10",
+    Callback = function(value)
+        local size = tonumber(value)
+        for _, instance in pairs(splib.Instances) do
+            if instance.Type == "Text" or instance.Type == "DarkText" then
+                if instance.Instance:IsA("TextLabel") or instance.Instance:IsA("TextBox") then
+                    instance.Instance.TextSize = size
+                end
+            end
+        end
+    end,
+    __force_container = SettingTab
+})
+Tab:AddDropdown({
+    Name = "按钮透明度",
+    Options = {"0", "0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.7", "0.8", "0.9", "1"},
+    Default = "0",
+    Callback = function(value)
+        local transparency = tonumber(value)
+        for _, obj in pairs(Components:GetDescendants()) do
+            if obj:IsA("TextButton") and obj.Name == "Option" then
+                obj.BackgroundTransparency = transparency
+            end
+        end
+    end,
+    __force_container = SettingTab
+})
+Tab:AddDropdown({
+    Name = "图标大小",
+    Options = {"10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"},
+    Default = "13",
+    Callback = function(value)
+        local size = tonumber(value)
         -- 更新所有标签页图标大小
         for _, tab in pairs(splib.Tabs) do
             local tabButton = MainScroll:FindFirstChild(tab.TabInfo.Name)
             if tabButton then
                 local icon = tabButton:FindFirstChildOfClass("ImageLabel")
                 if icon then
-                    icon.Size = UDim2.new(0, value, 0, value)
+                    icon.Size = UDim2.new(0, size, 0, size)
                 end
             end
         end
@@ -4465,36 +4444,19 @@ Tab:AddToggle({
     end,
     __force_container = SettingTab
 })
-Tab:AddDropdown({
-    Name = "界面语言",
-    Options = {"简体中文", "English", "繁體中文", "Español", "Français"},
-    Default = "简体中文",
-    Callback = function(language)
-        -- 这里可以实现多语言切换
-        local translations = {
-            ["简体中文"] = {
-                settings = "设置",
-                uiSize = "UI大小",
-                theme = "主题"
-            },
-            ["English"] = {
-                settings = "Settings", 
-                uiSize = "UI Size",
-                theme = "Theme"
-            }
-        }
-        
-     
-        if translations[language] then
-     
-        end
-        
-        spLib:MakeNotification({
-            Name = "语言切换",
-            Content = "界面语言已切换到: " .. language,
-            Time = 3
-        })
-    end,
+
+Tab:AddToggle({
+  Name = "UI按扭图标",
+  Default = true,
+  Flag = "UIProtection",
+  Callback = function(enabled)
+    if enabled then
+      checkBounds()
+      enableBoundaryProtection()
+    else
+      disableBoundaryProtection()
+    end
+  end,
     __force_container = SettingTab
 })
 Tab:AddToggle({
