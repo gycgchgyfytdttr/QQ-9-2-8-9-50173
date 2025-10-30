@@ -183,7 +183,7 @@ local splib = {
 		Version = "1.1.5"
 	},
 	Save = {
-		UISize = {550, 380},
+		UISize = {570, 358},
 		TabSize = 160,
 		Theme = "Red"
 	},
@@ -197,6 +197,168 @@ local splib = {
 Icons = loadstring(game:HttpGet("https://raw.githubusercontent.com/atoyayaya/REDz-ui/refs/heads/main/REDzIcon"))()
 }
 
+-- 启动动画
+repeat
+    task.wait()
+until game:IsLoaded()
+
+local function PlayStartupAnimation()
+    for _, v in next, CoreGui:GetChildren() do
+        if v.Name == "StartupAnimation" then
+            v:Destroy()
+        end
+    end
+    
+    local StartupGui = Instance.new("ScreenGui")
+    StartupGui.Name = "StartupAnimation"
+    StartupGui.Parent = CoreGui
+    StartupGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    
+    local MainFrame = Instance.new("Frame")
+    MainFrame.Name = "MainFrame"
+    MainFrame.Parent = StartupGui
+    MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+    MainFrame.BackgroundColor3 = Color3.fromRGB(13, 13, 13)
+    MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+    MainFrame.Size = UDim2.new(0, 0, 0, 0)
+    MainFrame.ZIndex = 2
+    MainFrame.ClipsDescendants = true
+    
+    local UICorner = Instance.new("UICorner")
+    UICorner.Parent = MainFrame
+    UICorner.CornerRadius = UDim.new(0, 12)
+    
+    local RainbowBorder = Instance.new("Frame")
+    RainbowBorder.Name = "RainbowBorder"
+    RainbowBorder.Parent = MainFrame
+    RainbowBorder.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    RainbowBorder.Size = UDim2.new(1, 0, 1, 0)
+    RainbowBorder.ZIndex = 1
+    RainbowBorder.ClipsDescendants = true
+    
+    local BorderCorner = Instance.new("UICorner")
+    BorderCorner.Parent = RainbowBorder
+    BorderCorner.CornerRadius = UDim.new(0, 12)
+    
+    local UIGradient = Instance.new("UIGradient")
+    UIGradient.Color = ColorSequence.new({
+        ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 0, 0)),
+        ColorSequenceKeypoint.new(0.14, Color3.fromRGB(255, 127, 0)),
+        ColorSequenceKeypoint.new(0.28, Color3.fromRGB(255, 255, 0)),
+        ColorSequenceKeypoint.new(0.42, Color3.fromRGB(0, 255, 0)),
+        ColorSequenceKeypoint.new(0.56, Color3.fromRGB(0, 255, 255)),
+        ColorSequenceKeypoint.new(0.70, Color3.fromRGB(0, 0, 255)),
+        ColorSequenceKeypoint.new(0.84, Color3.fromRGB(139, 0, 255)),
+        ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 0, 255))
+    })
+    UIGradient.Rotation = 45
+    UIGradient.Parent = RainbowBorder
+    
+    local InnerFrame = Instance.new("Frame")
+    InnerFrame.Name = "InnerFrame"
+    InnerFrame.Parent = MainFrame
+    InnerFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+    InnerFrame.BackgroundColor3 = Color3.fromRGB(13, 13, 13)
+    InnerFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+    InnerFrame.Size = UDim2.new(1, -8, 1, -8) 
+    InnerFrame.ZIndex = 3
+    
+    local InnerCorner = Instance.new("UICorner")
+    InnerCorner.Parent = InnerFrame
+    InnerCorner.CornerRadius = UDim.new(0, 8)
+    
+    local WelcomeLabel = Instance.new("TextLabel")
+    WelcomeLabel.Name = "WelcomeLabel"
+    WelcomeLabel.Parent = InnerFrame
+    WelcomeLabel.AnchorPoint = Vector2.new(0.5, 0.5)
+    WelcomeLabel.Position = UDim2.new(0.5, 0, 0.5, 0)
+    WelcomeLabel.Size = UDim2.new(0.8, 0, 0.3, 0)
+    WelcomeLabel.Text = "DEBRIS ORBIT V2"
+    WelcomeLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    WelcomeLabel.TextSize = 24
+    WelcomeLabel.BackgroundTransparency = 1
+    WelcomeLabel.TextTransparency = 1
+    WelcomeLabel.TextStrokeTransparency = 0.7
+    WelcomeLabel.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+    WelcomeLabel.Font = Enum.Font.GothamBold
+    WelcomeLabel.Visible = true
+    
+    local SubTitle = Instance.new("TextLabel")
+    SubTitle.Name = "SubTitle"
+    SubTitle.Parent = InnerFrame
+    SubTitle.AnchorPoint = Vector2.new(0.5, 0.5)
+    SubTitle.Position = UDim2.new(0.5, 0, 0.7, 0)
+    SubTitle.Size = UDim2.new(0.8, 0, 0.2, 0)
+    SubTitle.Text = "专为精品服务器而打造"
+    SubTitle.TextColor3 = Color3.fromRGB(200, 200, 200)
+    SubTitle.TextSize = 14
+    SubTitle.BackgroundTransparency = 1
+    SubTitle.TextTransparency = 1
+    SubTitle.Font = Enum.Font.Gotham
+    SubTitle.Visible = true
+    
+    local LoadingFrame = Instance.new("Frame")
+    LoadingFrame.Name = "LoadingFrame"
+    LoadingFrame.Parent = InnerFrame
+    LoadingFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+    LoadingFrame.Position = UDim2.new(0.5, 0, 0.85, 0)
+    LoadingFrame.Size = UDim2.new(0.6, 0, 0, 4)
+    LoadingFrame.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    LoadingFrame.BackgroundTransparency = 0.5
+    LoadingFrame.BorderSizePixel = 0
+    
+    local LoadingCorner = Instance.new("UICorner")
+    LoadingCorner.Parent = LoadingFrame
+    LoadingCorner.CornerRadius = UDim.new(1, 0)
+    
+    local LoadingBar = Instance.new("Frame")
+    LoadingBar.Name = "LoadingBar"
+    LoadingBar.Parent = LoadingFrame
+    LoadingBar.Size = UDim2.new(0, 0, 1, 0)
+    LoadingBar.BackgroundColor3 = Color3.fromRGB(0, 162, 255)
+    LoadingBar.BorderSizePixel = 0
+    
+    local LoadingBarCorner = Instance.new("UICorner")
+    LoadingBarCorner.Parent = LoadingBar
+    LoadingBarCorner.CornerRadius = UDim.new(1, 0)
+    
+    local rotationTweenInfo = TweenInfo.new(3, Enum.EasingStyle.Linear, Enum.EasingDirection.In, -1)
+    local rotationTween = TweenService:Create(UIGradient, rotationTweenInfo, {Rotation = 360})
+    rotationTween:Play()
+    
+    local function playStartupAnimation()
+        local initialSize = UDim2.new(0, 200, 0, 120)
+        MainFrame:TweenSize(initialSize, "Out", "Quad", 0.5, true, function()
+            local showTextTween = TweenService:Create(
+                WelcomeLabel,
+                TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                {TextTransparency = 0}
+            )
+            showTextTween:Play()
+            
+            local showSubTitleTween = TweenService:Create(
+                SubTitle,
+                TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                {TextTransparency = 0}
+            )
+            showSubTitleTween:Play()
+            
+            showTextTween.Completed:Wait()
+            LoadingBar:TweenSize(UDim2.new(1, 0, 1, 0), "Out", "Quad", 0.8, true)
+            task.wait(0.8)
+            local finalSize = UDim2.new(0, 570, 0, 358)
+            MainFrame:TweenSize(finalSize, "Out", "Quad", 0.5, true, function()
+                task.wait(0.5)
+                StartupGui:Destroy()
+            end)
+        end)
+    end
+    
+    playStartupAnimation()
+end
+
+-- 立即执行启动动画
+PlayStartupAnimation()
 
 -- ok this is redz lib v5 but now its for sp cuz its has edited in full! and  big improvent and added more functions by sp to contact the the dev discord @nadermohamed22
 
@@ -4196,6 +4358,70 @@ end
     splib:ClearAllBinds()
     ScreenFind:Destroy()
 end
+
+-- 添加彩虹边框
+local rainbowBorder = Instance.new("Frame")
+rainbowBorder.Name = "RainbowBorder"
+rainbowBorder.Parent = MainFrame
+rainbowBorder.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+rainbowBorder.Size = UDim2.new(1, 0, 1, 0)
+rainbowBorder.ZIndex = 1
+rainbowBorder.ClipsDescendants = true
+
+local borderCorner = Instance.new("UICorner")
+borderCorner.Parent = rainbowBorder
+borderCorner.CornerRadius = UDim.new(0, 10)
+
+local borderGradient = Instance.new("UIGradient")
+borderGradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 0, 0)),
+    ColorSequenceKeypoint.new(0.14, Color3.fromRGB(255, 127, 0)),
+    ColorSequenceKeypoint.new(0.28, Color3.fromRGB(255, 255, 0)),
+    ColorSequenceKeypoint.new(0.42, Color3.fromRGB(0, 255, 0)),
+    ColorSequenceKeypoint.new(0.56, Color3.fromRGB(0, 255, 255)),
+    ColorSequenceKeypoint.new(0.70, Color3.fromRGB(0, 0, 255)),
+    ColorSequenceKeypoint.new(0.84, Color3.fromRGB(139, 0, 255)),
+    ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 0, 255))
+})
+borderGradient.Rotation = 45
+borderGradient.Parent = rainbowBorder
+
+-- 旋转动画
+local rotationTweenInfo = TweenInfo.new(3, Enum.EasingStyle.Linear, Enum.EasingDirection.In, -1)
+local rotationTween = TweenService:Create(borderGradient, rotationTweenInfo, {Rotation = 405})
+rotationTween:Play()
+
+-- 内边框覆盖
+local innerBorder = Instance.new("Frame")
+innerBorder.Name = "InnerBorder"
+innerBorder.Parent = MainFrame
+innerBorder.AnchorPoint = Vector2.new(0.5, 0.5)
+innerBorder.BackgroundColor3 = Theme["Color Hub 2"]
+innerBorder.Position = UDim2.new(0.5, 0, 0.5, 0)
+innerBorder.Size = UDim2.new(1, -4, 1, -4)
+innerBorder.ZIndex = 2
+
+local innerCorner = Instance.new("UICorner")
+innerCorner.Parent = innerBorder
+innerCorner.CornerRadius = UDim.new(0, 8)
+
+-- 渐变边框颜色选项
+local borderColorOptions = {
+    "彩虹渐变",
+    "绿色渐变",
+    "银白渐变", 
+    "紫色渐变",
+    "青色渐变",
+    "橙色渐变",
+    "红黑渐变",
+    "蓝白渐变",
+    "金橙渐变",
+    "粉紫渐变",
+    "青绿渐变",
+    "深红渐变"
+}
+
+-- 设置选项卡
 Tab:AddSection({
     Name = "UI 设置",
     __force_container = SettingTab
@@ -4204,7 +4430,7 @@ Tab:AddSection({
 Tab:AddDropdown({
     Name     = "UI 大小设置",
     Options  = {"小", "中", "大"},
-    Default  = savedSize,
+    Default  = "中",
     Flag = "UISize",
     Callback = function(v)
         local offset = isMobile and -200 or 0
@@ -4227,6 +4453,99 @@ Tab:AddDropdown({
         splib:SetTheme(selectedTheme)
         splib.Save.Theme = selectedTheme
         SaveJson("sp library.json", splib.Save)
+    end,
+    __force_container = SettingTab
+})
+
+Tab:AddDropdown({
+    Name = "渐变边框颜色",
+    Options = borderColorOptions,
+    Default = "彩虹渐变",
+    Callback = function(selectedColor)
+        local colorSequence
+        
+        if selectedColor == "彩虹渐变" then
+            colorSequence = ColorSequence.new({
+                ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 0, 0)),
+                ColorSequenceKeypoint.new(0.14, Color3.fromRGB(255, 127, 0)),
+                ColorSequenceKeypoint.new(0.28, Color3.fromRGB(255, 255, 0)),
+                ColorSequenceKeypoint.new(0.42, Color3.fromRGB(0, 255, 0)),
+                ColorSequenceKeypoint.new(0.56, Color3.fromRGB(0, 255, 255)),
+                ColorSequenceKeypoint.new(0.70, Color3.fromRGB(0, 0, 255)),
+                ColorSequenceKeypoint.new(0.84, Color3.fromRGB(139, 0, 255)),
+                ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 0, 255))
+            })
+        elseif selectedColor == "绿色渐变" then
+            colorSequence = ColorSequence.new({
+                ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 255, 0)),
+                ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 200, 100)),
+                ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 150, 0))
+            })
+        elseif selectedColor == "银白渐变" then
+            colorSequence = ColorSequence.new({
+                ColorSequenceKeypoint.new(0.00, Color3.fromRGB(200, 200, 200)),
+                ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 255, 255)),
+                ColorSequenceKeypoint.new(1.00, Color3.fromRGB(150, 150, 150))
+            })
+        elseif selectedColor == "紫色渐变" then
+            colorSequence = ColorSequence.new({
+                ColorSequenceKeypoint.new(0.00, Color3.fromRGB(128, 0, 128)),
+                ColorSequenceKeypoint.new(0.5, Color3.fromRGB(200, 0, 200)),
+                ColorSequenceKeypoint.new(1.00, Color3.fromRGB(75, 0, 130))
+            })
+        elseif selectedColor == "青色渐变" then
+            colorSequence = ColorSequence.new({
+                ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 255, 255)),
+                ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 200, 200)),
+                ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 150, 150))
+            })
+        elseif selectedColor == "橙色渐变" then
+            colorSequence = ColorSequence.new({
+                ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 165, 0)),
+                ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 140, 0)),
+                ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 100, 0))
+            })
+        elseif selectedColor == "红黑渐变" then
+            colorSequence = ColorSequence.new({
+                ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 0, 0)),
+                ColorSequenceKeypoint.new(0.5, Color3.fromRGB(150, 0, 0)),
+                ColorSequenceKeypoint.new(1.00, Color3.fromRGB(50, 0, 0))
+            })
+        elseif selectedColor == "蓝白渐变" then
+            colorSequence = ColorSequence.new({
+                ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 0, 255)),
+                ColorSequenceKeypoint.new(0.5, Color3.fromRGB(100, 100, 255)),
+                ColorSequenceKeypoint.new(1.00, Color3.fromRGB(200, 200, 255))
+            })
+        elseif selectedColor == "金橙渐变" then
+            colorSequence = ColorSequence.new({
+                ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 215, 0)),
+                ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 165, 0)),
+                ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 140, 0))
+            })
+        elseif selectedColor == "粉紫渐变" then
+            colorSequence = ColorSequence.new({
+                ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 105, 180)),
+                ColorSequenceKeypoint.new(0.5, Color3.fromRGB(200, 0, 200)),
+                ColorSequenceKeypoint.new(1.00, Color3.fromRGB(128, 0, 128))
+            })
+        elseif selectedColor == "青绿渐变" then
+            colorSequence = ColorSequence.new({
+                ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 255, 255)),
+                ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 255, 127)),
+                ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 200, 100))
+            })
+        elseif selectedColor == "深红渐变" then
+            colorSequence = ColorSequence.new({
+                ColorSequenceKeypoint.new(0.00, Color3.fromRGB(139, 0, 0)),
+                ColorSequenceKeypoint.new(0.5, Color3.fromRGB(178, 34, 34)),
+                ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 0, 0))
+            })
+        end
+        
+        if colorSequence then
+            borderGradient.Color = colorSequence
+        end
     end,
     __force_container = SettingTab
 })
@@ -4280,7 +4599,6 @@ Tab:AddDropdown({
             easingStyle = Enum.EasingStyle.Sine
         end
         
-      
         Settings.EasingStyle = easingStyle
     end,
     __force_container = SettingTab
@@ -4288,18 +4606,16 @@ Tab:AddDropdown({
 
 Tab:AddDropdown({
     Name = "背景图片",
-    Options = BackgroundOptions,
+    Options = {"无背景", "rbxassetid://4384403532", "rbxassetid://4384403533", "rbxassetid://4384403534"},
     Default = "无背景",
     Callback = function(selectedBackground)
         if selectedBackground == "无背景" then
-        
             for _, child in pairs(MainFrame:GetChildren()) do
                 if child:IsA("ImageLabel") then
                     child:Destroy()
                 end
             end
         else
-          
             local background = MainFrame:FindFirstChild("BackgroundImage")
             if not background then
                 background = Create("ImageLabel", MainFrame, {
@@ -4311,11 +4627,12 @@ Tab:AddDropdown({
                 })
             end
             background.Image = selectedBackground
-            background.ImageTransparency = 0.8 
+            background.ImageTransparency = 0.8
         end
     end,
     __force_container = SettingTab
 })
+
 Tab:AddDropdown({
     Name = "边框厚度",
     Options = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"},
@@ -4330,6 +4647,7 @@ Tab:AddDropdown({
     end,
     __force_container = SettingTab
 })
+
 Tab:AddDropdown({
     Name = "圆角大小",
     Options = {"0", "2", "4", "6", "7", "8", "10", "12", "14", "16", "18", "20"},
@@ -4344,6 +4662,7 @@ Tab:AddDropdown({
     end,
     __force_container = SettingTab
 })
+
 Tab:AddDropdown({
     Name = "元素间距",
     Options = {"0", "2", "3", "4", "5", "6", "7", "8", "9", "10", "12", "15"},
@@ -4363,6 +4682,7 @@ Tab:AddDropdown({
     end,
     __force_container = SettingTab
 })
+
 Tab:AddDropdown({
     Name = "文本大小",
     Options = {"8", "9", "10", "11", "12", "13", "14", "15", "16"},
@@ -4379,6 +4699,7 @@ Tab:AddDropdown({
     end,
     __force_container = SettingTab
 })
+
 Tab:AddDropdown({
     Name = "按钮透明度",
     Options = {"0", "0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.7", "0.8", "0.9", "1"},
@@ -4393,13 +4714,13 @@ Tab:AddDropdown({
     end,
     __force_container = SettingTab
 })
+
 Tab:AddDropdown({
     Name = "图标大小",
     Options = {"10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"},
     Default = "13",
     Callback = function(value)
         local size = tonumber(value)
-        -- 更新所有标签页图标大小
         for _, tab in pairs(splib.Tabs) do
             local tabButton = MainScroll:FindFirstChild(tab.TabInfo.Name)
             if tabButton then
@@ -4419,7 +4740,7 @@ Tab:AddToggle({
     Callback = function(enabled)
         Settings.AutoSave = enabled
         if enabled then
-            spLib:MakeNotification({
+            splib:MakeNotification({
                 Name = "自动保存",
                 Content = "设置更改将自动保存",
                 Time = 3
@@ -4443,6 +4764,7 @@ Tab:AddToggle({
   end,
     __force_container = SettingTab
 })
+
 Tab:AddToggle({
     Name = "侧边栏悬停拓展",
     Flag = "SidebarHover",
@@ -4461,46 +4783,6 @@ Tab:AddToggle({
 
 Tab:AddSection({
     Name = "UI",
-    __force_container = SettingTab
-})
-
-local rainbowStroke
-
-rainbowStroke = Make("Stroke", MainFrame, {
-    Thickness = 2
-})
-
-local rainbowColors = {
-    Red = Color3.fromRGB(255, 0, 0),
-    Orange = Color3.fromRGB(255, 165, 0),
-    Yellow = Color3.fromRGB(255, 255, 0),
-    Green = Color3.fromRGB(0, 255, 0),
-    Blue = Color3.fromRGB(0, 0, 255),
-    Purple = Color3.fromRGB(128, 0, 128),
-    Pink = Color3.fromRGB(255, 105, 180),
-    Cyan = Color3.fromRGB(0, 255, 255),
-    White = Color3.fromRGB(255, 255, 255),
-    Black = Color3.fromRGB(0, 0, 0)
-}
-
-task.spawn(function()
-    while rainbowStroke and rainbowStroke.Parent do
-        local t = tick() * 0.5
-        local r = math.sin(t) * 0.5 + 0.5
-        local g = math.sin(t + 2) * 0.5 + 0.5
-        local b = math.sin(t + 4) * 0.5 + 0.5
-        rainbowStroke.Color = Color3.new(r, g, b)
-        task.wait()
-    end
-end)
-
-Tab:AddToggle({
-    Name = "彩虹边框",
-    Flag = "RainbowMainFrame",
-    Default = Settings.RainbowMainFrameDefault,
-    Callback = function(enabled)
-        rainbowStroke.Transparency = enabled and 0 or 1
-    end,
     __force_container = SettingTab
 })
 
@@ -4528,7 +4810,6 @@ task.spawn(function()
         task.wait()
     end
 end)
-
 
 Tab:AddToggle({
     Name = "彩虹字体",
@@ -4561,6 +4842,7 @@ Tab:AddToggle({
 	MinimizeButton.Activated:Connect(Window.MinimizeBtn)
 	return Window
 end
+
 function splib:Destroy()
     for _, conn in ipairs(self.bindConnections or {}) do
         if typeof(conn) == "RBXScriptConnection" and conn.Connected then
@@ -4577,7 +4859,7 @@ function splib:Destroy()
         self:ClearAllToggles()
     end
 
-        ScreenGui:Destroy()
+    ScreenGui:Destroy()
 end
 
 return splib
