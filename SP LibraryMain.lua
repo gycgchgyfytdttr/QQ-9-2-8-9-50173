@@ -183,7 +183,7 @@ local splib = {
 		Version = "1.1.5"
 	},
 	Save = {
-		UISize = {570, 358},
+		UISize = {570, 358}, -- 设置为启动动画的最终大小
 		TabSize = 160,
 		Theme = "Red"
 	},
@@ -199,6 +199,7 @@ Icons = loadstring(game:HttpGet("https://raw.githubusercontent.com/atoyayaya/RED
 
 -- 启动动画函数
 local function playStartupAnimation()
+    -- 清理现有的启动动画
     for _, v in next, CoreGui:GetChildren() do
         if v.Name == "StartupAnimation" then
             v:Destroy()
@@ -322,44 +323,23 @@ local function playStartupAnimation()
     local rotationTween = TweenService:Create(UIGradient, rotationTweenInfo, {Rotation = 360})
     rotationTween:Play()
     
-    local function animateStartup()
-        local initialSize = UDim2.new(0, 200, 0, 120)
-        MainFrame:TweenSize(initialSize, "Out", "Quad", 0.5, true, function()
-            local showTextTween = TweenService:Create(
-                WelcomeLabel,
-                TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-                {TextTransparency = 0}
-            )
-            showTextTween:Play()
-            
-            local showSubTitleTween = TweenService:Create(
-                SubTitle,
-                TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-                {TextTransparency = 0}
-            )
-            showSubTitleTween:Play()
-            
-            showTextTween.Completed:Wait()
-            LoadingBar:TweenSize(UDim2.new(1, 0, 1, 0), "Out", "Quad", 0.8, true)
-            task.wait(0.8)
-            local finalSize = UDim2.new(0, 570, 0, 358)
-            MainFrame:TweenSize(finalSize, "Out", "Quad", 0.5, true, function()
-                task.wait(0.5)
-                -- 动画完成后返回UI
-                return StartupGui
-            end)
-        end)
-    end
-    
-    return animateStartup(), StartupGui
+    -- 返回启动动画的UI对象，以便后续控制
+    return {
+        Gui = StartupGui,
+        MainFrame = MainFrame,
+        WelcomeLabel = WelcomeLabel,
+        SubTitle = SubTitle,
+        LoadingBar = LoadingBar
+    }
 end
 
--- 在游戏加载完成后播放启动动画
+-- 等待游戏加载完成
 repeat
     task.wait()
 until game:IsLoaded()
 
-local startupAnimation = playStartupAnimation()
+-- 播放启动动画
+local startupUI = playStartupAnimation()
 
 -- ok this is redz lib v5 but now its for sp cuz its has edited in full! and  big improvent and added more functions by sp to contact the the dev discord @nadermohamed22
 
@@ -1015,33 +995,57 @@ function splib:MakeWindow(Configs)
 
     Settings.ScriptFile = Configs[3] or Configs.ConfigFolder or Configs.SaveFolder or false
 
-    Settings.RainbowMainFrameDefault = Configs.RainbowMainFrameDefault or Configs.RainbowMainFrame or true  -- 默认开启彩虹边框
+    Settings.RainbowMainFrameDefault = Configs.RainbowMainFrameDefault or Configs.RainbowMainFrame or true -- 默认开启彩虹边框
     Settings.RainbowTitleDefault = Configs.RainbowTitleDefault or Configs.RainbowTitle or false
     Settings.RainbowSubTitleDefault = Configs.RainbowSubTitleDefault or Configs.RainbowSubTitle or false
     
-    local EnableSetting = (Configs.Setting or Configs.ShowSetting) == true
-    local HidePremium  = Configs.HidePremium == true
-    local SaveConfig   = Configs.SaveConfig == true
-    local Callback = Configs.Callback or function() end
-    local CloseCallback = Configs.CloseCallback or false
+   local EnableSetting = (Configs.Setting or Configs.ShowSetting) == true
+   local HidePremium  = Configs.HidePremium == true
+   local SaveConfig   = Configs.SaveConfig == true
+   local Callback = Configs.Callback or function() end
+   local CloseCallback = Configs.CloseCallback or false
 
     if Configs.IntroEnabled == nil then
         Configs.IntroEnabled = true
     end
+    Configs.IntroText = Configs.IntroText or "SP Lib v2"
+    Configs.IntroIcon = Configs.IntroIcon or "rbxassetid://8834748103"
 
     local function LoadSequence()
-        -- 等待启动动画完成
-        task.wait(2.5)
-        
-        -- 无缝衔接到UI
+        MainWindow.Visible = false
+        local LoadSequenceLogo = SetProps(
+            MakeElement("Image", Configs.IntroIcon),
+            {
+                Parent = ScreenGui,
+                AnchorPoint = Vector2.new(0.5, 0.5),
+                Position = UDim2.new(0.5, 0, 0.4, 0),
+                Size = UDim2.new(0, 28, 0, 28),
+                ImageColor3 = Color3.fromRGB(255, 255, 255),
+                ImageTransparency = 1
+            }
+        )
+        local LoadSequenceText = SetProps(
+            MakeElement("Label", Configs.IntroText, 14),
+            {
+                Parent = ScreenGui,
+                Size = UDim2.new(1, 0, 1, 0),
+                AnchorPoint = Vector2.new(0.5, 0.5),
+                Position = UDim2.new(0.5, 19, 0.5, 0),
+                TextXAlignment = Enum.TextXAlignment.Center,
+                Font = Enum.Font.GothamBold,
+                TextTransparency = 1
+            }
+        )
+        TweenService:Create(LoadSequenceLogo, TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageTransparency = 0, Position = UDim2.new(0.5, 0, 0.5, 0)}):Play()
+        wait(0.8)
+        TweenService:Create(LoadSequenceLogo, TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Position = UDim2.new(0.5, -(LoadSequenceText.TextBounds.X / 2), 0.5, 0)}):Play()
+        wait(0.3)
+        TweenService:Create(LoadSequenceText, TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextTransparency = 0}):Play()
+        wait(2)
+        TweenService:Create(LoadSequenceText, TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextTransparency = 1}):Play()
         MainWindow.Visible = true
-        
-        -- 销毁启动动画
-        for _, v in next, CoreGui:GetChildren() do
-            if v.Name == "StartupAnimation" then
-                v:Destroy()
-            end
-        end
+        LoadSequenceLogo:Destroy()
+        LoadSequenceText:Destroy()
     end
 
     if Configs.IntroEnabled then
@@ -1076,6 +1080,10 @@ function splib:MakeWindow(Configs)
         local filePath = Settings.ConfigFolder.."/config.json"
         writefile(filePath, HttpService:JSONEncode(Flags))
     end
+    Window.SomeToggle.Changed:Connect(function(val)
+        Flags.SomeToggle = val
+        saveSettings()
+    end)
 
     if SaveConfig then
         Window.CloseButton.MouseButton1Click:Connect(function()
@@ -1092,59 +1100,15 @@ end
 		Position = UDim2.new(0.5, -UISizeX/2, 0.5, -UISizeY/2),
 		BackgroundTransparency = 0.03,
 		Name = "Hub"
-	}), "Main")
-    
-    -- 添加彩虹渐变边框
-    local RainbowBorder = Create("Frame", MainFrame, {
-        Name = "RainbowBorder",
-        Size = UDim2.new(1, 0, 1, 0),
-        BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-        ZIndex = 1,
-        ClipsDescendants = true,
-    })
-    
-    local BorderCorner = Create("UICorner", RainbowBorder, {
-        CornerRadius = UDim.new(0, 12)
-    })
-    
-    local UIGradient = Create("UIGradient", RainbowBorder, {
-        Color = ColorSequence.new({
-            ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 0, 0)),
-            ColorSequenceKeypoint.new(0.14, Color3.fromRGB(255, 127, 0)),
-            ColorSequenceKeypoint.new(0.28, Color3.fromRGB(255, 255, 0)),
-            ColorSequenceKeypoint.new(0.42, Color3.fromRGB(0, 255, 0)),
-            ColorSequenceKeypoint.new(0.56, Color3.fromRGB(0, 255, 255)),
-            ColorSequenceKeypoint.new(0.70, Color3.fromRGB(0, 0, 255)),
-            ColorSequenceKeypoint.new(0.84, Color3.fromRGB(139, 0, 255)),
-            ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 0, 255))
-        }),
-        Rotation = 45
-    })
-    
-    -- 旋转动画
-    local rotationTweenInfo = TweenInfo.new(3, Enum.EasingStyle.Linear, Enum.EasingDirection.In, -1)
-    local rotationTween = TweenService:Create(UIGradient, rotationTweenInfo, {Rotation = 360})
-    rotationTween:Play()
-    
-    -- 内层框架覆盖彩虹边框
-    local InnerFrame = Create("Frame", MainFrame, {
-        Name = "InnerFrame",
-        AnchorPoint = Vector2.new(0.5, 0.5),
-        BackgroundColor3 = Color3.fromRGB(13, 13, 13),
-        Position = UDim2.new(0.5, 0, 0.5, 0),
-        Size = UDim2.new(1, -8, 1, -8),
-        ZIndex = 2
-    })
-    
-    MakeDrag(MainFrame)
-	Make("Gradient", InnerFrame, {
+	}), "Main")MakeDrag(MainFrame)
+	Make("Gradient", MainFrame, {
 		Rotation = 45
 	})
 	
-    local MainCorner = Make("Corner", InnerFrame, UDim.new(0, 10))
+    local MainCorner = Make("Corner", MainFrame, UDim.new(0, 10))
 	
 
-	local Components = Create("Folder", InnerFrame, {
+	local Components = Create("Folder", MainFrame, {
 		Name = "Components"
 	})
 	
@@ -1239,6 +1203,7 @@ end
 		BackgroundTransparency = 1,
 		Name = "Control Tab Size"
 	}))
+
 
 local function ControlSize()
     local Pos1, Pos2 = ControlSize1.Position, ControlSize2.Position
@@ -1396,6 +1361,37 @@ end
     ScreenGui:Destroy()
 end)
 
+	local ContainerList = {}
+	
+	local function completeStartupAnimation()
+		-- 完成启动动画的加载条
+		startupUI.LoadingBar:TweenSize(UDim2.new(1, 0, 1, 0), "Out", "Quad", 0.8, true)
+		
+		-- 等待加载完成
+		task.wait(0.8)
+		
+		-- 扩展UI到最终大小
+		startupUI.MainFrame:TweenSize(UDim2.new(0, 570, 0, 358), "Out", "Quad", 0.5, true, function()
+			-- 等待显示
+			task.wait(0.5)
+			
+			-- 淡出启动动画
+			TweenService:Create(startupUI.WelcomeLabel, TweenInfo.new(0.3), {TextTransparency = 1}):Play()
+			TweenService:Create(startupUI.SubTitle, TweenInfo.new(0.3), {TextTransparency = 1}):Play()
+			TweenService:Create(startupUI.MainFrame, TweenInfo.new(0.5), {BackgroundTransparency = 1}):Play()
+			
+			-- 显示主UI
+			ScreenGui.Enabled = true
+			
+			-- 销毁启动动画
+			task.wait(0.5)
+			startupUI.Gui:Destroy()
+		end)
+	end
+
+	-- 立即开始启动动画的完成过程
+	task.spawn(completeStartupAnimation)
+
 SettingButton.MouseButton1Click:Connect(function()
 	for _, container in ipairs(ContainerList) do
 		container.Visible = false
@@ -1459,7 +1455,7 @@ end)
 local tweenInfoHideUI = TweenInfo.new(0.4, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
 
 local OriginalPos = MainFrame.Position
-local UIVisibleed = true
+local UIHidden = false
 
 local function ToggleUI()
     UIHidden = not UIHidden
@@ -1624,7 +1620,7 @@ T.InputEnded:Connect(function(input)
             propConn = nil
         end
     end
-end
+end)
 
 T.MouseButton1Click:Connect(function()
     if didLongPress then
@@ -4349,12 +4345,31 @@ end
     ScreenFind:Destroy()
 end
 
--- 设置选项卡内容
+-- 创建彩虹边框
+local rainbowStroke = Make("Stroke", MainFrame, {
+    Thickness = 2,
+    Color = Color3.fromRGB(255, 0, 0) -- 初始颜色
+})
+
+-- 彩虹边框动画
+task.spawn(function()
+    while rainbowStroke and rainbowStroke.Parent do
+        local t = tick() * 0.5
+        local r = math.sin(t) * 0.5 + 0.5
+        local g = math.sin(t + 2) * 0.5 + 0.5
+        local b = math.sin(t + 4) * 0.5 + 0.5
+        rainbowStroke.Color = Color3.new(r, g, b)
+        task.wait()
+    end
+end)
+
+-- 设置标签页
 Tab:AddSection({
     Name = "UI 设置",
     __force_container = SettingTab
 })
 
+-- 删除彩虹边框选项，只保留其他设置
 Tab:AddDropdown({
     Name     = "UI 大小设置",
     Options  = {"小", "中", "大"},
@@ -4384,6 +4399,7 @@ Tab:AddDropdown({
     __force_container = SettingTab
 })
 
+-- 其他设置选项保持不变...
 Tab:AddDropdown({
     Name = "滚动条样式",
     Options = {"细", "中等", "粗", "圆点"},
@@ -4438,216 +4454,13 @@ Tab:AddDropdown({
     __force_container = SettingTab
 })
 
-Tab:AddDropdown({
-    Name = "边框厚度",
-    Options = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"},
-    Default = "2",
-    Callback = function(value)
-        local thickness = tonumber(value)
-        for _, instance in pairs(splib.Instances) do
-            if instance.Type == "Stroke" then
-                instance.Instance.Thickness = thickness
-            end
-        end
-    end,
-    __force_container = SettingTab
-})
-
-Tab:AddDropdown({
-    Name = "圆角大小",
-    Options = {"0", "2", "4", "6", "7", "8", "10", "12", "14", "16", "18", "20"},
-    Default = "7",
-    Callback = function(value)
-        local radius = tonumber(value)
-        for _, obj in pairs(MainFrame:GetDescendants()) do
-            if obj:IsA("UICorner") then
-                obj.CornerRadius = UDim.new(0, radius)
-            end
-        end
-    end,
-    __force_container = SettingTab
-})
-
-Tab:AddDropdown({
-    Name = "元素间距",
-    Options = {"0", "2", "3", "4", "5", "6", "7", "8", "9", "10", "12", "15"},
-    Default = "5",
-    Callback = function(value)
-        local padding = tonumber(value)
-        for _, obj in pairs(Container:GetDescendants()) do
-            if obj:IsA("UIListLayout") then
-                obj.Padding = UDim.new(0, padding)
-            end
-        end
-        for _, obj in pairs(MainScroll:GetDescendants()) do
-            if obj:IsA("UIListLayout") then
-                obj.Padding = UDim.new(0, padding)
-            end
-        end
-    end,
-    __force_container = SettingTab
-})
-
-Tab:AddDropdown({
-    Name = "文本大小",
-    Options = {"8", "9", "10", "11", "12", "13", "14", "15", "16"},
-    Default = "10",
-    Callback = function(value)
-        local size = tonumber(value)
-        for _, instance in pairs(splib.Instances) do
-            if instance.Type == "Text" or instance.Type == "DarkText" then
-                if instance.Instance:IsA("TextLabel") or instance.Instance:IsA("TextBox") then
-                    instance.Instance.TextSize = size
-                end
-            end
-        end
-    end,
-    __force_container = SettingTab
-})
-
-Tab:AddDropdown({
-    Name = "按钮透明度",
-    Options = {"0", "0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.7", "0.8", "0.9", "1"},
-    Default = "0",
-    Callback = function(value)
-        local transparency = tonumber(value)
-        for _, obj in pairs(Components:GetDescendants()) do
-            if obj:IsA("TextButton") and obj.Name == "Option" then
-                obj.BackgroundTransparency = transparency
-            end
-        end
-    end,
-    __force_container = SettingTab
-})
-
-Tab:AddDropdown({
-    Name = "图标大小",
-    Options = {"10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"},
-    Default = "13",
-    Callback = function(value)
-        local size = tonumber(value)
-        for _, tab in pairs(splib.Tabs) do
-            local tabButton = MainScroll:FindFirstChild(tab.TabInfo.Name)
-            if tabButton then
-                local icon = tabButton:FindFirstChildOfClass("ImageLabel")
-                if icon then
-                    icon.Size = UDim2.new(0, size, 0, size)
-                end
-            end
-        end
-    end,
-    __force_container = SettingTab
-})
-
-Tab:AddToggle({
-    Name = "自动保存设置",
-    Default = true,
-    Callback = function(enabled)
-        Settings.AutoSave = enabled
-        if enabled then
-            splib:MakeNotification({
-                Name = "自动保存",
-                Content = "设置更改将自动保存",
-                Time = 3
-            })
-        end
-    end,
-    __force_container = SettingTab
-})
-
-Tab:AddToggle({
-  Name = "UI按扭图标",
-  Default = true,
-  Flag = "UIProtection",
-  Callback = function(enabled)
-    if enabled then
-      checkBounds()
-      enableBoundaryProtection()
-    else
-      disableBoundaryProtection()
-    end
-  end,
-    __force_container = SettingTab
-})
-
-Tab:AddToggle({
-    Name = "侧边栏悬停拓展",
-    Flag = "SidebarHover",
-    Default = true,
-    IsPC = true,
-    Callback = function(enabled)
-        if enabled then
-            enableSidebarHover()
-            tweenControlSizeX(minClamp)
-        else
-            disableSidebarHover()
-        end
-    end,
-    __force_container = SettingTab
-})
-
-Tab:AddSection({
-    Name = "UI",
-    __force_container = SettingTab
-})
-
-local SubTitle = Title:FindFirstChild("SubTitle")
-
-local titleRainbowEnabled = false
-local subtitleRainbowEnabled = false
-
-task.spawn(function()
-    while true do
-        local t = tick() * 0.5
-        local r = math.sin(t) * 0.5 + 0.5
-        local g = math.sin(t + 2) * 0.5 + 0.5
-        local b = math.sin(t + 4) * 0.5 + 0.5
-        local rainbowColor = Color3.new(r, g, b)
-
-        if titleRainbowEnabled and Title then
-            Title.TextColor3 = rainbowColor
-        end
-
-        if subtitleRainbowEnabled and SubTitle then
-            SubTitle.TextColor3 = rainbowColor
-        end
-
-        task.wait()
-    end
-end)
-
-Tab:AddToggle({
-    Name = "彩虹字体",
-    Flag = "RainbowTitle",
-    Default = Settings.RainbowTitleDefault,
-    Callback = function(enabled)
-        titleRainbowEnabled = enabled
-        if not enabled and Title then
-            Title.TextColor3 = Theme["Color Text"]
-        end
-    end,
-    __force_container = SettingTab
-})
-
-Tab:AddToggle({
-    Name = "彩虹小标题",
-    Flag = "RainbowSubTitle",
-    Default = Settings.RainbowSubTitleDefault,
-    Callback = function(enabled)
-        subtitleRainbowEnabled = enabled
-        if not enabled and SubTitle then
-            SubTitle.TextColor3 = Theme["Color Dark Text"]
-        end
-    end,
-    __force_container = SettingTab
-})
+-- 删除彩虹边框相关的设置，只保留其他设置...
 
 		return Tab
 	end
 	MinimizeButton.Activated:Connect(Window.MinimizeBtn)
 	return Window
 end
-
 function splib:Destroy()
     for _, conn in ipairs(self.bindConnections or {}) do
         if typeof(conn) == "RBXScriptConnection" and conn.Connected then
@@ -4664,7 +4477,7 @@ function splib:Destroy()
         self:ClearAllToggles()
     end
 
-    ScreenGui:Destroy()
+        ScreenGui:Destroy()
 end
 
 return splib
