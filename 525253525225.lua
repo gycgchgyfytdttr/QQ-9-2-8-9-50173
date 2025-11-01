@@ -5759,11 +5759,9 @@ or(((i.Padding-2)*2)+x.Main.Frame.Title.TextBounds.Y)
 )
 
 ab.AddSignal(x.Main.MouseEnter,function()
-
 b(x.Main,.04,{ImageTransparency=.95}):Play()
 end)
 ab.AddSignal(x.Main.InputEnded,function()
-
 b(x.Main,.08,{ImageTransparency=1}):Play()
 end)
 ab.AddSignal(x.Main.MouseButton1Click,function()
@@ -6054,6 +6052,56 @@ ImageColor3=Color3.new(0,0,0),
 ZIndex=999,
 Active=false,
 })
+
+local RainbowBorder = e("Frame", {
+Name = "RainbowBorder",
+Parent = p.UIElements.Main,
+BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+Size = UDim2.new(1, 6, 1, 6),
+Position = UDim2.new(0.5, 0, 0.5, 0),
+AnchorPoint = Vector2.new(0.5, 0.5),
+ZIndex = 1,
+ClipsDescendants = true
+})
+
+local BorderCorner = e("UICorner", {
+Parent = RainbowBorder,
+CornerRadius = UDim.new(0, p.UICorner + 3)
+})
+
+local UIGradient = e("UIGradient", {
+Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 0, 0)),
+    ColorSequenceKeypoint.new(0.14, Color3.fromRGB(255, 127, 0)),
+    ColorSequenceKeypoint.new(0.28, Color3.fromRGB(255, 255, 0)),
+    ColorSequenceKeypoint.new(0.42, Color3.fromRGB(0, 255, 0)),
+    ColorSequenceKeypoint.new(0.56, Color3.fromRGB(0, 255, 255)),
+    ColorSequenceKeypoint.new(0.70, Color3.fromRGB(0, 0, 255)),
+    ColorSequenceKeypoint.new(0.84, Color3.fromRGB(139, 0, 255)),
+    ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 0, 255))
+}),
+Rotation = 45,
+Parent = RainbowBorder
+})
+
+local InnerFrame = e("Frame", {
+Name = "InnerFrame",
+Parent = RainbowBorder,
+AnchorPoint = Vector2.new(0.5, 0.5),
+BackgroundColor3 = Color3.fromRGB(13, 13, 13),
+Position = UDim2.new(0.5, 0, 0.5, 0),
+Size = UDim2.new(1, -4, 1, -4),
+ZIndex = 2
+})
+
+local InnerCorner = e("UICorner", {
+Parent = InnerFrame,
+CornerRadius = UDim.new(0, p.UICorner + 1)
+})
+
+local rotationTweenInfo = TweenInfo.new(3, Enum.EasingStyle.Linear, Enum.EasingDirection.In, -1)
+local rotationTween = e:Create(UIGradient, rotationTweenInfo, {Rotation = 360})
+rotationTween:Play()
 
 
 
@@ -6428,7 +6476,6 @@ end)
 end
 end
 
-
 local C
 local D
 
@@ -6461,40 +6508,6 @@ TextSize=16,
 ThemeTag={
 TextColor3="Text"
 }
-})
-
-local RainbowBorder = e("Frame", {
-Name = "RainbowBorder",
-BackgroundTransparency = 1,
-Size = UDim2.new(1, 8, 1, 8),
-Position = UDim2.new(0.5, 0, 0.5, 0),
-AnchorPoint = Vector2.new(0.5, 0.5),
-ZIndex = 1,
-Parent = p.UIElements.Main
-}, {
-e("UICorner", {
-CornerRadius = UDim.new(0, p.UICorner + 2)
-}),
-e("UIGradient", {
-Color = ColorSequence.new({
-    ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 0, 0)),
-    ColorSequenceKeypoint.new(0.14, Color3.fromRGB(255, 127, 0)),
-    ColorSequenceKeypoint.new(0.28, Color3.fromRGB(255, 255, 0)),
-    ColorSequenceKeypoint.new(0.42, Color3.fromRGB(0, 255, 0)),
-    ColorSequenceKeypoint.new(0.56, Color3.fromRGB(0, 255, 255)),
-    ColorSequenceKeypoint.new(0.70, Color3.fromRGB(0, 0, 255)),
-    ColorSequenceKeypoint.new(0.84, Color3.fromRGB(139, 0, 255)),
-    ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 0, 255))
-}),
-Rotation = 45
-})
-})
-
-local UIStroke = e("UIStroke", {
-Thickness = 4,
-ApplyStrokeMode = "Border",
-Transparency = 0,
-Parent = RainbowBorder
 })
 
 p.UIElements.Main=e("Frame",{
@@ -6534,11 +6547,11 @@ r,
 
 
 }),
-RainbowBorder,
 UIStroke,
 q,
 s,
 t,
+RainbowBorder,
 e("Frame",{
 Size=UDim2.new(1,0,1,0),
 BackgroundTransparency=1,
