@@ -183,7 +183,7 @@ local splib = {
 		Version = "1.1.5"
 	},
 	Save = {
-		UISize = {570, 358}, -- 设置为启动动画的最终大小
+		UISize = {550, 380},
 		TabSize = 160,
 		Theme = "Red"
 	},
@@ -197,149 +197,6 @@ local splib = {
 Icons = loadstring(game:HttpGet("https://raw.githubusercontent.com/atoyayaya/REDz-ui/refs/heads/main/REDzIcon"))()
 }
 
--- 启动动画函数
-local function playStartupAnimation()
-    -- 清理现有的启动动画
-    for _, v in next, CoreGui:GetChildren() do
-        if v.Name == "StartupAnimation" then
-            v:Destroy()
-        end
-    end
-    
-    local StartupGui = Instance.new("ScreenGui")
-    StartupGui.Name = "StartupAnimation"
-    StartupGui.Parent = CoreGui
-    StartupGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    
-    local MainFrame = Instance.new("Frame")
-    MainFrame.Name = "MainFrame"
-    MainFrame.Parent = StartupGui
-    MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-    MainFrame.BackgroundColor3 = Color3.fromRGB(13, 13, 13)
-    MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
-    MainFrame.Size = UDim2.new(0, 0, 0, 0)
-    MainFrame.ZIndex = 2
-    MainFrame.ClipsDescendants = true
-    
-    local UICorner = Instance.new("UICorner")
-    UICorner.Parent = MainFrame
-    UICorner.CornerRadius = UDim.new(0, 12)
-    
-    local RainbowBorder = Instance.new("Frame")
-    RainbowBorder.Name = "RainbowBorder"
-    RainbowBorder.Parent = MainFrame
-    RainbowBorder.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    RainbowBorder.Size = UDim2.new(1, 0, 1, 0)
-    RainbowBorder.ZIndex = 1
-    RainbowBorder.ClipsDescendants = true
-    
-    local BorderCorner = Instance.new("UICorner")
-    BorderCorner.Parent = RainbowBorder
-    BorderCorner.CornerRadius = UDim.new(0, 12)
-    
-    local UIGradient = Instance.new("UIGradient")
-    UIGradient.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 0, 0)),
-        ColorSequenceKeypoint.new(0.14, Color3.fromRGB(255, 127, 0)),
-        ColorSequenceKeypoint.new(0.28, Color3.fromRGB(255, 255, 0)),
-        ColorSequenceKeypoint.new(0.42, Color3.fromRGB(0, 255, 0)),
-        ColorSequenceKeypoint.new(0.56, Color3.fromRGB(0, 255, 255)),
-        ColorSequenceKeypoint.new(0.70, Color3.fromRGB(0, 0, 255)),
-        ColorSequenceKeypoint.new(0.84, Color3.fromRGB(139, 0, 255)),
-        ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 0, 255))
-    })
-    UIGradient.Rotation = 45
-    UIGradient.Parent = RainbowBorder
-    
-    local InnerFrame = Instance.new("Frame")
-    InnerFrame.Name = "InnerFrame"
-    InnerFrame.Parent = MainFrame
-    InnerFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-    InnerFrame.BackgroundColor3 = Color3.fromRGB(13, 13, 13)
-    InnerFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
-    InnerFrame.Size = UDim2.new(1, -8, 1, -8) 
-    InnerFrame.ZIndex = 3
-    
-    local InnerCorner = Instance.new("UICorner")
-    InnerCorner.Parent = InnerFrame
-    InnerCorner.CornerRadius = UDim.new(0, 8)
-    
-    local WelcomeLabel = Instance.new("TextLabel")
-    WelcomeLabel.Name = "WelcomeLabel"
-    WelcomeLabel.Parent = InnerFrame
-    WelcomeLabel.AnchorPoint = Vector2.new(0.5, 0.5)
-    WelcomeLabel.Position = UDim2.new(0.5, 0, 0.5, 0)
-    WelcomeLabel.Size = UDim2.new(0.8, 0, 0.3, 0)
-    WelcomeLabel.Text = "DEBRIS ORBIT V2"
-    WelcomeLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    WelcomeLabel.TextSize = 24
-    WelcomeLabel.BackgroundTransparency = 1
-    WelcomeLabel.TextTransparency = 1
-    WelcomeLabel.TextStrokeTransparency = 0.7
-    WelcomeLabel.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
-    WelcomeLabel.Font = Enum.Font.GothamBold
-    WelcomeLabel.Visible = true
-    
-    local SubTitle = Instance.new("TextLabel")
-    SubTitle.Name = "SubTitle"
-    SubTitle.Parent = InnerFrame
-    SubTitle.AnchorPoint = Vector2.new(0.5, 0.5)
-    SubTitle.Position = UDim2.new(0.5, 0, 0.7, 0)
-    SubTitle.Size = UDim2.new(0.8, 0, 0.2, 0)
-    SubTitle.Text = "专为精品服务器而打造"
-    SubTitle.TextColor3 = Color3.fromRGB(200, 200, 200)
-    SubTitle.TextSize = 14
-    SubTitle.BackgroundTransparency = 1
-    SubTitle.TextTransparency = 1
-    SubTitle.Font = Enum.Font.Gotham
-    SubTitle.Visible = true
-    
-    local LoadingFrame = Instance.new("Frame")
-    LoadingFrame.Name = "LoadingFrame"
-    LoadingFrame.Parent = InnerFrame
-    LoadingFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-    LoadingFrame.Position = UDim2.new(0.5, 0, 0.85, 0)
-    LoadingFrame.Size = UDim2.new(0.6, 0, 0, 4)
-    LoadingFrame.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-    LoadingFrame.BackgroundTransparency = 0.5
-    LoadingFrame.BorderSizePixel = 0
-    
-    local LoadingCorner = Instance.new("UICorner")
-    LoadingCorner.Parent = LoadingFrame
-    LoadingCorner.CornerRadius = UDim.new(1, 0)
-    
-    local LoadingBar = Instance.new("Frame")
-    LoadingBar.Name = "LoadingBar"
-    LoadingBar.Parent = LoadingFrame
-    LoadingBar.Size = UDim2.new(0, 0, 1, 0)
-    LoadingBar.BackgroundColor3 = Color3.fromRGB(0, 162, 255)
-    LoadingBar.BorderSizePixel = 0
-    
-    local LoadingBarCorner = Instance.new("UICorner")
-    LoadingBarCorner.Parent = LoadingBar
-    LoadingBarCorner.CornerRadius = UDim.new(1, 0)
-    
-    local rotationTweenInfo = TweenInfo.new(3, Enum.EasingStyle.Linear, Enum.EasingDirection.In, -1)
-    local rotationTween = TweenService:Create(UIGradient, rotationTweenInfo, {Rotation = 360})
-    rotationTween:Play()
-    
-    -- 返回启动动画的UI对象，以便后续控制
-    return {
-        Gui = StartupGui,
-        MainFrame = MainFrame,
-        WelcomeLabel = WelcomeLabel,
-        SubTitle = SubTitle,
-        LoadingBar = LoadingBar
-    }
-end
-
--- 等待游戏加载完成
-repeat
-    task.wait()
-until game:IsLoaded()
-
--- 播放启动动画
-local startupUI = playStartupAnimation()
 
 -- ok this is redz lib v5 but now its for sp cuz its has edited in full! and  big improvent and added more functions by sp to contact the the dev discord @nadermohamed22
 
@@ -991,19 +848,26 @@ function splib:MakeWindow(Configs)
 
     local ToggleIcon = tostring(Configs.ToggleIcon or "rbxassetid://83114982417764")
     local WTitle     = Configs[1] or Configs.Name or Configs.Title or ""
-    local WMiniText  = Configs[2] or Configs.SubTitle or Configs.SubName or "by:神青[DE]"
+    local WMiniText  = Configs[2] or Configs.SubTitle or Configs.SubName or "By: Q3E4"
+
+
+function splib:MakeWindow(Configs)
+
+    local WTitle     = Configs[1] or Configs.Name or Configs.Title or "SP Lib v2"
+    local WMiniText  = Configs[2] or Configs.SubTitle or Configs.SubName or "by : SP Hub"
 
     Settings.ScriptFile = Configs[3] or Configs.ConfigFolder or Configs.SaveFolder or false
 
-    Settings.RainbowMainFrameDefault = Configs.RainbowMainFrameDefault or Configs.RainbowMainFrame or true -- 默认开启彩虹边框
+    Settings.RainbowMainFrameDefault = Configs.RainbowMainFrameDefault or Configs.RainbowMainFrame or false
     Settings.RainbowTitleDefault = Configs.RainbowTitleDefault or Configs.RainbowTitle or false
     Settings.RainbowSubTitleDefault = Configs.RainbowSubTitleDefault or Configs.RainbowSubTitle or false
     
    local EnableSetting = (Configs.Setting or Configs.ShowSetting) == true
-   local HidePremium  = Configs.HidePremium == true
-   local SaveConfig   = Configs.SaveConfig == true
-   local Callback = Configs.Callback or function() end
-   local CloseCallback = Configs.CloseCallback or false
+   local ToggleIcon = tostring(Configs.ToggleIcon or "rbxassetid://83114982417764")
+    local HidePremium  = Configs.HidePremium == true
+    local SaveConfig   = Configs.SaveConfig == true
+    local Callback = Configs.Callback or function() end
+    local CloseCallback = Configs.CloseCallback or false
 
     if Configs.IntroEnabled == nil then
         Configs.IntroEnabled = true
@@ -1178,6 +1042,25 @@ end
 			Padding = UDim.new(0, 5)
 		})
 	}), "ScrollBar")
+
+--[[
+ local SearchBox = Create("TextBox", MainScroll, {
+    Size = UDim2.new(1, 0, 0, 24),
+    Position = UDim2.new(0, 0, 0, 0),
+    BackgroundColor3 = Color3.fromRGB(13, 13, 13),
+    PlaceholderText = "Search",
+    Text = "",
+    TextXAlignment = Enum.TextXAlignment.Left,
+    TextTruncate = Enum.TextTruncate.AtEnd,
+    TextColor3 = Color3.fromRGB(255, 255, 255),
+    ClearTextOnFocus = false,
+    Font = Enum.Font.Gotham,
+    TextSize = 10,
+    TextWrapped = false,
+})
+Make("Corner", SearchBox)
+]]
+
 
 	local Containers = Create("Frame", Components, {
 		Size = UDim2.new(1, -MainScroll.Size.X.Offset, 1, -TopBar.Size.Y.Offset),
@@ -1361,37 +1244,6 @@ end
     ScreenGui:Destroy()
 end)
 
-	local ContainerList = {}
-	
-	local function completeStartupAnimation()
-		-- 完成启动动画的加载条
-		startupUI.LoadingBar:TweenSize(UDim2.new(1, 0, 1, 0), "Out", "Quad", 0.8, true)
-		
-		-- 等待加载完成
-		task.wait(0.8)
-		
-		-- 扩展UI到最终大小
-		startupUI.MainFrame:TweenSize(UDim2.new(0, 570, 0, 358), "Out", "Quad", 0.5, true, function()
-			-- 等待显示
-			task.wait(0.5)
-			
-			-- 淡出启动动画
-			TweenService:Create(startupUI.WelcomeLabel, TweenInfo.new(0.3), {TextTransparency = 1}):Play()
-			TweenService:Create(startupUI.SubTitle, TweenInfo.new(0.3), {TextTransparency = 1}):Play()
-			TweenService:Create(startupUI.MainFrame, TweenInfo.new(0.5), {BackgroundTransparency = 1}):Play()
-			
-			-- 显示主UI
-			ScreenGui.Enabled = true
-			
-			-- 销毁启动动画
-			task.wait(0.5)
-			startupUI.Gui:Destroy()
-		end)
-	end
-
-	-- 立即开始启动动画的完成过程
-	task.spawn(completeStartupAnimation)
-
 SettingButton.MouseButton1Click:Connect(function()
 	for _, container in ipairs(ContainerList) do
 		container.Visible = false
@@ -1455,7 +1307,7 @@ end)
 local tweenInfoHideUI = TweenInfo.new(0.4, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
 
 local OriginalPos = MainFrame.Position
-local UIHidden = false
+local UIVisibleed = true
 
 local function ToggleUI()
     UIHidden = not UIHidden
@@ -3340,7 +3192,7 @@ function Tab:AddSlider(Configs)
 
 
     if Configs.IsMobile and not isMobile then return nil end
-    if Configs.IsPC     and not isPC     then return nil end
+    if Configs.IsPC and not isPC then return nil end
 
     local Button, LabelFunc = ButtonFrame(Container, SName, SDesc, UDim2.new(1, -20))
     local SliderHolder = Create("TextButton", Button, {
@@ -4345,35 +4197,18 @@ end
     ScreenFind:Destroy()
 end
 
--- 创建彩虹边框
-local rainbowStroke = Make("Stroke", MainFrame, {
-    Thickness = 2,
-    Color = Color3.fromRGB(255, 0, 0) -- 初始颜色
-})
+-- local SettingTab
 
--- 彩虹边框动画
-task.spawn(function()
-    while rainbowStroke and rainbowStroke.Parent do
-        local t = tick() * 0.5
-        local r = math.sin(t) * 0.5 + 0.5
-        local g = math.sin(t + 2) * 0.5 + 0.5
-        local b = math.sin(t + 4) * 0.5 + 0.5
-        rainbowStroke.Color = Color3.new(r, g, b)
-        task.wait()
-    end
-end)
-
--- 设置标签页
 Tab:AddSection({
     Name = "UI 设置",
     __force_container = SettingTab
 })
 
--- 删除彩虹边框选项，只保留其他设置
 Tab:AddDropdown({
     Name     = "UI 大小设置",
     Options  = {"小", "中", "大"},
-    Default  = "中",
+    Default  = savedSize,
+    Flag = "UISize",
     Callback = function(v)
         local offset = isMobile and -200 or 0
         if v == "小" then
@@ -4399,7 +4234,6 @@ Tab:AddDropdown({
     __force_container = SettingTab
 })
 
--- 其他设置选项保持不变...
 Tab:AddDropdown({
     Name = "滚动条样式",
     Options = {"细", "中等", "粗", "圆点"},
@@ -4449,12 +4283,281 @@ Tab:AddDropdown({
             easingStyle = Enum.EasingStyle.Sine
         end
         
+      
         Settings.EasingStyle = easingStyle
     end,
     __force_container = SettingTab
 })
 
--- 删除彩虹边框相关的设置，只保留其他设置...
+Tab:AddDropdown({
+    Name = "背景图片",
+    Options = BackgroundOptions,
+    Default = "无背景",
+    Callback = function(selectedBackground)
+        if selectedBackground == "无背景" then
+        
+            for _, child in pairs(MainFrame:GetChildren()) do
+                if child:IsA("ImageLabel") then
+                    child:Destroy()
+                end
+            end
+        else
+          
+            local background = MainFrame:FindFirstChild("BackgroundImage")
+            if not background then
+                background = Create("ImageLabel", MainFrame, {
+                    Name = "BackgroundImage",
+                    Size = UDim2.new(1, 0, 1, 0),
+                    Position = UDim2.new(0, 0, 0, 0),
+                    BackgroundTransparency = 1,
+                    ZIndex = 0
+                })
+            end
+            background.Image = selectedBackground
+            background.ImageTransparency = 0.8 
+        end
+    end,
+    __force_container = SettingTab
+})
+Tab:AddDropdown({
+    Name = "边框厚度",
+    Options = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"},
+    Default = "2",
+    Callback = function(value)
+        local thickness = tonumber(value)
+        for _, instance in pairs(splib.Instances) do
+            if instance.Type == "Stroke" then
+                instance.Instance.Thickness = thickness
+            end
+        end
+    end,
+    __force_container = SettingTab
+})
+Tab:AddDropdown({
+    Name = "圆角大小",
+    Options = {"0", "2", "4", "6", "7", "8", "10", "12", "14", "16", "18", "20"},
+    Default = "7",
+    Callback = function(value)
+        local radius = tonumber(value)
+        for _, obj in pairs(MainFrame:GetDescendants()) do
+            if obj:IsA("UICorner") then
+                obj.CornerRadius = UDim.new(0, radius)
+            end
+        end
+    end,
+    __force_container = SettingTab
+})
+Tab:AddDropdown({
+    Name = "元素间距",
+    Options = {"0", "2", "3", "4", "5", "6", "7", "8", "9", "10", "12", "15"},
+    Default = "5",
+    Callback = function(value)
+        local padding = tonumber(value)
+        for _, obj in pairs(Container:GetDescendants()) do
+            if obj:IsA("UIListLayout") then
+                obj.Padding = UDim.new(0, padding)
+            end
+        end
+        for _, obj in pairs(MainScroll:GetDescendants()) do
+            if obj:IsA("UIListLayout") then
+                obj.Padding = UDim.new(0, padding)
+            end
+        end
+    end,
+    __force_container = SettingTab
+})
+Tab:AddDropdown({
+    Name = "文本大小",
+    Options = {"8", "9", "10", "11", "12", "13", "14", "15", "16"},
+    Default = "10",
+    Callback = function(value)
+        local size = tonumber(value)
+        for _, instance in pairs(splib.Instances) do
+            if instance.Type == "Text" or instance.Type == "DarkText" then
+                if instance.Instance:IsA("TextLabel") or instance.Instance:IsA("TextBox") then
+                    instance.Instance.TextSize = size
+                end
+            end
+        end
+    end,
+    __force_container = SettingTab
+})
+Tab:AddDropdown({
+    Name = "按钮透明度",
+    Options = {"0", "0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.7", "0.8", "0.9", "1"},
+    Default = "0",
+    Callback = function(value)
+        local transparency = tonumber(value)
+        for _, obj in pairs(Components:GetDescendants()) do
+            if obj:IsA("TextButton") and obj.Name == "Option" then
+                obj.BackgroundTransparency = transparency
+            end
+        end
+    end,
+    __force_container = SettingTab
+})
+Tab:AddDropdown({
+    Name = "图标大小",
+    Options = {"10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"},
+    Default = "13",
+    Callback = function(value)
+        local size = tonumber(value)
+        -- 更新所有标签页图标大小
+        for _, tab in pairs(splib.Tabs) do
+            local tabButton = MainScroll:FindFirstChild(tab.TabInfo.Name)
+            if tabButton then
+                local icon = tabButton:FindFirstChildOfClass("ImageLabel")
+                if icon then
+                    icon.Size = UDim2.new(0, size, 0, size)
+                end
+            end
+        end
+    end,
+    __force_container = SettingTab
+})
+
+Tab:AddToggle({
+    Name = "自动保存设置",
+    Default = true,
+    Callback = function(enabled)
+        Settings.AutoSave = enabled
+        if enabled then
+            spLib:MakeNotification({
+                Name = "自动保存",
+                Content = "设置更改将自动保存",
+                Time = 3
+            })
+        end
+    end,
+    __force_container = SettingTab
+})
+
+Tab:AddToggle({
+  Name = "UI按扭图标",
+  Default = true,
+  Flag = "UIProtection",
+  Callback = function(enabled)
+    if enabled then
+      checkBounds()
+      enableBoundaryProtection()
+    else
+      disableBoundaryProtection()
+    end
+  end,
+    __force_container = SettingTab
+})
+Tab:AddToggle({
+    Name = "侧边栏悬停拓展",
+    Flag = "SidebarHover",
+    Default = true,
+    IsPC = true,
+    Callback = function(enabled)
+        if enabled then
+            enableSidebarHover()
+            tweenControlSizeX(minClamp)
+        else
+            disableSidebarHover()
+        end
+    end,
+    __force_container = SettingTab
+})
+
+Tab:AddSection({
+    Name = "UI",
+    __force_container = SettingTab
+})
+
+local rainbowStroke
+
+rainbowStroke = Make("Stroke", MainFrame, {
+    Thickness = 2
+})
+
+local rainbowColors = {
+    Red = Color3.fromRGB(255, 0, 0),
+    Orange = Color3.fromRGB(255, 165, 0),
+    Yellow = Color3.fromRGB(255, 255, 0),
+    Green = Color3.fromRGB(0, 255, 0),
+    Blue = Color3.fromRGB(0, 0, 255),
+    Purple = Color3.fromRGB(128, 0, 128),
+    Pink = Color3.fromRGB(255, 105, 180),
+    Cyan = Color3.fromRGB(0, 255, 255),
+    White = Color3.fromRGB(255, 255, 255),
+    Black = Color3.fromRGB(0, 0, 0)
+}
+
+task.spawn(function()
+    while rainbowStroke and rainbowStroke.Parent do
+        local t = tick() * 0.5
+        local r = math.sin(t) * 0.5 + 0.5
+        local g = math.sin(t + 2) * 0.5 + 0.5
+        local b = math.sin(t + 4) * 0.5 + 0.5
+        rainbowStroke.Color = Color3.new(r, g, b)
+        task.wait()
+    end
+end)
+
+Tab:AddToggle({
+    Name = "彩虹边框",
+    Flag = "RainbowMainFrame",
+    Default = Settings.RainbowMainFrameDefault,
+    Callback = function(enabled)
+        rainbowStroke.Transparency = enabled and 0 or 1
+    end,
+    __force_container = SettingTab
+})
+
+local SubTitle = Title:FindFirstChild("SubTitle")
+
+local titleRainbowEnabled = false
+local subtitleRainbowEnabled = false
+
+task.spawn(function()
+    while true do
+        local t = tick() * 0.5
+        local r = math.sin(t) * 0.5 + 0.5
+        local g = math.sin(t + 2) * 0.5 + 0.5
+        local b = math.sin(t + 4) * 0.5 + 0.5
+        local rainbowColor = Color3.new(r, g, b)
+
+        if titleRainbowEnabled and Title then
+            Title.TextColor3 = rainbowColor
+        end
+
+        if subtitleRainbowEnabled and SubTitle then
+            SubTitle.TextColor3 = rainbowColor
+        end
+
+        task.wait()
+    end
+end)
+
+
+Tab:AddToggle({
+    Name = "彩虹字体",
+    Flag = "RainbowTitle",
+    Default = Settings.RainbowTitleDefault,
+    Callback = function(enabled)
+        titleRainbowEnabled = enabled
+        if not enabled and Title then
+            Title.TextColor3 = Theme["Color Text"]
+        end
+    end,
+    __force_container = SettingTab
+})
+
+Tab:AddToggle({
+    Name = "彩虹小标题",
+    Flag = "RainbowSubTitle",
+    Default = Settings.RainbowSubTitleDefault,
+    Callback = function(enabled)
+        subtitleRainbowEnabled = enabled
+        if not enabled and SubTitle then
+            SubTitle.TextColor3 = Theme["Color Dark Text"]
+        end
+    end,
+    __force_container = SettingTab
+})
 
 		return Tab
 	end
