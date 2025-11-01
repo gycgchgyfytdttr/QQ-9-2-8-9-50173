@@ -2148,13 +2148,13 @@ i.Container=n
 function i.Open(o)
 n.Visible=true
 
-f(n,.16,{GroupTransparency=0}):Play()
-f(k,.18,{Scale=1}):Play()
+f(n,.16,{GroupTransparency=0},Enum.EasingStyle.Quint,Enum.EasingDirection.Out):Play()
+f(k,.18,{Scale=1},Enum.EasingStyle.Quint,Enum.EasingDirection.Out):Play()
 end
 
 function i.Close(o)
-f(n,.2,{GroupTransparency=1}):Play()
-f(k,.2,{Scale=.9}):Play()
+f(n,.2,{GroupTransparency=1},Enum.EasingStyle.Quint,Enum.EasingDirection.Out):Play()
+f(k,.2,{Scale=.9},Enum.EasingStyle.Quint,Enum.EasingDirection.Out):Play()
 
 task.wait(.25)
 
@@ -4663,161 +4663,76 @@ local h={
 __type="Section",
 Title=g.Title or"Section",
 Icon=g.Icon,
-IconThemed=g.IconThemed,
-Opened=g.Opened or false,
-
-HeaderSize=42,
-IconSize=18,
-
-Expandable=false,
+TextXAlignment=g.TextXAlignment or"Left",
+TextSize=g.TextSize or 19,
+UIElements={},
 }
 
-local n
+local i
 if h.Icon then
-n=aa.Image(
+i=aa.Image(
 h.Icon,
-h.Icon,
+h.Icon..":"..h.Title,
 0,
-i,
-"Section",
-true,
-h.IconThemed
+g.Window.Folder,
+h.__type,
+true
 )
-
-n.Size=UDim2.new(0,h.IconSize,0,h.IconSize)
-n.ImageLabel.ImageTransparency=.25
+i.Size=UDim2.new(0,24,0,24)
 end
 
-local o=ab("Frame",{
-Size=UDim2.new(0,h.IconSize,0,h.IconSize),
+h.UIElements.Main=ab("TextLabel",{
 BackgroundTransparency=1,
-Visible=false
-},{
-ab("ImageLabel",{
-Size=UDim2.new(1,0,1,0),
-BackgroundTransparency=1,
-Image=aa.Icon"chevron-down"[1],
-ImageRectSize=aa.Icon"chevron-down"[2].ImageRectSize,
-ImageRectOffset=aa.Icon"chevron-down"[2].ImageRectPosition,
-ThemeTag={
-ImageColor3="Icon",
-},
-ImageTransparency=.7,
-})
-})
-
-local p=ab("Frame",{
-Size=UDim2.new(1,0,0,h.HeaderSize),
-BackgroundTransparency=1,
-Parent=g.Parent,
-ClipsDescendants=true,
-},{
-ab("TextButton",{
-Size=UDim2.new(1,0,0,h.HeaderSize),
-BackgroundTransparency=1,
-Text="",
-},{
-n,
-ab("TextLabel",{
-Text=h.Title,
 TextXAlignment="Left",
-Size=UDim2.new(
-1,
-n and(-h.IconSize-10)*2
-or(-h.IconSize-10),
-
-1,
-0
-),
+AutomaticSize="XY",
+TextSize=h.TextSize,
 ThemeTag={
 TextColor3="Text",
 },
 FontFace=Font.new(aa.Font,Enum.FontWeight.SemiBold),
-TextSize=14,
-BackgroundTransparency=1,
-TextTransparency=.7,
 
-TextWrapped=true
-}),
+
+Text=h.Title,
+})
+
+ab("Frame",{
+Size=UDim2.new(1,0,0,0),
+BackgroundTransparency=1,
+AutomaticSize="Y",
+Parent=g.Parent,
+},{
+i,
+h.UIElements.Main,
 ab("UIListLayout",{
+Padding=UDim.new(0,8),
 FillDirection="Horizontal",
 VerticalAlignment="Center",
-Padding=UDim.new(0,10)
+HorizontalAlignment=h.TextXAlignment,
 }),
-o,
 ab("UIPadding",{
-PaddingLeft=UDim.new(0,11),
-PaddingRight=UDim.new(0,11),
-})
-}),
-ab("Frame",{
-BackgroundTransparency=1,
-Size=UDim2.new(1,0,0,0),
-AutomaticSize="Y",
-Name="Content",
-Visible=true,
-Position=UDim2.new(0,0,0,h.HeaderSize)
-},{
-ab("UIListLayout",{
-FillDirection="Vertical",
-Padding=UDim.new(0,0),
-VerticalAlignment="Bottom",
-}),
+PaddingTop=UDim.new(0,4),
+PaddingBottom=UDim.new(0,2),
 })
 })
 
 
-function h.Tab(q,r)
-if not h.Expandable then
-h.Expandable=true
-o.Visible=true
-end
-r.Parent=p.Content
-return e.New(r)
-end
-
-function h.Open(q)
-if h.Expandable then
-h.Opened=true
-ac(p,0.33,{
-Size=UDim2.new(1,0,0,h.HeaderSize+(p.Content.AbsoluteSize.Y/j))
-},Enum.EasingStyle.Quint,Enum.EasingDirection.Out):Play()
-
-ac(o.ImageLabel,0.1,{Rotation=180},Enum.EasingStyle.Quint,Enum.EasingDirection.Out):Play()
-end
-end
-function h.Close(q)
-if h.Expandable then
-h.Opened=false
-ac(p,0.26,{
-Size=UDim2.new(1,0,0,h.HeaderSize)
-},Enum.EasingStyle.Quint,Enum.EasingDirection.Out):Play()
-ac(o.ImageLabel,0.1,{Rotation=0},Enum.EasingStyle.Quint,Enum.EasingDirection.Out):Play()
-end
-end
-
-aa.AddSignal(p.TextButton.MouseButton1Click,function()
-if h.Expandable then
-if h.Opened then
-h:Close()
-else
-h:Open()
-end
-end
-end)
-
-if h.Opened then
-task.spawn(function()
-task.wait()
-h:Open()
-end)
-end
 
 
 
-return h
+function h.SetTitle(j,k)
+h.UIElements.Main.Text=k
+end
+function h.Destroy(j)
+h.UIElements.Main.AutomaticSize="None"
+h.UIElements.Main.Size=UDim2.new(1,0,0,h.UIElements.Main.TextBounds.Y)
+
+ac(h.UIElements.Main,.1,{TextTransparency=1}):Play()
+task.wait(.1)
+ac(h.UIElements.Main,.15,{Size=UDim2.new(1,0,0,0)},Enum.EasingStyle.Quint,Enum.EasingDirection.InOut):Play()
 end
 
+return h.__type,h
+end
 
 return b end function a.A()
 game:GetService"UserInputService"
@@ -6137,6 +6052,39 @@ ZIndex=999,
 Active=false,
 })
 
+local RainbowBorder = e("Frame", {
+Name = "RainbowBorder",
+Parent = p.UIElements.Main,
+BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+Size = UDim2.new(1, 0, 1, 0),
+ZIndex = 1,
+ClipsDescendants = true
+})
+
+local BorderCorner = e("UICorner", {
+Parent = RainbowBorder,
+CornerRadius = UDim.new(0, p.UICorner)
+})
+
+local UIGradient = e("UIGradient", {
+Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 0, 0)),
+    ColorSequenceKeypoint.new(0.14, Color3.fromRGB(255, 127, 0)),
+    ColorSequenceKeypoint.new(0.28, Color3.fromRGB(255, 255, 0)),
+    ColorSequenceKeypoint.new(0.42, Color3.fromRGB(0, 255, 0)),
+    ColorSequenceKeypoint.new(0.56, Color3.fromRGB(0, 255, 255)),
+    ColorSequenceKeypoint.new(0.70, Color3.fromRGB(0, 0, 255)),
+    ColorSequenceKeypoint.new(0.84, Color3.fromRGB(139, 0, 255)),
+    ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 0, 255))
+}),
+Rotation = 45,
+Parent = RainbowBorder
+})
+
+local rotationTweenInfo = TweenInfo.new(3, Enum.EasingStyle.Linear, Enum.EasingDirection.In, -1)
+local rotationTween = game:GetService("TweenService"):Create(UIGradient, rotationTweenInfo, {Rotation = 360})
+rotationTween:Play()
+
 
 
 
@@ -6542,45 +6490,6 @@ TextSize=16,
 ThemeTag={
 TextColor3="Text"
 }
-})
-
-local RainbowBorder = e("Frame",{
-Name="RainbowBorder",
-Parent=p.UIElements.Main,
-BackgroundColor3=Color3.fromRGB(255,255,255),
-Size=UDim2.new(1,0,1,0),
-ZIndex=1,
-ClipsDescendants=true,
-})
-local BorderCorner = e("UICorner",{
-Parent=RainbowBorder,
-CornerRadius=UDim.new(0,p.UICorner),
-})
-local RainbowGradient = e("UIGradient",{
-Parent=RainbowBorder,
-Color=ColorSequence.new({
-    ColorSequenceKeypoint.new(0.00,Color3.fromRGB(255,0,0)),
-    ColorSequenceKeypoint.new(0.14,Color3.fromRGB(255,127,0)),
-    ColorSequenceKeypoint.new(0.28,Color3.fromRGB(255,255,0)),
-    ColorSequenceKeypoint.new(0.42,Color3.fromRGB(0,255,0)),
-    ColorSequenceKeypoint.new(0.56,Color3.fromRGB(0,255,255)),
-    ColorSequenceKeypoint.new(0.70,Color3.fromRGB(0,0,255)),
-    ColorSequenceKeypoint.new(0.84,Color3.fromRGB(139,0,255)),
-    ColorSequenceKeypoint.new(1.00,Color3.fromRGB(255,0,255))
-}),
-Rotation=45,
-})
-
-local UIStroke = e("UIStroke",{
-Parent=p.UIElements.Main,
-Thickness=2,
-ApplyStrokeMode="Border",
-Color=Color3.new(1,1,1),
-Transparency=0,
-},{
-e("UIGradient",{
-Color=ColorSequence.new(Color3.fromHex"40c9ff",Color3.fromHex"e81cff")
-})
 })
 
 p.UIElements.Main=e("Frame",{
@@ -7162,8 +7071,8 @@ end
 function p.Divider(N)
 local O=e("Frame",{
 Size=UDim2.new(1,0,0,1),
-Position=UDim2.new(0.5,0,0.5,0),
-AnchorPoint=Vector2.new(0.5,0.5),
+Position=UDim2.new(0.5,0,0,0),
+AnchorPoint=Vector2.new(0.5,0),
 BackgroundTransparency=.9,
 ThemeTag={
 BackgroundColor3="Text"
