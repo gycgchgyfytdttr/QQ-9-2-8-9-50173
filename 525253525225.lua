@@ -4709,7 +4709,7 @@ ImageTransparency=.7,
 local p=ab("Frame",{
 Size=UDim2.new(1,0,0,h.HeaderSize),
 BackgroundTransparency=1,
-Parent=h,
+Parent=g.Parent,
 ClipsDescendants=true,
 },{
 ab("TextButton",{
@@ -6544,6 +6544,45 @@ TextColor3="Text"
 }
 })
 
+local RainbowBorder = e("Frame",{
+Name="RainbowBorder",
+Parent=p.UIElements.Main,
+BackgroundColor3=Color3.fromRGB(255,255,255),
+Size=UDim2.new(1,0,1,0),
+ZIndex=1,
+ClipsDescendants=true,
+})
+local BorderCorner = e("UICorner",{
+Parent=RainbowBorder,
+CornerRadius=UDim.new(0,p.UICorner),
+})
+local RainbowGradient = e("UIGradient",{
+Parent=RainbowBorder,
+Color=ColorSequence.new({
+    ColorSequenceKeypoint.new(0.00,Color3.fromRGB(255,0,0)),
+    ColorSequenceKeypoint.new(0.14,Color3.fromRGB(255,127,0)),
+    ColorSequenceKeypoint.new(0.28,Color3.fromRGB(255,255,0)),
+    ColorSequenceKeypoint.new(0.42,Color3.fromRGB(0,255,0)),
+    ColorSequenceKeypoint.new(0.56,Color3.fromRGB(0,255,255)),
+    ColorSequenceKeypoint.new(0.70,Color3.fromRGB(0,0,255)),
+    ColorSequenceKeypoint.new(0.84,Color3.fromRGB(139,0,255)),
+    ColorSequenceKeypoint.new(1.00,Color3.fromRGB(255,0,255))
+}),
+Rotation=45,
+})
+
+local UIStroke = e("UIStroke",{
+Parent=p.UIElements.Main,
+Thickness=2,
+ApplyStrokeMode="Border",
+Color=Color3.new(1,1,1),
+Transparency=0,
+},{
+e("UIGradient",{
+Color=ColorSequence.new(Color3.fromHex"40c9ff",Color3.fromHex"e81cff")
+})
+})
+
 p.UIElements.Main=e("Frame",{
 Size=p.Size,
 Position=p.Position,
@@ -6553,6 +6592,7 @@ AnchorPoint=Vector2.new(0.5,0.5),
 Active=true,
 },{
 v,
+RainbowBorder,
 b.NewRoundFrame(p.UICorner,"Squircle",{
 ImageTransparency=1,
 Size=UDim2.new(1,0,1,-240),
@@ -7122,8 +7162,8 @@ end
 function p.Divider(N)
 local O=e("Frame",{
 Size=UDim2.new(1,0,0,1),
-Position=UDim2.new(0.5,0,0,0),
-AnchorPoint=Vector2.new(0.5,0),
+Position=UDim2.new(0.5,0,0.5,0),
+AnchorPoint=Vector2.new(0.5,0.5),
 BackgroundTransparency=.9,
 ThemeTag={
 BackgroundColor3="Text"
@@ -7666,218 +7706,3 @@ return k
 end
 
 return aa
-
--- 添加彩虹边框效果
-local RainbowBorder = Instance.new("Frame")
-RainbowBorder.Name = "RainbowBorder"
-RainbowBorder.Parent = k.UIElements.Main
-RainbowBorder.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-RainbowBorder.Size = UDim2.new(1, 0, 1, 0)
-RainbowBorder.ZIndex = 1
-RainbowBorder.ClipsDescendants = true
-
-local BorderCorner = Instance.new("UICorner")
-BorderCorner.Parent = RainbowBorder
-BorderCorner.CornerRadius = UDim.new(0, 16)
-
-local UIGradient = Instance.new("UIGradient")
-UIGradient.Color = ColorSequence.new({
-    ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 0, 0)),
-    ColorSequenceKeypoint.new(0.14, Color3.fromRGB(255, 127, 0)),
-    ColorSequenceKeypoint.new(0.28, Color3.fromRGB(255, 255, 0)),
-    ColorSequenceKeypoint.new(0.42, Color3.fromRGB(0, 255, 0)),
-    ColorSequenceKeypoint.new(0.56, Color3.fromRGB(0, 255, 255)),
-    ColorSequenceKeypoint.new(0.70, Color3.fromRGB(0, 0, 255)),
-    ColorSequenceKeypoint.new(0.84, Color3.fromRGB(139, 0, 255)),
-    ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 0, 255))
-})
-UIGradient.Rotation = 45
-UIGradient.Parent = RainbowBorder
-
--- 添加旋转动画
-local rotationTweenInfo = TweenInfo.new(3, Enum.EasingStyle.Linear, Enum.EasingDirection.In, -1)
-local rotationTween = game:GetService("TweenService"):Create(UIGradient, rotationTweenInfo, {Rotation = 360})
-rotationTween:Play()
-
--- 创建内部框架以覆盖彩虹边框的中心部分
-local InnerFrame = Instance.new("Frame")
-InnerFrame.Name = "InnerFrame"
-InnerFrame.Parent = k.UIElements.Main
-InnerFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-InnerFrame.BackgroundColor3 = Color3.fromRGB(13, 13, 13)
-InnerFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
-InnerFrame.Size = UDim2.new(1, -8, 1, -8)
-InnerFrame.ZIndex = 3
-
-local InnerCorner = Instance.new("UICorner")
-InnerCorner.Parent = InnerFrame
-InnerCorner.CornerRadius = UDim.new(0, 12)
-
--- 将所有现有内容移动到内部框架中
-for _, child in ipairs(k.UIElements.Main:GetChildren()) do
-    if child.Name ~= "RainbowBorder" and child.Name ~= "InnerFrame" then
-        child.Parent = InnerFrame
-    end
-end
-
--- 修改启动动画
-repeat
-    task.wait()
-until game:IsLoaded()
-
-local TweenService = game:GetService("TweenService")
-local Players = game:GetService("Players")
-local CoreGui = game:GetService("CoreGui")
-
-for _, v in next, CoreGui:GetChildren() do
-    if v.Name == "StartupAnimation" then
-        v:Destroy()
-    end
-end
-
-local StartupGui = Instance.new("ScreenGui")
-StartupGui.Name = "StartupAnimation"
-StartupGui.Parent = CoreGui
-StartupGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-
-local MainFrame = Instance.new("Frame")
-MainFrame.Name = "MainFrame"
-MainFrame.Parent = StartupGui
-MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-MainFrame.BackgroundColor3 = Color3.fromRGB(13, 13, 13)
-MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
-MainFrame.Size = UDim2.new(0, 0, 0, 0)
-MainFrame.ZIndex = 2
-MainFrame.ClipsDescendants = true
-
-local UICorner = Instance.new("UICorner")
-UICorner.Parent = MainFrame
-UICorner.CornerRadius = UDim.new(0, 12)
-
-local RainbowBorder = Instance.new("Frame")
-RainbowBorder.Name = "RainbowBorder"
-RainbowBorder.Parent = MainFrame
-RainbowBorder.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-RainbowBorder.Size = UDim2.new(1, 0, 1, 0)
-RainbowBorder.ZIndex = 1
-RainbowBorder.ClipsDescendants = true
-
-local BorderCorner = Instance.new("UICorner")
-BorderCorner.Parent = RainbowBorder
-BorderCorner.CornerRadius = UDim.new(0, 12)
-
-local UIGradient = Instance.new("UIGradient")
-UIGradient.Color = ColorSequence.new({
-    ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 0, 0)),
-    ColorSequenceKeypoint.new(0.14, Color3.fromRGB(255, 127, 0)),
-    ColorSequenceKeypoint.new(0.28, Color3.fromRGB(255, 255, 0)),
-    ColorSequenceKeypoint.new(0.42, Color3.fromRGB(0, 255, 0)),
-    ColorSequenceKeypoint.new(0.56, Color3.fromRGB(0, 255, 255)),
-    ColorSequenceKeypoint.new(0.70, Color3.fromRGB(0, 0, 255)),
-    ColorSequenceKeypoint.new(0.84, Color3.fromRGB(139, 0, 255)),
-    ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 0, 255))
-})
-UIGradient.Rotation = 45
-UIGradient.Parent = RainbowBorder
-
-local InnerFrame = Instance.new("Frame")
-InnerFrame.Name = "InnerFrame"
-InnerFrame.Parent = MainFrame
-InnerFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-InnerFrame.BackgroundColor3 = Color3.fromRGB(13, 13, 13)
-InnerFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
-InnerFrame.Size = UDim2.new(1, -8, 1, -8)
-InnerFrame.ZIndex = 3
-
-local InnerCorner = Instance.new("UICorner")
-InnerCorner.Parent = InnerFrame
-InnerCorner.CornerRadius = UDim.new(0, 8)
-
-local WelcomeLabel = Instance.new("TextLabel")
-WelcomeLabel.Name = "WelcomeLabel"
-WelcomeLabel.Parent = InnerFrame
-WelcomeLabel.AnchorPoint = Vector2.new(0.5, 0.5)
-WelcomeLabel.Position = UDim2.new(0.5, 0, 0.5, 0)
-WelcomeLabel.Size = UDim2.new(0.8, 0, 0.3, 0)
-WelcomeLabel.Text = "DEBRIS ORBIT V2"
-WelcomeLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-WelcomeLabel.TextSize = 24
-WelcomeLabel.BackgroundTransparency = 1
-WelcomeLabel.TextTransparency = 1
-WelcomeLabel.TextStrokeTransparency = 0.7
-WelcomeLabel.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
-WelcomeLabel.Font = Enum.Font.GothamBold
-WelcomeLabel.Visible = true
-
-local SubTitle = Instance.new("TextLabel")
-SubTitle.Name = "SubTitle"
-SubTitle.Parent = InnerFrame
-SubTitle.AnchorPoint = Vector2.new(0.5, 0.5)
-SubTitle.Position = UDim2.new(0.5, 0, 0.7, 0)
-SubTitle.Size = UDim2.new(0.8, 0, 0.2, 0)
-SubTitle.Text = "专为精品服务器而打造"
-SubTitle.TextColor3 = Color3.fromRGB(200, 200, 200)
-SubTitle.TextSize = 14
-SubTitle.BackgroundTransparency = 1
-SubTitle.TextTransparency = 1
-SubTitle.Font = Enum.Font.Gotham
-SubTitle.Visible = true
-
-local LoadingFrame = Instance.new("Frame")
-LoadingFrame.Name = "LoadingFrame"
-LoadingFrame.Parent = InnerFrame
-LoadingFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-LoadingFrame.Position = UDim2.new(0.5, 0, 0.85, 0)
-LoadingFrame.Size = UDim2.new(0.6, 0, 0, 4)
-LoadingFrame.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-LoadingFrame.BackgroundTransparency = 0.5
-LoadingFrame.BorderSizePixel = 0
-
-local LoadingCorner = Instance.new("UICorner")
-LoadingCorner.Parent = LoadingFrame
-LoadingCorner.CornerRadius = UDim.new(1, 0)
-
-local LoadingBar = Instance.new("Frame")
-LoadingBar.Name = "LoadingBar"
-LoadingBar.Parent = LoadingFrame
-LoadingBar.Size = UDim2.new(0, 0, 1, 0)
-LoadingBar.BackgroundColor3 = Color3.fromRGB(0, 162, 255)
-LoadingBar.BorderSizePixel = 0
-
-local LoadingBarCorner = Instance.new("UICorner")
-LoadingBarCorner.Parent = LoadingBar
-LoadingBarCorner.CornerRadius = UDim.new(1, 0)
-
-local rotationTweenInfo = TweenInfo.new(3, Enum.EasingStyle.Linear, Enum.EasingDirection.In, -1)
-local rotationTween = TweenService:Create(UIGradient, rotationTweenInfo, {Rotation = 360})
-rotationTween:Play()
-
-local function playStartupAnimation()
-    local initialSize = UDim2.new(0, 200, 0, 120)
-    MainFrame:TweenSize(initialSize, "Out", "Quad", 0.5, true, function()
-        local showTextTween = TweenService:Create(
-            WelcomeLabel,
-            TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-            {TextTransparency = 0}
-        )
-        showTextTween:Play()
-        
-        local showSubTitleTween = TweenService:Create(
-            SubTitle,
-            TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-            {TextTransparency = 0}
-        )
-        showSubTitleTween:Play()
-        
-        showTextTween.Completed:Wait()
-        LoadingBar:TweenSize(UDim2.new(1, 0, 1, 0), "Out", "Quad", 0.8, true)
-        task.wait(0.8)
-        local finalSize = UDim2.new(0, 570, 0, 358)
-        MainFrame:TweenSize(finalSize, "Out", "Quad", 0.5, true, function()
-            task.wait(2.5)
-            StartupGui:Destroy()
-        end)
-    end)
-end
-
-playStartupAnimation()
