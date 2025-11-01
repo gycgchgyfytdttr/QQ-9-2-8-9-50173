@@ -1451,7 +1451,7 @@ local o
 if h.Icon then
 o=d.Image(
 h.Icon,
-h.Title..":"..h.Icon,
+h.Icon..":"..h.Title,
 0,
 g.WindUI.Window,
 "Popup",
@@ -6052,39 +6052,6 @@ ZIndex=999,
 Active=false,
 })
 
-local RainbowBorder = e("Frame", {
-Name = "RainbowBorder",
-Parent = p.UIElements.Main,
-BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-Size = UDim2.new(1, 0, 1, 0),
-ZIndex = 1,
-ClipsDescendants = true
-})
-
-local BorderCorner = e("UICorner", {
-Parent = RainbowBorder,
-CornerRadius = UDim.new(0, p.UICorner)
-})
-
-local UIGradient = e("UIGradient", {
-Color = ColorSequence.new({
-    ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 0, 0)),
-    ColorSequenceKeypoint.new(0.14, Color3.fromRGB(255, 127, 0)),
-    ColorSequenceKeypoint.new(0.28, Color3.fromRGB(255, 255, 0)),
-    ColorSequenceKeypoint.new(0.42, Color3.fromRGB(0, 255, 0)),
-    ColorSequenceKeypoint.new(0.56, Color3.fromRGB(0, 255, 255)),
-    ColorSequenceKeypoint.new(0.70, Color3.fromRGB(0, 0, 255)),
-    ColorSequenceKeypoint.new(0.84, Color3.fromRGB(139, 0, 255)),
-    ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 0, 255))
-}),
-Rotation = 45,
-Parent = RainbowBorder
-})
-
-local rotationTweenInfo = TweenInfo.new(3, Enum.EasingStyle.Linear, Enum.EasingDirection.In, -1)
-local rotationTween = game:GetService("TweenService"):Create(UIGradient, rotationTweenInfo, {Rotation = 360})
-rotationTween:Play()
-
 
 
 
@@ -6492,6 +6459,48 @@ TextColor3="Text"
 }
 })
 
+local UIStroke = e("UIStroke", {
+    Thickness = 2,
+    ApplyStrokeMode = "Border",
+    Color = Color3.new(1,1,1),
+    Transparency = 1,
+    Parent = p.UIElements.Main
+})
+
+local RainbowBorder = e("Frame", {
+    Name = "RainbowBorder",
+    Size = UDim2.new(1, 4, 1, 4),
+    Position = UDim2.new(0.5, 0, 0.5, 0),
+    AnchorPoint = Vector2.new(0.5, 0.5),
+    BackgroundTransparency = 1,
+    ZIndex = 1,
+    Parent = p.UIElements.Main
+})
+
+local BorderCorner = e("UICorner", {
+    CornerRadius = UDim.new(0, p.UICorner),
+    Parent = RainbowBorder
+})
+
+local UIGradient = e("UIGradient", {
+    Color = ColorSequence.new({
+        ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 0, 0)),
+        ColorSequenceKeypoint.new(0.14, Color3.fromRGB(255, 127, 0)),
+        ColorSequenceKeypoint.new(0.28, Color3.fromRGB(255, 255, 0)),
+        ColorSequenceKeypoint.new(0.42, Color3.fromRGB(0, 255, 0)),
+        ColorSequenceKeypoint.new(0.56, Color3.fromRGB(0, 255, 255)),
+        ColorSequenceKeypoint.new(0.70, Color3.fromRGB(0, 0, 255)),
+        ColorSequenceKeypoint.new(0.84, Color3.fromRGB(139, 0, 255)),
+        ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 0, 255))
+    }),
+    Rotation = 45,
+    Parent = RainbowBorder
+})
+
+local rotationTweenInfo = TweenInfo.new(3, Enum.EasingStyle.Linear, Enum.EasingDirection.In, -1)
+local rotationTween = e:Create(UIGradient, rotationTweenInfo, {Rotation = 360})
+rotationTween:Play()
+
 p.UIElements.Main=e("Frame",{
 Size=p.Size,
 Position=p.Position,
@@ -6501,7 +6510,6 @@ AnchorPoint=Vector2.new(0.5,0.5),
 Active=true,
 },{
 v,
-RainbowBorder,
 b.NewRoundFrame(p.UICorner,"Squircle",{
 ImageTransparency=1,
 Size=UDim2.new(1,0,1,-240),
@@ -6531,6 +6539,7 @@ r,
 
 }),
 UIStroke,
+RainbowBorder,
 q,
 s,
 t,
