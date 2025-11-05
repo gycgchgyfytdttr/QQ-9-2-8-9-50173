@@ -4663,7 +4663,6 @@ local h={
 __type="Section",
 Title=g.Title or"Section",
 Icon=g.Icon,
-IconThemed=g.IconThemed,
 TextXAlignment=g.TextXAlignment or"Left",
 TextSize=g.TextSize or 19,
 UIElements={},
@@ -4677,8 +4676,7 @@ h.Icon..":"..h.Title,
 0,
 g.Window.Folder,
 h.__type,
-true,
-h.IconThemed
+true
 )
 i.Size=UDim2.new(0,24,0,24)
 end
@@ -5058,8 +5056,8 @@ Section=a.load'z',
 function k.Divider(z)
 local A=ac("Frame",{
 Size=UDim2.new(1,0,0,1),
-Position=UDim2.new(0.5,0,0,0),
-AnchorPoint=Vector2.new(0.5,0),
+Position=UDim2.new(0.5,0,0.5,0),
+AnchorPoint=Vector2.new(0.5,0.5),
 BackgroundTransparency=.9,
 ThemeTag={
 BackgroundColor3="Text"
@@ -5764,7 +5762,6 @@ ab.AddSignal(x.Main.MouseEnter,function()
 b(x.Main,.04,{ImageTransparency=.95}):Play()
 end)
 ab.AddSignal(x.Main.InputEnded,function()
-
 b(x.Main,.08,{ImageTransparency=1}):Play()
 end)
 ab.AddSignal(x.Main.MouseButton1Click,function()
@@ -6466,17 +6463,22 @@ TextColor3="Text"
 
 local RainbowBorder = e("Frame", {
 Name = "RainbowBorder",
-BackgroundTransparency = 1,
-Size = UDim2.new(1, 8, 1, 8),
+Parent = p.UIElements.Main,
+BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+Size = UDim2.new(1, 6, 1, 6),
 Position = UDim2.new(0.5, 0, 0.5, 0),
 AnchorPoint = Vector2.new(0.5, 0.5),
 ZIndex = 1,
-Parent = p.UIElements.Main
-}, {
-e("UICorner", {
-CornerRadius = UDim.new(0, p.UICorner + 2)
-}),
-e("UIGradient", {
+ClipsDescendants = true
+})
+
+local BorderCorner = e("UICorner", {
+Parent = RainbowBorder,
+CornerRadius = UDim.new(0, p.UICorner)
+})
+
+local UIGradient = e("UIGradient", {
+Parent = RainbowBorder,
 Color = ColorSequence.new({
     ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 0, 0)),
     ColorSequenceKeypoint.new(0.14, Color3.fromRGB(255, 127, 0)),
@@ -6489,13 +6491,20 @@ Color = ColorSequence.new({
 }),
 Rotation = 45
 })
+
+local InnerFrame = e("Frame", {
+Name = "InnerFrame",
+Parent = RainbowBorder,
+AnchorPoint = Vector2.new(0.5, 0.5),
+BackgroundColor3 = Color3.fromRGB(13, 13, 13),
+Position = UDim2.new(0.5, 0, 0.5, 0),
+Size = UDim2.new(1, -8, 1, -8),
+ZIndex = 2
 })
 
-local UIStroke = e("UIStroke", {
-Thickness = 4,
-ApplyStrokeMode = "Border",
-Transparency = 0,
-Parent = RainbowBorder
+local InnerCorner = e("UICorner", {
+Parent = InnerFrame,
+CornerRadius = UDim.new(0, p.UICorner - 2)
 })
 
 p.UIElements.Main=e("Frame",{
@@ -6506,6 +6515,7 @@ Parent=o.Parent,
 AnchorPoint=Vector2.new(0.5,0.5),
 Active=true,
 },{
+RainbowBorder,
 v,
 b.NewRoundFrame(p.UICorner,"Squircle",{
 ImageTransparency=1,
@@ -6535,7 +6545,6 @@ r,
 
 
 }),
-RainbowBorder,
 UIStroke,
 q,
 s,
@@ -6620,6 +6629,7 @@ PaddingTop=UDim.new(0,p.UIPadding),
 PaddingLeft=UDim.new(0,p.UIPadding),
 PaddingRight=UDim.new(0,8),
 PaddingBottom=UDim.new(0,p.UIPadding),
+})
 })
 })
 })
@@ -6874,7 +6884,7 @@ task.spawn(function()
 task.wait(.19)
 p.UIElements.Main.Main.Visible=true
 end)
-end
+end)
 end
 function p.Close(K)
 local L={}
@@ -7435,7 +7445,7 @@ ad.Tween
 
 ad.Themes=ac
 
-local ag=game:GetService"Players"and game:GetService"Players".LocalPlayer or nil
+local ag=game:GetService"Players"and game:GetService("Players").LocalPlayer or nil
 aa.Themes=ac
 
 local ah=protectgui or(syn and syn.protect_gui)or function()end
