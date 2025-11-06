@@ -1451,7 +1451,7 @@ local o
 if h.Icon then
 o=d.Image(
 h.Icon,
-h.Title..":"..h.Icon,
+h.Icon..":"..h.Title,
 0,
 g.WindUI.Window,
 "Popup",
@@ -1835,6 +1835,14 @@ end)
 end
 end)
 
+e.AddSignal(d.InputChanged,function(v)
+if v==q and p and o~=nil then
+if t.CanDraggable then
+update(v)
+end
+end
+end)
+
 e.AddSignal(h:GetPropertyChangedSignal"AbsoluteWindowSize",function()
 updateSliderSize()
 updateThumbPosition()
@@ -2148,13 +2156,13 @@ i.Container=n
 function i.Open(o)
 n.Visible=true
 
-f(n,.16,{GroupTransparency=0},Enum.EasingStyle.Quint,Enum.EasingDirection.Out):Play()
-f(k,.18,{Scale=1},Enum.EasingStyle.Quint,Enum.EasingDirection.Out):Play()
+f(n,.16,{GroupTransparency=0}):Play()
+f(k,.18,{Scale=1}):Play()
 end
 
 function i.Close(o)
-f(n,.2,{GroupTransparency=1},Enum.EasingStyle.Quint,Enum.EasingDirection.Out):Play()
-f(k,.2,{Scale=.9},Enum.EasingStyle.Quint,Enum.EasingDirection.Out):Play()
+f(n,.2,{GroupTransparency=1}):Play()
+f(k,.2,{Scale=.9}):Play()
 
 task.wait(.25)
 
@@ -2508,6 +2516,7 @@ e("UIGradient",{
 Rotation=90,
 Transparency=NumberSequence.new{
 NumberSequenceKeypoint.new(0,0),
+NumberSequenceKeypoint.new(0.5,0.8),
 NumberSequenceKeypoint.new(1,1),
 }
 })
@@ -2628,6 +2637,7 @@ e("UIGradient",{
 Rotation=90,
 Transparency=NumberSequence.new{
 NumberSequenceKeypoint.new(0,0),
+NumberSequenceKeypoint.new(0.5,0.8),
 NumberSequenceKeypoint.new(1,1),
 }
 })
@@ -5758,6 +5768,7 @@ or(((i.Padding-2)*2)+x.Main.Frame.Title.TextBounds.Y)
 )
 
 ab.AddSignal(x.Main.MouseEnter,function()
+
 b(x.Main,.04,{ImageTransparency=.95}):Play()
 end)
 ab.AddSignal(x.Main.InputEnded,function()
@@ -6460,6 +6471,52 @@ TextColor3="Text"
 }
 })
 
+local RainbowBorder = e("Frame", {
+Name = "RainbowBorder",
+Parent = p.UIElements.Main,
+BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+Size = UDim2.new(1, 6, 1, 6),
+Position = UDim2.new(0.5, 0, 0.5, 0),
+AnchorPoint = Vector2.new(0.5, 0.5),
+ZIndex = 1,
+ClipsDescendants = true
+})
+
+local BorderCorner = e("UICorner", {
+Parent = RainbowBorder,
+CornerRadius = UDim.new(0, p.UICorner)
+})
+
+local UIGradient = e("UIGradient", {
+Parent = RainbowBorder,
+Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 0, 0)),
+    ColorSequenceKeypoint.new(0.14, Color3.fromRGB(255, 127, 0)),
+    ColorSequenceKeypoint.new(0.28, Color3.fromRGB(255, 255, 0)),
+    ColorSequenceKeypoint.new(0.42, Color3.fromRGB(0, 255, 0)),
+    ColorSequenceKeypoint.new(0.56, Color3.fromRGB(0, 255, 255)),
+    ColorSequenceKeypoint.new(0.70, Color3.fromRGB(0, 0, 255)),
+    ColorSequenceKeypoint.new(0.84, Color3.fromRGB(139, 0, 255)),
+    ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 0, 255))
+}),
+Rotation = 45
+})
+
+local InnerFrame = e("Frame", {
+Name = "InnerFrame",
+Parent = RainbowBorder,
+AnchorPoint = Vector2.new(0.5, 0.5),
+BackgroundColor3 = Color3.fromRGB(13, 13, 13),
+Position = UDim2.new(0.5, 0, 0.5, 0),
+Size = UDim2.new(1, -8, 1, -8),
+ZIndex = 2
+})
+
+local InnerCorner = e("UICorner", {
+Parent = InnerFrame,
+CornerRadius = UDim.new(0, p.UICorner - 2)
+})
+
 p.UIElements.Main=e("Frame",{
 Size=p.Size,
 Position=p.Position,
@@ -6468,6 +6525,7 @@ Parent=o.Parent,
 AnchorPoint=Vector2.new(0.5,0.5),
 Active=true,
 },{
+RainbowBorder,
 v,
 b.NewRoundFrame(p.UICorner,"Squircle",{
 ImageTransparency=1,
@@ -6497,7 +6555,6 @@ r,
 
 
 }),
-UIStroke,
 q,
 s,
 t,
@@ -6813,9 +6870,6 @@ Size=UDim2.new(1,0,1,0),
 g(p.UIElements.Main.Background.ImageLabel,0.2,{ImageTransparency=p.BackgroundImageTransparency},Enum.EasingStyle.Quint,Enum.EasingDirection.Out):Play()
 
 g(v,0.25,{ImageTransparency=.7},Enum.EasingStyle.Quint,Enum.EasingDirection.Out):Play()
-if UIStroke then
-g(UIStroke,0.25,{Transparency=.8},Enum.EasingStyle.Quint,Enum.EasingDirection.Out):Play()
-end
 
 task.spawn(function()
 task.wait(.5)
@@ -6836,7 +6890,7 @@ task.spawn(function()
 task.wait(.19)
 p.UIElements.Main.Main.Visible=true
 end)
-end
+end)
 end
 function p.Close(K)
 local L={}
@@ -6862,9 +6916,6 @@ Size=UDim2.new(1,0,1,-240),
 
 g(p.UIElements.Main.Background.ImageLabel,0.2,{ImageTransparency=1},Enum.EasingStyle.Quint,Enum.EasingDirection.Out):Play()
 g(v,0.25,{ImageTransparency=1},Enum.EasingStyle.Quint,Enum.EasingDirection.Out):Play()
-if UIStroke then
-g(UIStroke,0.25,{Transparency=1},Enum.EasingStyle.Quint,Enum.EasingDirection.Out):Play()
-end
 
 g(E,.3,{Size=UDim2.new(0,0,0,4),ImageTransparency=1},Enum.EasingStyle.Exponential,Enum.EasingDirection.InOut):Play()
 g(r.ImageLabel,.3,{ImageTransparency=1},Enum.EasingStyle.Exponential,Enum.EasingDirection.Out):Play()
@@ -6999,9 +7050,6 @@ z.ImageRectSize=b.Icon(M.Icon)[2].ImageRectSize
 end
 
 y.UIStroke.UIGradient.Color=M.Color
-if A then
-A.UIGradient.Color=M.Color
-end
 
 y.UICorner.CornerRadius=M.CornerRadius
 y.TextButton.UICorner.CornerRadius=UDim.new(M.CornerRadius.Scale,M.CornerRadius.Offset-4)
