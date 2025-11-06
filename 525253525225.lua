@@ -1451,7 +1451,7 @@ local o
 if h.Icon then
 o=d.Image(
 h.Icon,
-h.Icon..":"..h.Title,
+h.Title..":"..h.Icon,
 0,
 g.WindUI.Window,
 "Popup",
@@ -2148,13 +2148,13 @@ i.Container=n
 function i.Open(o)
 n.Visible=true
 
-f(n,.16,{GroupTransparency=0}):Play()
-f(k,.18,{Scale=1}):Play()
+f(n,.16,{GroupTransparency=0},Enum.EasingStyle.Quint,Enum.EasingDirection.Out):Play()
+f(k,.18,{Scale=1},Enum.EasingStyle.Quint,Enum.EasingDirection.Out):Play()
 end
 
 function i.Close(o)
-f(n,.2,{GroupTransparency=1}):Play()
-f(k,.2,{Scale=.9}):Play()
+f(n,.2,{GroupTransparency=1},Enum.EasingStyle.Quint,Enum.EasingDirection.Out):Play()
+f(k,.2,{Scale=.9},Enum.EasingStyle.Quint,Enum.EasingDirection.Out):Play()
 
 task.wait(.25)
 
@@ -5758,7 +5758,6 @@ or(((i.Padding-2)*2)+x.Main.Frame.Title.TextBounds.Y)
 )
 
 ab.AddSignal(x.Main.MouseEnter,function()
-
 b(x.Main,.04,{ImageTransparency=.95}):Play()
 end)
 ab.AddSignal(x.Main.InputEnded,function()
@@ -6461,52 +6460,6 @@ TextColor3="Text"
 }
 })
 
-local RainbowBorder = e("Frame", {
-Name = "RainbowBorder",
-Parent = p.UIElements.Main,
-BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-Size = UDim2.new(1, 6, 1, 6),
-Position = UDim2.new(0.5, 0, 0.5, 0),
-AnchorPoint = Vector2.new(0.5, 0.5),
-ZIndex = 1,
-ClipsDescendants = true
-})
-
-local BorderCorner = e("UICorner", {
-Parent = RainbowBorder,
-CornerRadius = UDim.new(0, p.UICorner)
-})
-
-local UIGradient = e("UIGradient", {
-Parent = RainbowBorder,
-Color = ColorSequence.new({
-    ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 0, 0)),
-    ColorSequenceKeypoint.new(0.14, Color3.fromRGB(255, 127, 0)),
-    ColorSequenceKeypoint.new(0.28, Color3.fromRGB(255, 255, 0)),
-    ColorSequenceKeypoint.new(0.42, Color3.fromRGB(0, 255, 0)),
-    ColorSequenceKeypoint.new(0.56, Color3.fromRGB(0, 255, 255)),
-    ColorSequenceKeypoint.new(0.70, Color3.fromRGB(0, 0, 255)),
-    ColorSequenceKeypoint.new(0.84, Color3.fromRGB(139, 0, 255)),
-    ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 0, 255))
-}),
-Rotation = 45
-})
-
-local InnerFrame = e("Frame", {
-Name = "InnerFrame",
-Parent = RainbowBorder,
-AnchorPoint = Vector2.new(0.5, 0.5),
-BackgroundColor3 = Color3.fromRGB(13, 13, 13),
-Position = UDim2.new(0.5, 0, 0.5, 0),
-Size = UDim2.new(1, -8, 1, -8),
-ZIndex = 2
-})
-
-local InnerCorner = e("UICorner", {
-Parent = InnerFrame,
-CornerRadius = UDim.new(0, p.UICorner - 2)
-})
-
 p.UIElements.Main=e("Frame",{
 Size=p.Size,
 Position=p.Position,
@@ -6515,7 +6468,6 @@ Parent=o.Parent,
 AnchorPoint=Vector2.new(0.5,0.5),
 Active=true,
 },{
-RainbowBorder,
 v,
 b.NewRoundFrame(p.UICorner,"Squircle",{
 ImageTransparency=1,
@@ -6884,7 +6836,7 @@ task.spawn(function()
 task.wait(.19)
 p.UIElements.Main.Main.Visible=true
 end)
-end)
+end
 end
 function p.Close(K)
 local L={}
