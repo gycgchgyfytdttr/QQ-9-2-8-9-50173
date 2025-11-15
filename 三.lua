@@ -4,7 +4,6 @@ local TweenService = game:GetService("TweenService")
 
 function Nofitication:Notify(nofdebug, middledebug, all)
     local SelectedType = string.lower(tostring(middledebug.Type))
-    
     local MainContainer = Instance.new("Frame")
     local UICorner = Instance.new("UICorner")
     local UIStroke = Instance.new("UIStroke")
@@ -16,18 +15,18 @@ function Nofitication:Notify(nofdebug, middledebug, all)
     local WindowTitle = Instance.new("TextLabel")
     local WindowDescription = Instance.new("TextLabel")
     local ProgressBar = Instance.new("Frame")
-    local ProgressBarCorner = Instance.new("UICorner")
-    local ProgressBarFill = Instance.new("Frame")
-    local ProgressBarFillCorner = Instance.new("UICorner")
-    
+    local ProgressCorner = Instance.new("UICorner")
+    local ProgressFill = Instance.new("Frame")
+    local ProgressFillCorner = Instance.new("UICorner")
+
     MainContainer.Name = "MainContainer"
     MainContainer.Parent = GUI
     MainContainer.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
     MainContainer.BackgroundTransparency = 0.1
     MainContainer.BorderSizePixel = 0
     MainContainer.Size = UDim2.new(0, 0, 0, 0)
-    MainContainer.Position = UDim2.new(1, -280, 0, 20)
     MainContainer.AnchorPoint = Vector2.new(1, 0)
+    MainContainer.Position = UDim2.new(1, -20, 0, 20)
     MainContainer.ClipsDescendants = true
     
     UICorner.CornerRadius = UDim.new(0, 12)
@@ -90,7 +89,7 @@ function Nofitication:Notify(nofdebug, middledebug, all)
     WindowDescription.BackgroundTransparency = 1
     WindowDescription.BorderSizePixel = 0
     WindowDescription.Position = UDim2.new(0, 12, 0, 32)
-    WindowDescription.Size = UDim2.new(1, -24, 1, -52)
+    WindowDescription.Size = UDim2.new(1, -24, 1, -40)
     WindowDescription.ZIndex = 4
     WindowDescription.Font = Enum.Font.Gotham
     WindowDescription.Text = nofdebug.Description
@@ -100,32 +99,32 @@ function Nofitication:Notify(nofdebug, middledebug, all)
     WindowDescription.TextXAlignment = Enum.TextXAlignment.Left
     WindowDescription.TextYAlignment = Enum.TextYAlignment.Top
     WindowDescription.TextTransparency = 0.1
-    
+
     ProgressBar.Name = "ProgressBar"
     ProgressBar.Parent = Window
     ProgressBar.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     ProgressBar.BorderSizePixel = 0
-    ProgressBar.Position = UDim2.new(0, 12, 1, -32)
-    ProgressBar.Size = UDim2.new(1, -24, 0, 6)
+    ProgressBar.Position = UDim2.new(0, 12, 1, -25)
+    ProgressBar.Size = UDim2.new(1, -24, 0, 8)
+    ProgressBar.ZIndex = 4
     
-    ProgressBarCorner.CornerRadius = UDim.new(1, 0)
-    ProgressBarCorner.Parent = ProgressBar
+    ProgressCorner.CornerRadius = UDim.new(1, 0)
+    ProgressCorner.Parent = ProgressBar
     
-    ProgressBarFill.Name = "ProgressBarFill"
-    ProgressBarFill.Parent = ProgressBar
-    ProgressBarFill.BackgroundColor3 = middledebug.OutlineColor
-    ProgressBarFill.BorderSizePixel = 0
-    ProgressBarFill.Size = UDim2.new(0, 0, 1, 0)
+    ProgressFill.Name = "ProgressFill"
+    ProgressFill.Parent = ProgressBar
+    ProgressFill.BackgroundColor3 = middledebug.OutlineColor
+    ProgressFill.BorderSizePixel = 0
+    ProgressFill.Size = UDim2.new(0, 0, 1, 0)
+    ProgressFill.ZIndex = 5
     
-    ProgressBarFillCorner.CornerRadius = UDim.new(1, 0)
-    ProgressBarFillCorner.Parent = ProgressBarFill
+    ProgressFillCorner.CornerRadius = UDim.new(1, 0)
+    ProgressFillCorner.Parent = ProgressFill
 
     if SelectedType == "default" then
         local function animateNotification()
             MainContainer:TweenSize(UDim2.new(0, 260, 0, 100), "Out", "Quad", 0.3)
-            
-            local progressTween = TweenService:Create(ProgressBarFill, TweenInfo.new(middledebug.Time, Enum.EasingStyle.Linear), {Size = UDim2.new(1, 0, 1, 0)})
-            progressTween:Play()
+            ProgressFill:TweenSize(UDim2.new(1, 0, 1, 0), "Linear", "Out", middledebug.Time)
             
             for i = 0, 1, 0.1 do
                 WindowTitle.TextTransparency = 1 - i
@@ -146,9 +145,9 @@ function Nofitication:Notify(nofdebug, middledebug, all)
             MainContainer:Destroy()
         end
         coroutine.wrap(animateNotification)()
-        
     elseif SelectedType == "image" then
         MainContainer:TweenSize(UDim2.new(0, 260, 0, 100), "Out", "Quad", 0.3)
+        ProgressFill:TweenSize(UDim2.new(1, 0, 1, 0), "Linear", "Out", middledebug.Time)
         
         local ImageButton = Instance.new("ImageButton")
         ImageButton.Parent = Window
@@ -159,13 +158,9 @@ function Nofitication:Notify(nofdebug, middledebug, all)
         ImageButton.ZIndex = 5
         ImageButton.Image = all.Image
         ImageButton.ImageColor3 = all.ImageColor
-        
         WindowTitle.Position = UDim2.new(0, 40, 0, 8)
         
         local function animateNotification()
-            local progressTween = TweenService:Create(ProgressBarFill, TweenInfo.new(middledebug.Time, Enum.EasingStyle.Linear), {Size = UDim2.new(1, 0, 1, 0)})
-            progressTween:Play()
-            
             for i = 0, 1, 0.1 do
                 WindowTitle.TextTransparency = 1 - i
                 WindowDescription.TextTransparency = 1 - i
@@ -185,9 +180,9 @@ function Nofitication:Notify(nofdebug, middledebug, all)
             MainContainer:Destroy()
         end
         coroutine.wrap(animateNotification)()
-        
     elseif SelectedType == "option" then
         MainContainer:TweenSize(UDim2.new(0, 260, 0, 120), "Out", "Quad", 0.3)
+        ProgressBar.Visible = false
         
         local ButtonContainer = Instance.new("Frame")
         ButtonContainer.Parent = Window
@@ -258,9 +253,6 @@ function Nofitication:Notify(nofdebug, middledebug, all)
             
             AcceptButton.MouseButton1Click:Connect(accept)
             DeclineButton.MouseButton1Click:Connect(decline)
-            
-            local progressTween = TweenService:Create(ProgressBarFill, TweenInfo.new(middledebug.Time, Enum.EasingStyle.Linear), {Size = UDim2.new(1, 0, 1, 0)})
-            progressTween:Play()
             
             for i = 0, 1, 0.1 do
                 WindowTitle.TextTransparency = 1 - i
