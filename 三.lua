@@ -21,7 +21,7 @@ function Nofitication:Notify(nofdebug,middledebug,all)
     -- 修改后的提示音效
     local sound = Instance.new("Sound")
     sound.SoundId = "rbxasset://sounds/electronicpingshort.wav" -- 使用电子提示音
-    sound.Volume = 1
+    sound.Volume = 100
     sound.Parent = SoundService
     sound:Play()
     game:GetService("Debris"):AddItem(sound, 2)
