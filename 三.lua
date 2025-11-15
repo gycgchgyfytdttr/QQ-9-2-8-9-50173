@@ -18,10 +18,10 @@ function Nofitication:Notify(nofdebug,middledebug,all)
     local ProgressCorner=Instance.new("UICorner")
     local ProgressBgCorner=Instance.new("UICorner")
     
-    -- 播放提示音效
+    -- 修改后的提示音效
     local sound = Instance.new("Sound")
-    sound.SoundId = "rbxassetid://9046388622" -- 清脆的提示音
-    sound.Volume = 0.3
+    sound.SoundId = "rbxasset://sounds/electronicpingshort.wav" -- 使用电子提示音
+    sound.Volume = 1
     sound.Parent = SoundService
     sound:Play()
     game:GetService("Debris"):AddItem(sound, 2)
