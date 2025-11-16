@@ -1,6 +1,5 @@
 local Nofitication = {}
 
--- 创建GUI容器（如果不存在）
 local CoreGui = game:GetService("CoreGui")
 local GUI = CoreGui:FindFirstChild("STX_Nofitication")
 if not GUI then
@@ -29,15 +28,13 @@ function Nofitication:Notify(nofdebug, middledebug, all)
     local ProgressCorner = Instance.new("UICorner")
     local ProgressBgCorner = Instance.new("UICorner")
     
-    -- 播放音效
     local sound = Instance.new("Sound")
     sound.SoundId = "rbxasset://sounds/electronicpingshort.wav"
-    sound.Volume = 0.5 -- 降低音量避免太大
+    sound.Volume = 5
     sound.Parent = SoundService
     sound:Play()
     game:GetService("Debris"):AddItem(sound, 2)
 
-    -- 主容器设置
     MainContainer.Name = "MainContainer"
     MainContainer.Parent = GUI
     MainContainer.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
@@ -68,7 +65,6 @@ function Nofitication:Notify(nofdebug, middledebug, all)
     InnerGlow.SliceCenter = Rect.new(10, 10, 118, 118)
     InnerGlow.ZIndex = 1
 
-    -- 窗口设置
     Window.Name = "Window"
     Window.Parent = MainContainer
     Window.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
@@ -81,7 +77,6 @@ function Nofitication:Notify(nofdebug, middledebug, all)
     WindowCorner.CornerRadius = UDim.new(0, 12)
     WindowCorner.Parent = Window
 
-    -- 标题设置
     WindowTitle.Name = "WindowTitle"
     WindowTitle.Parent = Window
     WindowTitle.BackgroundTransparency = 1
@@ -94,9 +89,8 @@ function Nofitication:Notify(nofdebug, middledebug, all)
     WindowTitle.TextColor3 = Color3.fromRGB(245, 245, 245)
     WindowTitle.TextSize = 15
     WindowTitle.TextXAlignment = Enum.TextXAlignment.Left
-    WindowTitle.TextTransparency = 1 -- 初始透明，动画中显示
+    WindowTitle.TextTransparency = 1
 
-    -- 描述设置
     WindowDescription.Name = "WindowDescription"
     WindowDescription.Parent = Window
     WindowDescription.BackgroundTransparency = 1
@@ -111,9 +105,8 @@ function Nofitication:Notify(nofdebug, middledebug, all)
     WindowDescription.TextWrapped = true
     WindowDescription.TextXAlignment = Enum.TextXAlignment.Left
     WindowDescription.TextYAlignment = Enum.TextYAlignment.Top
-    WindowDescription.TextTransparency = 1 -- 初始透明，动画中显示
+    WindowDescription.TextTransparency = 1
 
-    -- 进度条背景
     ProgressBarBackground.Name = "ProgressBarBackground"
     ProgressBarBackground.Parent = Window
     ProgressBarBackground.BackgroundColor3 = Color3.fromRGB(50, 50, 60)
@@ -125,7 +118,6 @@ function Nofitication:Notify(nofdebug, middledebug, all)
     ProgressBgCorner.CornerRadius = UDim.new(1, 0)
     ProgressBgCorner.Parent = ProgressBarBackground
 
-    -- 进度条
     ProgressBar.Name = "ProgressBar"
     ProgressBar.Parent = ProgressBarBackground
     ProgressBar.BackgroundColor3 = middledebug.OutlineColor or Color3.fromRGB(100, 150, 255)
@@ -137,13 +129,10 @@ function Nofitication:Notify(nofdebug, middledebug, all)
     ProgressCorner.CornerRadius = UDim.new(1, 0)
     ProgressCorner.Parent = ProgressBar
 
-    -- 根据类型处理不同的通知样式
     if SelectedType == "default" then
         local function animateNotification()
-            -- 展开动画
             MainContainer:TweenSize(UDim2.new(0, 280, 0, 110), "Out", "Quad", 0.4, true)
             
-            -- 文本淡入动画
             local textTweenIn = TweenService:Create(
                 WindowTitle,
                 TweenInfo.new(0.4, Enum.EasingStyle.Quad),
@@ -157,73 +146,6 @@ function Nofitication:Notify(nofdebug, middledebug, all)
             textTweenIn:Play()
             descTweenIn:Play()
             
-            -- 进度条动画
-            local progressTween = TweenService:Create(
-                ProgressBar,
-                TweenInfo.new(middledebug.Time or 5, Enum.EasingStyle.Linear),
-                {Size = UDim2.new(0, 0, 1, 0)}
-            )
-            
-            wait(0.4) -- 等待展开动画完成
-            progressTween:Play()
-            wait(middledebug.Time or 5)
-            
-            -- 文本淡出动画
-            local textTweenOut = TweenService:Create(
-                WindowTitle,
-                TweenInfo.new(0.3, Enum.EasingStyle.Quad),
-                {TextTransparency = 1}
-            )
-            local descTweenOut = TweenService:Create(
-                WindowDescription,
-                TweenInfo.new(0.3, Enum.EasingStyle.Quad),
-                {TextTransparency = 1}
-            )
-            textTweenOut:Play()
-            descTweenOut:Play()
-            
-            -- 收缩动画
-            MainContainer:TweenSize(UDim2.new(0, 0, 0, 0), "Out", "Quad", 0.3, true)
-            wait(0.3)
-            MainContainer:Destroy()
-        end
-        coroutine.wrap(animateNotification)()
-        
-    elseif SelectedType == "image" then
-        local function animateNotification()
-            -- 展开动画
-            MainContainer:TweenSize(UDim2.new(0, 280, 0, 110), "Out", "Quad", 0.4, true)
-            
-            -- 创建图片按钮
-            local ImageButton = Instance.new("ImageButton")
-            ImageButton.Parent = Window
-            ImageButton.BackgroundTransparency = 1
-            ImageButton.BorderSizePixel = 0
-            ImageButton.Position = UDim2.new(0, 12, 0, 12)
-            ImageButton.Size = UDim2.new(0, 28, 0, 28)
-            ImageButton.ZIndex = 5
-            ImageButton.Image = all.Image or ""
-            ImageButton.ImageColor3 = all.ImageColor or Color3.fromRGB(255, 255, 255)
-            
-            -- 调整标题和描述位置
-            WindowTitle.Position = UDim2.new(0, 50, 0, 12)
-            WindowDescription.Position = UDim2.new(0, 50, 0, 38)
-            
-            -- 文本淡入动画
-            local textTweenIn = TweenService:Create(
-                WindowTitle,
-                TweenInfo.new(0.4, Enum.EasingStyle.Quad),
-                {TextTransparency = 0.1}
-            )
-            local descTweenIn = TweenService:Create(
-                WindowDescription,
-                TweenInfo.new(0.4, Enum.EasingStyle.Quad),
-                {TextTransparency = 0.1}
-            )
-            textTweenIn:Play()
-            descTweenIn:Play()
-            
-            -- 进度条动画
             local progressTween = TweenService:Create(
                 ProgressBar,
                 TweenInfo.new(middledebug.Time or 5, Enum.EasingStyle.Linear),
@@ -234,7 +156,6 @@ function Nofitication:Notify(nofdebug, middledebug, all)
             progressTween:Play()
             wait(middledebug.Time or 5)
             
-            -- 文本淡出动画
             local textTweenOut = TweenService:Create(
                 WindowTitle,
                 TweenInfo.new(0.3, Enum.EasingStyle.Quad),
@@ -248,7 +169,65 @@ function Nofitication:Notify(nofdebug, middledebug, all)
             textTweenOut:Play()
             descTweenOut:Play()
             
-            -- 收缩动画
+            MainContainer:TweenSize(UDim2.new(0, 0, 0, 0), "Out", "Quad", 0.3, true)
+            wait(0.3)
+            MainContainer:Destroy()
+        end
+        coroutine.wrap(animateNotification)()
+        
+    elseif SelectedType == "image" then
+        local function animateNotification()
+            MainContainer:TweenSize(UDim2.new(0, 280, 0, 110), "Out", "Quad", 0.4, true)
+            
+            local ImageButton = Instance.new("ImageButton")
+            ImageButton.Parent = Window
+            ImageButton.BackgroundTransparency = 1
+            ImageButton.BorderSizePixel = 0
+            ImageButton.Position = UDim2.new(0, 12, 0, 12)
+            ImageButton.Size = UDim2.new(0, 28, 0, 28)
+            ImageButton.ZIndex = 5
+            ImageButton.Image = all.Image or ""
+            ImageButton.ImageColor3 = all.ImageColor or Color3.fromRGB(255, 255, 255)
+            
+            WindowTitle.Position = UDim2.new(0, 50, 0, 12)
+            WindowDescription.Position = UDim2.new(0, 50, 0, 38)
+            
+            local textTweenIn = TweenService:Create(
+                WindowTitle,
+                TweenInfo.new(0.4, Enum.EasingStyle.Quad),
+                {TextTransparency = 0.1}
+            )
+            local descTweenIn = TweenService:Create(
+                WindowDescription,
+                TweenInfo.new(0.4, Enum.EasingStyle.Quad),
+                {TextTransparency = 0.1}
+            )
+            textTweenIn:Play()
+            descTweenIn:Play()
+            
+            local progressTween = TweenService:Create(
+                ProgressBar,
+                TweenInfo.new(middledebug.Time or 5, Enum.EasingStyle.Linear),
+                {Size = UDim2.new(0, 0, 1, 0)}
+            )
+            
+            wait(0.4)
+            progressTween:Play()
+            wait(middledebug.Time or 5)
+            
+            local textTweenOut = TweenService:Create(
+                WindowTitle,
+                TweenInfo.new(0.3, Enum.EasingStyle.Quad),
+                {TextTransparency = 1}
+            )
+            local descTweenOut = TweenService:Create(
+                WindowDescription,
+                TweenInfo.new(0.3, Enum.EasingStyle.Quad),
+                {TextTransparency = 1}
+            )
+            textTweenOut:Play()
+            descTweenOut:Play()
+            
             MainContainer:TweenSize(UDim2.new(0, 0, 0, 0), "Out", "Quad", 0.3, true)
             wait(0.3)
             MainContainer:Destroy()
@@ -257,10 +236,8 @@ function Nofitication:Notify(nofdebug, middledebug, all)
         
     elseif SelectedType == "option" then
         local function animateNotification()
-            -- 展开动画
             MainContainer:TweenSize(UDim2.new(0, 280, 0, 130), "Out", "Quad", 0.4, true)
             
-            -- 创建按钮容器
             local ButtonContainer = Instance.new("Frame")
             ButtonContainer.Parent = Window
             ButtonContainer.BackgroundTransparency = 1
@@ -273,7 +250,6 @@ function Nofitication:Notify(nofdebug, middledebug, all)
             local DeclineButton = Instance.new("TextButton")
             local DeclineCorner = Instance.new("UICorner")
             
-            -- 接受按钮
             AcceptButton.Name = "AcceptButton"
             AcceptButton.Parent = ButtonContainer
             AcceptButton.Size = UDim2.new(0.45, 0, 1, -8)
@@ -289,7 +265,6 @@ function Nofitication:Notify(nofdebug, middledebug, all)
             AcceptCorner.CornerRadius = UDim.new(0, 8)
             AcceptCorner.Parent = AcceptButton
             
-            -- 拒绝按钮
             DeclineButton.Name = "DeclineButton"
             DeclineButton.Parent = ButtonContainer
             DeclineButton.Size = UDim2.new(0.45, 0, 1, -8)
@@ -305,7 +280,6 @@ function Nofitication:Notify(nofdebug, middledebug, all)
             DeclineCorner.CornerRadius = UDim.new(0, 8)
             DeclineCorner.Parent = DeclineButton
             
-            -- 按钮悬停效果
             local function setupButtonHover(button, hoverColor, originalColor)
                 button.MouseEnter:Connect(function()
                     button.BackgroundColor3 = hoverColor
@@ -320,7 +294,6 @@ function Nofitication:Notify(nofdebug, middledebug, all)
             
             local Stilthere = true
             
-            -- 进度条动画
             local progressTween = TweenService:Create(
                 ProgressBar,
                 TweenInfo.new(middledebug.Time or 5, Enum.EasingStyle.Linear),
@@ -348,7 +321,6 @@ function Nofitication:Notify(nofdebug, middledebug, all)
             end
             
             local function closeNotification()
-                -- 文本淡出动画
                 local textTweenOut = TweenService:Create(
                     WindowTitle,
                     TweenInfo.new(0.3, Enum.EasingStyle.Quad),
@@ -362,7 +334,6 @@ function Nofitication:Notify(nofdebug, middledebug, all)
                 textTweenOut:Play()
                 descTweenOut:Play()
                 
-                -- 收缩动画
                 MainContainer:TweenSize(UDim2.new(0, 0, 0, 0), "Out", "Quad", 0.3, true)
                 wait(0.3)
                 MainContainer:Destroy()
@@ -371,7 +342,6 @@ function Nofitication:Notify(nofdebug, middledebug, all)
             AcceptButton.MouseButton1Click:Connect(accept)
             DeclineButton.MouseButton1Click:Connect(decline)
             
-            -- 文本淡入动画
             local textTweenIn = TweenService:Create(
                 WindowTitle,
                 TweenInfo.new(0.4, Enum.EasingStyle.Quad),
