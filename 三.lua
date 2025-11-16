@@ -1,24 +1,10 @@
-local Nofitication = {}
-local CoreGui = game:GetService("CoreGui")
-local Players = game:GetService("Players")
-local TweenService = game:GetService("TweenService")
-local SoundService = game:GetService("SoundService")
-local RunService = game:GetService("RunService")
-
--- 创建主GUI
-local GUI = CoreGui:FindFirstChild("STX_Nofitication")
-if not GUI then
-    GUI = Instance.new("ScreenGui")
-    GUI.Name = "STX_Nofitication"
-    GUI.Parent = CoreGui
-    GUI.ResetOnSpawn = false
+local Nofitication = {}local CoreGui = game:GetService("CoreGui")local Players = game:GetService("Players")local TweenService = game:GetService("TweenService")local SoundService = game:GetService("SoundService")local RunService = game:GetService("RunService")
+local GUI = CoreGui:FindFirstChild("STX_Nofitication")if not GUI then    GUI = Instance.new("ScreenGui")    GUI.Name = "STX_Nofitication"    GUI.Parent = CoreGui    GUI.ResetOnSpawn = false
 end
 
--- 存储所有活动通知的表格
 local activeNotifications = {}
 local notificationOffset = 0
 
--- 创建粒子效果函数
 local function createParticleEffect(parent, position)
     local particleContainer = Instance.new("Frame")
     particleContainer.BackgroundTransparency = 1
@@ -61,7 +47,6 @@ local function createParticleEffect(parent, position)
     game:GetService("Debris"):AddItem(particleContainer, 0.6)
 end
 
--- 创建彩虹边框效果
 local function createRainbowBorder(parent)
     local rainbowContainer = Instance.new("Frame")
     rainbowContainer.BackgroundTransparency = 1
@@ -90,7 +75,6 @@ local function createRainbowBorder(parent)
     local rotatingGradient = gradient:Clone()
     rotatingGradient.Parent = rainbowContainer
     
-    -- 旋转动画
     local connection
     connection = RunService.Heartbeat:Connect(function(delta)
         rotatingGradient.Rotation = (rotatingGradient.Rotation + delta * 60) % 360
@@ -112,7 +96,6 @@ end
 function Nofitication:Notify(nofdebug, middledebug, all)
     local SelectedType = string.lower(tostring(middledebug.Type or "default"))
     
-    -- 播放声音
     local sound = Instance.new("Sound")
     sound.SoundId = "rbxasset://sounds/electronicpingshort.wav"
     sound.Volume = 0.5 
@@ -120,7 +103,6 @@ function Nofitication:Notify(nofdebug, middledebug, all)
     sound:Play()
     game:GetService("Debris"):AddItem(sound, 2)
 
-    -- 创建主容器
     local MainContainer = Instance.new("Frame")
     local UICorner = Instance.new("UICorner")
     local UIStroke = Instance.new("UIStroke")
@@ -134,7 +116,6 @@ function Nofitication:Notify(nofdebug, middledebug, all)
     local ProgressCorner = Instance.new("UICorner")
     local ProgressBgCorner = Instance.new("UICorner")
     
-    -- 玩家头像
     local PlayerImage = Instance.new("ImageLabel")
     local PlayerImageCorner = Instance.new("UICorner")
     local PlayerImageStroke = Instance.new("UIStroke")
@@ -150,7 +131,6 @@ function Nofitication:Notify(nofdebug, middledebug, all)
     MainContainer.ClipsDescendants = true
     MainContainer.ZIndex = 100
     
-    -- 更新偏移量用于下一个通知
     notificationOffset = notificationOffset + 120
     table.insert(activeNotifications, {container = MainContainer, offset = notificationOffset - 120})
     
@@ -161,7 +141,6 @@ function Nofitication:Notify(nofdebug, middledebug, all)
     UIStroke.Color = Color3.fromRGB(60, 60, 80)
     UIStroke.Parent = MainContainer
     
-    -- 内部发光效果
     InnerGlow.Name = "InnerGlow"
     InnerGlow.Parent = MainContainer
     InnerGlow.BackgroundTransparency = 1
@@ -174,7 +153,6 @@ function Nofitication:Notify(nofdebug, middledebug, all)
     InnerGlow.SliceCenter = Rect.new(10, 10, 118, 118)
     InnerGlow.ZIndex = 1
 
-    -- 窗口框架
     Window.Name = "Window"
     Window.Parent = MainContainer
     Window.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
@@ -187,7 +165,6 @@ function Nofitication:Notify(nofdebug, middledebug, all)
     WindowCorner.CornerRadius = UDim.new(0, 12)
     WindowCorner.Parent = Window
 
-    -- 玩家头像设置
     PlayerImage.Name = "PlayerImage"
     PlayerImage.Parent = Window
     PlayerImage.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
@@ -196,7 +173,6 @@ function Nofitication:Notify(nofdebug, middledebug, all)
     PlayerImage.Size = UDim2.new(0, 32, 0, 32)
     PlayerImage.ZIndex = 5
     
-    -- 尝试获取玩家头像
     local localPlayer = Players.LocalPlayer
     if localPlayer then
         local thumbType = Enum.ThumbnailType.HeadShot
@@ -212,10 +188,8 @@ function Nofitication:Notify(nofdebug, middledebug, all)
     PlayerImageStroke.Color = Color3.fromRGB(100, 150, 255)
     PlayerImageStroke.Parent = PlayerImage
     
-    -- 创建彩虹边框
     createRainbowBorder(PlayerImage)
 
-    -- 标题设置
     WindowTitle.Name = "WindowTitle"
     WindowTitle.Parent = Window
     WindowTitle.BackgroundTransparency = 1
@@ -230,7 +204,6 @@ function Nofitication:Notify(nofdebug, middledebug, all)
     WindowTitle.TextXAlignment = Enum.TextXAlignment.Left
     WindowTitle.TextTransparency = 1
 
-    -- 描述设置
     WindowDescription.Name = "WindowDescription"
     WindowDescription.Parent = Window
     WindowDescription.BackgroundTransparency = 1
@@ -247,7 +220,6 @@ function Nofitication:Notify(nofdebug, middledebug, all)
     WindowDescription.TextYAlignment = Enum.TextYAlignment.Top
     WindowDescription.TextTransparency = 1
 
-    -- 进度条背景
     ProgressBarBackground.Name = "ProgressBarBackground"
     ProgressBarBackground.Parent = Window
     ProgressBarBackground.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
@@ -259,7 +231,6 @@ function Nofitication:Notify(nofdebug, middledebug, all)
     ProgressBgCorner.CornerRadius = UDim.new(1, 0)
     ProgressBgCorner.Parent = ProgressBarBackground
 
-    -- 进度条
     ProgressBar.Name = "ProgressBar"
     ProgressBar.Parent = ProgressBarBackground
     ProgressBar.BackgroundColor3 = middledebug.OutlineColor or Color3.fromRGB(100, 150, 255)
@@ -271,7 +242,6 @@ function Nofitication:Notify(nofdebug, middledebug, all)
     ProgressCorner.CornerRadius = UDim.new(1, 0)
     ProgressCorner.Parent = ProgressBar
 
-    -- 动态背景效果
     local backgroundPulse = Instance.new("Frame")
     backgroundPulse.BackgroundColor3 = Color3.fromRGB(100, 150, 255)
     backgroundPulse.BackgroundTransparency = 0.9
@@ -283,7 +253,6 @@ function Nofitication:Notify(nofdebug, middledebug, all)
     pulseCorner.CornerRadius = UDim.new(0, 12)
     pulseCorner.Parent = backgroundPulse
     
-    -- 脉冲动画
     local pulseTween = TweenService:Create(
         backgroundPulse,
         TweenInfo.new(2, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true),
@@ -291,12 +260,9 @@ function Nofitication:Notify(nofdebug, middledebug, all)
     )
     pulseTween:Play()
 
-    -- 根据类型处理不同的通知样式
     local function animateNotification()
-        -- 创建粒子效果
         createParticleEffect(MainContainer, UDim2.new(0, 0, 0, 0))
         
-        -- 展开动画
         local sizeTween = TweenService:Create(
             MainContainer,
             TweenInfo.new(0.6, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
@@ -304,7 +270,6 @@ function Nofitication:Notify(nofdebug, middledebug, all)
         )
         sizeTween:Play()
 
-        -- 文本淡入动画
         local textTweenIn = TweenService:Create(
             WindowTitle,
             TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, 0, false, 0.2),
@@ -318,7 +283,6 @@ function Nofitication:Notify(nofdebug, middledebug, all)
         textTweenIn:Play()
         descTweenIn:Play()
 
-        -- 玩家头像动画
         local imageTween = TweenService:Create(
             PlayerImage,
             TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out, 0, false, 0.2),
@@ -327,7 +291,6 @@ function Nofitication:Notify(nofdebug, middledebug, all)
         imageTween:Play()
 
         if SelectedType == "default" then
-            -- 进度条动画
             local progressTween = TweenService:Create(
                 ProgressBar,
                 TweenInfo.new(middledebug.Time or 5, Enum.EasingStyle.Linear),
@@ -341,7 +304,6 @@ function Nofitication:Notify(nofdebug, middledebug, all)
             closeNotification()
             
         elseif SelectedType == "image" then
-            -- 创建图片按钮
             local ImageButton = Instance.new("ImageButton")
             ImageButton.Parent = Window
             ImageButton.BackgroundTransparency = 1
@@ -352,13 +314,11 @@ function Nofitication:Notify(nofdebug, middledebug, all)
             ImageButton.Image = all.Image or ""
             ImageButton.ImageColor3 = all.ImageColor or Color3.fromRGB(255, 255, 255)
             
-            -- 调整标题和描述位置
             WindowTitle.Position = UDim2.new(0, 50, 0, 12)
             WindowDescription.Position = UDim2.new(0, 50, 0, 38)
             WindowTitle.Size = UDim2.new(1, -95, 0, 22)
             WindowDescription.Size = UDim2.new(1, -95, 1, -60)
             
-            -- 进度条动画
             local progressTween = TweenService:Create(
                 ProgressBar,
                 TweenInfo.new(middledebug.Time or 5, Enum.EasingStyle.Linear),
@@ -374,7 +334,6 @@ function Nofitication:Notify(nofdebug, middledebug, all)
         elseif SelectedType == "option" then
             MainContainer.Size = UDim2.new(0, 320, 0, 130)
             
-            -- 创建按钮容器
             local ButtonContainer = Instance.new("Frame")
             ButtonContainer.Parent = Window
             ButtonContainer.BackgroundTransparency = 1
@@ -387,7 +346,6 @@ function Nofitication:Notify(nofdebug, middledebug, all)
             local DeclineButton = Instance.new("TextButton")
             local DeclineCorner = Instance.new("UICorner")
             
-            -- 接受按钮
             AcceptButton.Name = "AcceptButton"
             AcceptButton.Parent = ButtonContainer
             AcceptButton.Size = UDim2.new(0.45, 0, 1, -8)
@@ -404,7 +362,6 @@ function Nofitication:Notify(nofdebug, middledebug, all)
             AcceptCorner.CornerRadius = UDim.new(0, 8)
             AcceptCorner.Parent = AcceptButton
             
-            -- 拒绝按钮
             DeclineButton.Name = "DeclineButton"
             DeclineButton.Parent = ButtonContainer
             DeclineButton.Size = UDim2.new(0.45, 0, 1, -8)
@@ -421,7 +378,6 @@ function Nofitication:Notify(nofdebug, middledebug, all)
             DeclineCorner.CornerRadius = UDim.new(0, 8)
             DeclineCorner.Parent = DeclineButton
             
-            -- 按钮悬停效果
             local function setupButtonHover(button, hoverColor, originalColor)
                 button.MouseEnter:Connect(function()
                     TweenService:Create(button, TweenInfo.new(0.2), {BackgroundColor3 = hoverColor}):Play()
@@ -436,15 +392,11 @@ function Nofitication:Notify(nofdebug, middledebug, all)
             
             local Stilthere = true
             
-            -- 进度条动画
             local progressTween = TweenService:Create(
                 ProgressBar,
-                TweenInfo.new(middledebug.Time or 5, Enum.EasingStyle.Linear),
-                {Size = UDim2.new(0, 0, 1, 0)}
+                TweenInfo.new(middledebug.Time or 5, Enum.EasingStyle.Linear),                {Size = UDim2.new(0, 0, 1, 0)}
             )
-            
-            -- 按钮淡入动画
-            local acceptTextTween = TweenService:Create(AcceptButton, TweenInfo.new(0.3), {TextTransparency = 0})
+                        local acceptTextTween = TweenService:Create(AcceptButton, TweenInfo.new(0.3), {TextTransparency = 0})
             local declineTextTween = TweenService:Create(DeclineButton, TweenInfo.new(0.3), {TextTransparency = 0})
             
             local function accept()
@@ -466,8 +418,7 @@ function Nofitication:Notify(nofdebug, middledebug, all)
                 Stilthere = false
                 closeNotification()
             end
-            
-            AcceptButton.MouseButton1Click:Connect(accept)
+                        AcceptButton.MouseButton1Click:Connect(accept)
             DeclineButton.MouseButton1Click:Connect(decline)
             
             wait(0.6)
@@ -483,7 +434,6 @@ function Nofitication:Notify(nofdebug, middledebug, all)
     end
 
     local function closeNotification()
-        -- 文本淡出动画
         local textTweenOut = TweenService:Create(
             WindowTitle,
             TweenInfo.new(0.3, Enum.EasingStyle.Quad),
@@ -497,20 +447,26 @@ function Nofitication:Notify(nofdebug, middledebug, all)
         textTweenOut:Play()
         descTweenOut:Play()
         
-        -- 创建消失粒子效果
         createParticleEffect(MainContainer, UDim2.new(0.5, 0, 0.5, 0))
         
-        -- 收缩动画
+        local shrinkTween = TweenService:Create(
+            MainContainer,
+            TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.In),
+            {Size = UDim2.new(0, 280, 0, 90)}
+        )
+        shrinkTween:Play()
+        
+        wait(0.3)
+        
         local closeTween = TweenService:Create(
             MainContainer,
-            TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.In),
+            TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.In),
             {Size = UDim2.new(0, 0, 0, 0)}
         )
         closeTween:Play()
         
-        wait(0.4)
+        wait(0.2)
         
-        -- 从活动通知表中移除
         for i, notification in ipairs(activeNotifications) do
             if notification.container == MainContainer then
                 table.remove(activeNotifications, i)
@@ -518,7 +474,6 @@ function Nofitication:Notify(nofdebug, middledebug, all)
             end
         end
         
-        -- 更新其他通知的位置
         updateNotificationPositions()
         
         MainContainer:Destroy()
