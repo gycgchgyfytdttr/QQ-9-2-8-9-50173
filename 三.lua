@@ -14,154 +14,134 @@ if not GUI then
     GUI.ResetOnSpawn = false
 end
 
--- 存储当前所有通知的列表
+-- 存储当前所有通知的引用
 local activeNotifications = {}
 local notificationOffset = 0
+local particleConnections = {}
 
--- 彩虹渐变函数
-local function createRainbowGradient()
-    local gradient = Instance.new("UIGradient")
-    gradient.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
-        ColorSequenceKeypoint.new(0.16, Color3.fromRGB(255, 255, 0)),
-        ColorSequenceKeypoint.new(0.33, Color3.fromRGB(0, 255, 0)),
-        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 255, 255)),
-        ColorSequenceKeypoint.new(0.66, Color3.fromRGB(0, 0, 255)),
-        ColorSequenceKeypoint.new(0.83, Color3.fromRGB(255, 0, 255)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 0))
-    })
-    gradient.Rotation = -45
-    return gradient
-end
+-- 彩虹渐变颜色表
+local rainbowColors = {
+    Color3.fromRGB(255, 0, 0),      -- 红
+    Color3.fromRGB(255, 127, 0),    -- 橙
+    Color3.fromRGB(255, 255, 0),    -- 黄
+    Color3.fromRGB(0, 255, 0),      -- 绿
+    Color3.fromRGB(0, 0, 255),      -- 蓝
+    Color3.fromRGB(75, 0, 130),     -- 靛
+    Color3.fromRGB(148, 0, 211)     -- 紫
+}
 
--- 创建动态粒子效果
+-- 创建粒子效果函数
 local function createParticleEffect(parent)
-    local particleContainer = Instance.new("Frame")
-    particleContainer.Name = "ParticleContainer"
-    particleContainer.BackgroundTransparency = 1
-    particleContainer.Size = UDim2.new(1, 0, 1, 0)
-    particleContainer.Position = UDim2.new(0, 0, 0, 0)
-    particleContainer.ZIndex = 1
-    particleContainer.Parent = parent
-    
     local particles = {}
     
-    -- 创建多个粒子
     for i = 1, 8 do
         local particle = Instance.new("Frame")
         particle.Name = "Particle_" .. i
-        particle.BackgroundColor3 = Color3.fromRGB(100, 150, 255)
+        particle.Parent = parent
+        particle.BackgroundColor3 = Color3.fromRGB(100, 200, 255)
         particle.BorderSizePixel = 0
         particle.Size = UDim2.new(0, 3, 0, 3)
-        particle.ZIndex = 1
-        particle.Parent = particleContainer
+        particle.ZIndex = 10
+        particle.AnchorPoint = Vector2.new(0.5, 0.5)
         
         local corner = Instance.new("UICorner")
         corner.CornerRadius = UDim.new(1, 0)
         corner.Parent = particle
         
-        particles[i] = {
-            frame = particle,
-            speed = math.random(20, 40) / 10,
-            angle = math.random() * 2 * math.pi,
-            distance = math.random(5, 15),
-            offset = math.random() * 2 * math.pi
-        }
+        particles[i] = particle
     end
     
+    return particles
+end
+
+-- 启动粒子动画
+local function startParticleAnimation(particles, container)
     local connection
-    local startTime = tick()
+    local time = 0
     
-    connection = RunService.Heartbeat:Connect(function()
-        local currentTime = tick() - startTime
+    connection = RunService.Heartbeat:Connect(function(delta)
+        time = time + delta
         
-        for _, particle in ipairs(particles) do
-            local x = math.cos(particle.angle + currentTime * particle.speed) * particle.distance
-            local y = math.sin(particle.offset + currentTime * particle.speed * 1.5) * particle.distance
+        for i, particle in ipairs(particles) do
+            local angle = (time * 2 + (i * math.pi / 4)) % (2 * math.pi)
+            local radius = 5 + math.sin(time * 3 + i) * 3
+            local x = math.cos(angle) * radius
+            local y = math.sin(angle) * radius
             
-            particle.frame.Position = UDim2.new(0.5, x, 0.5, y)
+            particle.Position = UDim2.new(0.5, x, 0.5, y)
             
-            -- 动态透明度
-            local alpha = 0.3 + 0.2 * math.sin(currentTime * particle.speed + particle.offset)
-            particle.frame.BackgroundTransparency = 1 - alpha
+            -- 大小脉动效果
+            local scale = 0.8 + math.sin(time * 4 + i) * 0.2
+            particle.Size = UDim2.new(0, 3 * scale, 0, 3 * scale)
+            
+            -- 颜色变化
+            local colorIndex = (math.floor(time * 2) + i) % #rainbowColors + 1
+            particle.BackgroundColor3 = rainbowColors[colorIndex]
         end
     end)
     
-    -- 清理函数
-    return function()
-        if connection then
-            connection:Disconnect()
-        end
-        particleContainer:Destroy()
-    end
+    return connection
 end
 
--- 更新所有通知位置
-local function updateNotificationPositions()
-    local totalHeight = 0
-    for i, notificationData in ipairs(activeNotifications) do
-        local targetY = 25 + totalHeight
-        notificationData.container:TweenPosition(
-            UDim2.new(1, -25, 0, targetY),
-            "Out",
-            "Quad",
-            0.3,
-            true
-        )
-        totalHeight = totalHeight + notificationData.height + 10
-    end
+-- 彩虹边框动画
+local function createRainbowBorderAnimation(stroke)
+    local connection
+    local time = 0
+    
+    connection = RunService.Heartbeat:Connect(function(delta)
+        time = time + delta
+        local colorIndex = (math.floor(time * 3) % #rainbowColors) + 1
+        local nextIndex = (colorIndex % #rainbowColors) + 1
+        local t = (time * 3) % 1
+        
+        stroke.Color = rainbowColors[colorIndex]:Lerp(rainbowColors[nextIndex], t)
+    end)
+    
+    return connection
 end
 
 function Nofitication:Notify(nofdebug, middledebug, all)
     local SelectedType = string.lower(tostring(middledebug.Type or "default"))
     
+    -- 创建唯一标识符
+    local notificationId = #activeNotifications + 1
+    local currentOffset = notificationOffset
+    notificationOffset = notificationOffset + 1
+    
     -- 播放音效
     local sound = Instance.new("Sound")
-    sound.SoundId = "rbxasset://sounds/electronicpingshort.wav"
-    sound.Volume = 0.5 
+    sound.SoundId = "rbxassetid://9046892323" -- 更科技感的音效
+    sound.Volume = 0.3
     sound.Parent = SoundService
     sound:Play()
     game:GetService("Debris"):AddItem(sound, 2)
 
     -- 创建主容器
     local MainContainer = Instance.new("Frame")
-    local UICorner = Instance.new("UICorner")
-    local UIStroke = Instance.new("UIStroke")
-    local InnerGlow = Instance.new("ImageLabel")
-    local OuterGlow = Instance.new("ImageLabel")
-    
-    MainContainer.Name = "MainContainer"
+    MainContainer.Name = "MainContainer_" .. notificationId
     MainContainer.Parent = GUI
     MainContainer.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
     MainContainer.BackgroundTransparency = 0.1
     MainContainer.BorderSizePixel = 0
     MainContainer.Size = UDim2.new(0, 0, 0, 0)
     MainContainer.AnchorPoint = Vector2.new(1, 0)
-    MainContainer.Position = UDim2.new(1, -25, 0, 25)
+    MainContainer.Position = UDim2.new(1, -25, 0, 25 + currentOffset * 140)
     MainContainer.ClipsDescendants = true
-    MainContainer.ZIndex = 100
+    MainContainer.ZIndex = 100 + notificationId
     
+    -- 圆角
+    local UICorner = Instance.new("UICorner")
     UICorner.CornerRadius = UDim.new(0, 20)
     UICorner.Parent = MainContainer
     
-    UIStroke.Thickness = 2
-    UIStroke.Color = Color3.fromRGB(60, 60, 80)
+    -- 彩虹边框
+    local UIStroke = Instance.new("UIStroke")
+    UIStroke.Thickness = 3
+    UIStroke.Color = rainbowColors[1]
     UIStroke.Parent = MainContainer
     
-    -- 外发光效果
-    OuterGlow.Name = "OuterGlow"
-    OuterGlow.Parent = MainContainer
-    OuterGlow.BackgroundTransparency = 1
-    OuterGlow.BorderSizePixel = 0
-    OuterGlow.Size = UDim2.new(1, 10, 1, 10)
-    OuterGlow.Position = UDim2.new(0, -5, 0, -5)
-    OuterGlow.Image = "rbxassetid://8992231221"
-    OuterGlow.ImageColor3 = Color3.fromRGB(100, 150, 255)
-    OuterGlow.ImageTransparency = 0.8
-    OuterGlow.ScaleType = Enum.ScaleType.Slice
-    OuterGlow.SliceCenter = Rect.new(10, 10, 118, 118)
-    OuterGlow.ZIndex = 99
-    
+    -- 内部发光效果
+    local InnerGlow = Instance.new("ImageLabel")
     InnerGlow.Name = "InnerGlow"
     InnerGlow.Parent = MainContainer
     InnerGlow.BackgroundTransparency = 1
@@ -169,21 +149,13 @@ function Nofitication:Notify(nofdebug, middledebug, all)
     InnerGlow.Size = UDim2.new(1, 0, 1, 0)
     InnerGlow.Image = "rbxassetid://8992231221"
     InnerGlow.ImageColor3 = Color3.fromRGB(30, 30, 40)
-    InnerGlow.ImageTransparency = 0.7
+    InnerGlow.ImageTransparency = 0.8
     InnerGlow.ScaleType = Enum.ScaleType.Slice
     InnerGlow.SliceCenter = Rect.new(10, 10, 118, 118)
-    InnerGlow.ZIndex = 101
-
-    -- 创建窗口内容
-    local Window = Instance.new("Frame")
-    local WindowCorner = Instance.new("UICorner")
-    local WindowTitle = Instance.new("TextLabel")
-    local WindowDescription = Instance.new("TextLabel")
-    local ProgressBar = Instance.new("Frame")
-    local ProgressBarBackground = Instance.new("Frame")
-    local ProgressCorner = Instance.new("UICorner")
-    local ProgressBgCorner = Instance.new("UICorner")
+    InnerGlow.ZIndex = 1
     
+    -- 窗口内容
+    local Window = Instance.new("Frame")
     Window.Name = "Window"
     Window.Parent = MainContainer
     Window.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
@@ -191,287 +163,228 @@ function Nofitication:Notify(nofdebug, middledebug, all)
     Window.BorderSizePixel = 0
     Window.Position = UDim2.new(0, 8, 0, 8)
     Window.Size = UDim2.new(1, -16, 1, -16)
-    Window.ZIndex = 102
+    Window.ZIndex = 2
     
+    local WindowCorner = Instance.new("UICorner")
     WindowCorner.CornerRadius = UDim.new(0, 14)
     WindowCorner.Parent = Window
-
-    -- 玩家头像和名字
+    
+    -- 玩家头像容器
+    local AvatarContainer = Instance.new("Frame")
+    AvatarContainer.Name = "AvatarContainer"
+    AvatarContainer.Parent = Window
+    AvatarContainer.BackgroundTransparency = 1
+    AvatarContainer.Size = UDim2.new(0, 50, 0, 70)
+    AvatarContainer.Position = UDim2.new(0, 10, 0, 10)
+    AvatarContainer.ZIndex = 5
+    
+    -- 彩虹头像边框
+    local AvatarBorder = Instance.new("Frame")
+    AvatarBorder.Name = "AvatarBorder"
+    AvatarBorder.Parent = AvatarContainer
+    AvatarBorder.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    AvatarBorder.Size = UDim2.new(0, 50, 0, 50)
+    AvatarBorder.Position = UDim2.new(0, 0, 0, 0)
+    AvatarBorder.ZIndex = 6
+    
+    local AvatarBorderCorner = Instance.new("UICorner")
+    AvatarBorderCorner.CornerRadius = UDim.new(1, 0)
+    AvatarBorderCorner.Parent = AvatarBorder
+    
+    local AvatarBorderStroke = Instance.new("UIStroke")
+    AvatarBorderStroke.Thickness = 3
+    AvatarBorderStroke.Color = rainbowColors[1]
+    AvatarBorderStroke.Parent = AvatarBorder
+    
+    -- 玩家头像
     local PlayerAvatar = Instance.new("ImageLabel")
-    local AvatarCorner = Instance.new("UICorner")
-    local AvatarStroke = Instance.new("UIStroke")
-    local PlayerName = Instance.new("TextLabel")
-    
     PlayerAvatar.Name = "PlayerAvatar"
-    PlayerAvatar.Parent = Window
-    PlayerAvatar.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
-    PlayerAvatar.BorderSizePixel = 0
-    PlayerAvatar.Position = UDim2.new(1, -50, 0, 15)
-    PlayerAvatar.Size = UDim2.new(0, 40, 0, 40)
-    PlayerAvatar.ZIndex = 104
+    PlayerAvatar.Parent = AvatarBorder
+    PlayerAvatar.BackgroundTransparency = 1
+    PlayerAvatar.Size = UDim2.new(1, -6, 1, -6)
+    PlayerAvatar.Position = UDim2.new(0, 3, 0, 3)
+    PlayerAvatar.ZIndex = 7
     
-    AvatarCorner.CornerRadius = UDim.new(1, 0)
-    AvatarCorner.Parent = PlayerAvatar
+    local PlayerAvatarCorner = Instance.new("UICorner")
+    PlayerAvatarCorner.CornerRadius = UDim.new(1, 0)
+    PlayerAvatarCorner.Parent = PlayerAvatar
     
-    AvatarStroke.Thickness = 3
-    AvatarStroke.Color = Color3.fromRGB(100, 150, 255)
-    AvatarStroke.Parent = PlayerAvatar
-    
-    -- 彩虹渐变边框
-    local rainbowGradient = createRainbowGradient()
-    rainbowGradient.Parent = AvatarStroke
-    
-    -- 动态彩虹颜色动画
-    local rainbowConnection
-    rainbowConnection = RunService.Heartbeat:Connect(function()
-        rainbowGradient.Rotation = rainbowGradient.Rotation + 1
-        if rainbowGradient.Rotation >= 360 then
-            rainbowGradient.Rotation = 0
-        end
-    end)
-
+    -- 玩家名字
+    local PlayerName = Instance.new("TextLabel")
     PlayerName.Name = "PlayerName"
-    PlayerName.Parent = Window
+    PlayerName.Parent = AvatarContainer
     PlayerName.BackgroundTransparency = 1
-    PlayerName.Position = UDim2.new(1, -120, 0, 60)
-    PlayerName.Size = UDim2.new(0, 110, 0, 20)
-    PlayerName.ZIndex = 104
+    PlayerName.Size = UDim2.new(1, 0, 0, 16)
+    PlayerName.Position = UDim2.new(0, 0, 0, 55)
+    PlayerName.ZIndex = 6
     PlayerName.Font = Enum.Font.GothamBold
-    PlayerName.Text = Players.LocalPlayer.Name
+    PlayerName.Text = "玩家"
     PlayerName.TextColor3 = Color3.fromRGB(220, 220, 230)
-    PlayerName.TextSize = 12
-    PlayerName.TextXAlignment = Enum.TextXAlignment.Right
-
-    -- 加载玩家头像
-    local player = Players.LocalPlayer
-    local userId = player.UserId
-    local thumbType = Enum.ThumbnailType.HeadShot
-    local thumbSize = Enum.ThumbnailSize.Size420x420
-    local content, isReady = Players:GetUserThumbnailAsync(userId, thumbType, thumbSize)
+    PlayerName.TextSize = 11
+    PlayerName.TextTransparency = 1
     
-    PlayerAvatar.Image = content
-
+    -- 加载玩家头像和名字
+    local localPlayer = Players.LocalPlayer
+    if localPlayer then
+        PlayerName.Text = localPlayer.Name
+        local userId = localPlayer.UserId
+        PlayerAvatar.Image = "https://www.roblox.com/headshot-thumbnail/image?userId=" .. userId .. "&width=150&height=150&format=png"
+    end
+    
+    -- 标题
+    local WindowTitle = Instance.new("TextLabel")
     WindowTitle.Name = "WindowTitle"
     WindowTitle.Parent = Window
     WindowTitle.BackgroundTransparency = 1
     WindowTitle.BorderSizePixel = 0
-    WindowTitle.Position = UDim2.new(0, 15, 0, 12)
-    WindowTitle.Size = UDim2.new(1, -140, 0, 22)
-    WindowTitle.ZIndex = 104
+    WindowTitle.Position = UDim2.new(0, 70, 0, 12)
+    WindowTitle.Size = UDim2.new(1, -80, 0, 22)
+    WindowTitle.ZIndex = 4
     WindowTitle.Font = Enum.Font.GothamBold
     WindowTitle.Text = nofdebug.Title or "通知"
     WindowTitle.TextColor3 = Color3.fromRGB(245, 245, 245)
     WindowTitle.TextSize = 16
     WindowTitle.TextXAlignment = Enum.TextXAlignment.Left
     WindowTitle.TextTransparency = 1
-
+    
+    -- 描述
+    local WindowDescription = Instance.new("TextLabel")
     WindowDescription.Name = "WindowDescription"
     WindowDescription.Parent = Window
     WindowDescription.BackgroundTransparency = 1
     WindowDescription.BorderSizePixel = 0
-    WindowDescription.Position = UDim2.new(0, 15, 0, 38)
-    WindowDescription.Size = UDim2.new(1, -140, 1, -80)
-    WindowDescription.ZIndex = 104
+    WindowDescription.Position = UDim2.new(0, 70, 0, 38)
+    WindowDescription.Size = UDim2.new(1, -80, 1, -60)
+    WindowDescription.ZIndex = 4
     WindowDescription.Font = Enum.Font.Gotham
     WindowDescription.Text = nofdebug.Description or ""
-    WindowDescription.TextColor3 = Color3.fromRGB(210, 210, 220)
+    WindowDescription.TextColor3 = Color3.fromRGB(200, 200, 210)
     WindowDescription.TextSize = 13
     WindowDescription.TextWrapped = true
     WindowDescription.TextXAlignment = Enum.TextXAlignment.Left
     WindowDescription.TextYAlignment = Enum.TextYAlignment.Top
     WindowDescription.TextTransparency = 1
-
+    
+    -- 进度条背景
+    local ProgressBarBackground = Instance.new("Frame")
     ProgressBarBackground.Name = "ProgressBarBackground"
     ProgressBarBackground.Parent = Window
     ProgressBarBackground.BackgroundColor3 = Color3.fromRGB(50, 50, 65)
     ProgressBarBackground.BorderSizePixel = 0
-    ProgressBarBackground.Position = UDim2.new(0, 15, 1, -25)
-    ProgressBarBackground.Size = UDim2.new(1, -140, 0, 8)
-    ProgressBarBackground.ZIndex = 103
+    ProgressBarBackground.Position = UDim2.new(0, 70, 1, -22)
+    ProgressBarBackground.Size = UDim2.new(1, -80, 0, 6)
+    ProgressBarBackground.ZIndex = 3
     
+    local ProgressBgCorner = Instance.new("UICorner")
     ProgressBgCorner.CornerRadius = UDim.new(1, 0)
     ProgressBgCorner.Parent = ProgressBarBackground
-
+    
+    -- 进度条
+    local ProgressBar = Instance.new("Frame")
     ProgressBar.Name = "ProgressBar"
     ProgressBar.Parent = ProgressBarBackground
-    ProgressBar.BackgroundColor3 = middledebug.OutlineColor or Color3.fromRGB(100, 150, 255)
+    ProgressBar.BackgroundColor3 = middledebug.OutlineColor or Color3.fromRGB(100, 180, 255)
     ProgressBar.BorderSizePixel = 0
     ProgressBar.Size = UDim2.new(1, 0, 1, 0)
-    ProgressBar.ZIndex = 104
+    ProgressBar.ZIndex = 4
     
+    local ProgressCorner = Instance.new("UICorner")
     ProgressCorner.CornerRadius = UDim.new(1, 0)
     ProgressCorner.Parent = ProgressBar
-
+    
     -- 创建粒子效果
-    local cleanupParticles = createParticleEffect(MainContainer)
-
-    -- 计算通知高度
-    local notificationHeight = 110
-    if SelectedType == "option" then
-        notificationHeight = 140
-    elseif SelectedType == "image" then
-        notificationHeight = 110
-    end
-
-    -- 添加到活动通知列表
-    local notificationData = {
-        container = MainContainer,
-        height = notificationHeight
+    local particles = createParticleEffect(Window)
+    
+    -- 存储到活动通知表
+    activeNotifications[notificationId] = {
+        Container = MainContainer,
+        Particles = particles,
+        Position = currentOffset
     }
-    table.insert(activeNotifications, notificationData)
-
-    local function removeNotification()
-        -- 从活动列表中移除
-        for i, data in ipairs(activeNotifications) do
-            if data.container == MainContainer then
-                table.remove(activeNotifications, i)
-                break
-            end
+    
+    -- 启动动画
+    local function animateNotification()
+        -- 启动彩虹边框动画
+        local borderAnimation = createRainbowBorderAnimation(UIStroke)
+        local avatarBorderAnimation = createRainbowBorderAnimation(AvatarBorderStroke)
+        
+        -- 启动粒子动画
+        local particleAnimation = startParticleAnimation(particles, Window)
+        
+        -- 存储连接以便清理
+        particleConnections[notificationId] = {
+            Border = borderAnimation,
+            AvatarBorder = avatarBorderAnimation,
+            Particles = particleAnimation
+        }
+        
+        -- 展开动画
+        local expandTween = TweenService:Create(
+            MainContainer,
+            TweenInfo.new(0.6, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
+            {Size = UDim2.new(0, 320, 0, 120)}
+        )
+        expandTween:Play()
+        
+        -- 文本和头像淡入动画
+        wait(0.3)
+        
+        local fadeInTweens = {
+            TweenService:Create(WindowTitle, TweenInfo.new(0.4), {TextTransparency = 0}),
+            TweenService:Create(WindowDescription, TweenInfo.new(0.4), {TextTransparency = 0.2}),
+            TweenService:Create(PlayerName, TweenInfo.new(0.4), {TextTransparency = 0})
+        }
+        
+        for _, tween in ipairs(fadeInTweens) do
+            tween:Play()
         end
         
-        -- 更新其他通知位置
-        updateNotificationPositions()
-        
-        -- 清理资源
-        if rainbowConnection then
-            rainbowConnection:Disconnect()
-        end
-        if cleanupParticles then
-            cleanupParticles()
-        end
-    end
-
-    if SelectedType == "default" then
-        local function animateNotification()
-            -- 展开动画
-            MainContainer:TweenSize(UDim2.new(0, 320, 0, notificationHeight), "Out", "Quad", 0.5, true)
-            
-            -- 更新所有通知位置
-            updateNotificationPositions()
-            
-            -- 文本和头像淡入动画
-            local fadeInTweens = {
-                TweenService:Create(WindowTitle, TweenInfo.new(0.5), {TextTransparency = 0}),
-                TweenService:Create(WindowDescription, TweenInfo.new(0.5), {TextTransparency = 0.2}),
-                TweenService:Create(PlayerAvatar, TweenInfo.new(0.5), {ImageTransparency = 0}),
-                TweenService:Create(PlayerName, TweenInfo.new(0.5), {TextTransparency = 0})
-            }
-            
-            for _, tween in ipairs(fadeInTweens) do
-                tween:Play()
-            end
-            
+        if SelectedType == "default" then
             -- 进度条动画
+            wait(0.2)
             local progressTween = TweenService:Create(
                 ProgressBar,
-                TweenInfo.new(middledebug.Time or 5, Enum.EasingStyle.Linear),
+                TweenInfo.new(middledebug.Time or 5, Enum.EasingStyle.Quint, Enum.EasingDirection.Out),
                 {Size = UDim2.new(0, 0, 1, 0)}
             )
-            
-            wait(0.5)
             progressTween:Play()
-            wait(middledebug.Time or 5)
             
-            -- 淡出动画
-            local fadeOutTweens = {
-                TweenService:Create(WindowTitle, TweenInfo.new(0.4), {TextTransparency = 1}),
-                TweenService:Create(WindowDescription, TweenInfo.new(0.4), {TextTransparency = 1}),
-                TweenService:Create(PlayerAvatar, TweenInfo.new(0.4), {ImageTransparency = 1}),
-                TweenService:Create(PlayerName, TweenInfo.new(0.4), {TextTransparency = 1})
-            }
+            wait((middledebug.Time or 5) + 0.2)
             
-            for _, tween in ipairs(fadeOutTweens) do
-                tween:Play()
-            end
-            
-            -- 收缩动画
-            MainContainer:TweenSize(UDim2.new(0, 0, 0, 0), "Out", "Quad", 0.4, true)
-            wait(0.4)
-            removeNotification()
-            MainContainer:Destroy()
-        end
-        coroutine.wrap(animateNotification)()
-        
-    elseif SelectedType == "image" then
-        local function animateNotification()
-            MainContainer:TweenSize(UDim2.new(0, 320, 0, notificationHeight), "Out", "Quad", 0.5, true)
-            updateNotificationPositions()
-            
-            -- 创建内容图片
-            local ContentImage = Instance.new("ImageLabel")
-            ContentImage.Parent = Window
-            ContentImage.BackgroundTransparency = 1
-            ContentImage.BorderSizePixel = 0
-            ContentImage.Position = UDim2.new(0, 15, 0, 45)
-            ContentImage.Size = UDim2.new(0, 50, 0, 50)
-            ContentImage.ZIndex = 104
-            ContentImage.Image = all.Image or ""
-            ContentImage.ImageColor3 = all.ImageColor or Color3.fromRGB(255, 255, 255)
-            ContentImage.ImageTransparency = 1
-            
-            -- 调整描述位置
-            WindowDescription.Position = UDim2.new(0, 75, 0, 45)
-            WindowDescription.Size = UDim2.new(1, -160, 1, -80)
-            
-            local fadeInTweens = {
-                TweenService:Create(WindowTitle, TweenInfo.new(0.5), {TextTransparency = 0}),
-                TweenService:Create(WindowDescription, TweenInfo.new(0.5), {TextTransparency = 0.2}),
-                TweenService:Create(PlayerAvatar, TweenInfo.new(0.5), {ImageTransparency = 0}),
-                TweenService:Create(PlayerName, TweenInfo.new(0.5), {TextTransparency = 0}),
-                TweenService:Create(ContentImage, TweenInfo.new(0.5), {ImageTransparency = 0})
-            }
-            
-            for _, tween in ipairs(fadeInTweens) do
-                tween:Play()
+        elseif SelectedType == "image" then
+            -- 图片类型处理
+            if all and all.Image then
+                local ImageIcon = Instance.new("ImageLabel")
+                ImageIcon.Parent = Window
+                ImageIcon.BackgroundTransparency = 1
+                ImageIcon.Size = UDim2.new(0, 24, 0, 24)
+                ImageIcon.Position = UDim2.new(0, 40, 0, 15)
+                ImageIcon.Image = all.Image
+                ImageIcon.ImageColor3 = all.ImageColor or Color3.fromRGB(255, 255, 255)
+                ImageIcon.ZIndex = 5
             end
             
             local progressTween = TweenService:Create(
                 ProgressBar,
-                TweenInfo.new(middledebug.Time or 5, Enum.EasingStyle.Linear),
+                TweenInfo.new(middledebug.Time or 5, Enum.EasingStyle.Quint, Enum.EasingDirection.Out),
                 {Size = UDim2.new(0, 0, 1, 0)}
             )
-            
-            wait(0.5)
             progressTween:Play()
-            wait(middledebug.Time or 5)
             
-            local fadeOutTweens = {
-                TweenService:Create(WindowTitle, TweenInfo.new(0.4), {TextTransparency = 1}),
-                TweenService:Create(WindowDescription, TweenInfo.new(0.4), {TextTransparency = 1}),
-                TweenService:Create(PlayerAvatar, TweenInfo.new(0.4), {ImageTransparency = 1}),
-                TweenService:Create(PlayerName, TweenInfo.new(0.4), {TextTransparency = 1}),
-                TweenService:Create(ContentImage, TweenInfo.new(0.4), {ImageTransparency = 1})
-            }
+            wait((middledebug.Time or 5) + 0.2)
             
-            for _, tween in ipairs(fadeOutTweens) do
-                tween:Play()
-            end
+        elseif SelectedType == "option" then
+            -- 选项类型处理
+            MainContainer.Size = UDim2.new(0, 320, 0, 140)
             
-            MainContainer:TweenSize(UDim2.new(0, 0, 0, 0), "Out", "Quad", 0.4, true)
-            wait(0.4)
-            removeNotification()
-            MainContainer:Destroy()
-        end
-        coroutine.wrap(animateNotification)()
-        
-    elseif SelectedType == "option" then
-        local function animateNotification()
-            MainContainer:TweenSize(UDim2.new(0, 320, 0, notificationHeight), "Out", "Quad", 0.5, true)
-            updateNotificationPositions()
-            
-            -- 创建按钮容器
             local ButtonContainer = Instance.new("Frame")
             ButtonContainer.Parent = Window
             ButtonContainer.BackgroundTransparency = 1
-            ButtonContainer.Size = UDim2.new(1, -140, 0, 32)
-            ButtonContainer.Position = UDim2.new(0, 15, 1, -40)
-            ButtonContainer.ZIndex = 105
+            ButtonContainer.Size = UDim2.new(1, -80, 0, 32)
+            ButtonContainer.Position = UDim2.new(0, 70, 1, -40)
+            ButtonContainer.ZIndex = 5
             
             local AcceptButton = Instance.new("TextButton")
-            local AcceptCorner = Instance.new("UICorner")
-            local DeclineButton = Instance.new("TextButton")
-            local DeclineCorner = Instance.new("UICorner")
-            
             AcceptButton.Name = "AcceptButton"
             AcceptButton.Parent = ButtonContainer
             AcceptButton.Size = UDim2.new(0.45, 0, 1, -8)
@@ -482,12 +395,13 @@ function Nofitication:Notify(nofdebug, middledebug, all)
             AcceptButton.Font = Enum.Font.GothamBold
             AcceptButton.TextSize = 13
             AcceptButton.AutoButtonColor = false
-            AcceptButton.ZIndex = 106
-            AcceptButton.TextTransparency = 1
+            AcceptButton.ZIndex = 6
             
+            local AcceptCorner = Instance.new("UICorner")
             AcceptCorner.CornerRadius = UDim.new(0, 8)
             AcceptCorner.Parent = AcceptButton
             
+            local DeclineButton = Instance.new("TextButton")
             DeclineButton.Name = "DeclineButton"
             DeclineButton.Parent = ButtonContainer
             DeclineButton.Size = UDim2.new(0.45, 0, 1, -8)
@@ -498,26 +412,13 @@ function Nofitication:Notify(nofdebug, middledebug, all)
             DeclineButton.Font = Enum.Font.GothamBold
             DeclineButton.TextSize = 13
             DeclineButton.AutoButtonColor = false
-            DeclineButton.ZIndex = 106
-            DeclineButton.TextTransparency = 1
+            DeclineButton.ZIndex = 6
             
+            local DeclineCorner = Instance.new("UICorner")
             DeclineCorner.CornerRadius = UDim.new(0, 8)
             DeclineCorner.Parent = DeclineButton
             
-            local function setupButtonHover(button, hoverColor, originalColor)
-                button.MouseEnter:Connect(function()
-                    button.BackgroundColor3 = hoverColor
-                end)
-                button.MouseLeave:Connect(function()
-                    button.BackgroundColor3 = originalColor
-                end)
-            end
-            
-            setupButtonHover(AcceptButton, Color3.fromRGB(100, 220, 140), Color3.fromRGB(80, 200, 120))
-            setupButtonHover(DeclineButton, Color3.fromRGB(240, 110, 110), Color3.fromRGB(220, 90, 90))
-            
             local Stilthere = true
-            
             local progressTween = TweenService:Create(
                 ProgressBar,
                 TweenInfo.new(middledebug.Time or 5, Enum.EasingStyle.Linear),
@@ -531,7 +432,6 @@ function Nofitication:Notify(nofdebug, middledebug, all)
                     end
                 end)
                 Stilthere = false
-                closeNotification()
             end
             
             local function decline()
@@ -541,55 +441,72 @@ function Nofitication:Notify(nofdebug, middledebug, all)
                     end
                 end)
                 Stilthere = false
-                closeNotification()
-            end
-            
-            local function closeNotification()
-                local fadeOutTweens = {
-                    TweenService:Create(WindowTitle, TweenInfo.new(0.3), {TextTransparency = 1}),
-                    TweenService:Create(WindowDescription, TweenInfo.new(0.3), {TextTransparency = 1}),
-                    TweenService:Create(PlayerAvatar, TweenInfo.new(0.3), {ImageTransparency = 1}),
-                    TweenService:Create(PlayerName, TweenInfo.new(0.3), {TextTransparency = 1}),
-                    TweenService:Create(AcceptButton, TweenInfo.new(0.3), {TextTransparency = 1}),
-                    TweenService:Create(DeclineButton, TweenInfo.new(0.3), {TextTransparency = 1})
-                }
-                
-                for _, tween in ipairs(fadeOutTweens) do
-                    tween:Play()
-                end
-                
-                MainContainer:TweenSize(UDim2.new(0, 0, 0, 0), "Out", "Quad", 0.3, true)
-                wait(0.3)
-                removeNotification()
-                MainContainer:Destroy()
             end
             
             AcceptButton.MouseButton1Click:Connect(accept)
             DeclineButton.MouseButton1Click:Connect(decline)
             
-            -- 淡入动画
-            local fadeInTweens = {
-                TweenService:Create(WindowTitle, TweenInfo.new(0.5), {TextTransparency = 0}),
-                TweenService:Create(WindowDescription, TweenInfo.new(0.5), {TextTransparency = 0.2}),
-                TweenService:Create(PlayerAvatar, TweenInfo.new(0.5), {ImageTransparency = 0}),
-                TweenService:Create(PlayerName, TweenInfo.new(0.5), {TextTransparency = 0}),
-                TweenService:Create(AcceptButton, TweenInfo.new(0.5), {TextTransparency = 0}),
-                TweenService:Create(DeclineButton, TweenInfo.new(0.5), {TextTransparency = 0})
-            }
-            
-            for _, tween in ipairs(fadeInTweens) do
-                tween:Play()
-            end
-            
-            wait(0.5)
             progressTween:Play()
-            wait(middledebug.Time or 5)
+            local startTime = tick()
             
-            if Stilthere then
-                closeNotification()
+            while Stilthere and (tick() - startTime) < (middledebug.Time or 5) do
+                wait(0.1)
             end
         end
-        coroutine.wrap(animateNotification)()
+        
+        -- 淡出动画
+        local fadeOutTweens = {
+            TweenService:Create(WindowTitle, TweenInfo.new(0.3), {TextTransparency = 1}),
+            TweenService:Create(WindowDescription, TweenInfo.new(0.3), {TextTransparency = 1}),
+            TweenService:Create(PlayerName, TweenInfo.new(0.3), {TextTransparency = 1})
+        }
+        
+        for _, tween in ipairs(fadeOutTweens) do
+            tween:Play()
+        end
+        
+        wait(0.3)
+        
+        -- 收缩动画
+        local collapseTween = TweenService:Create(
+            MainContainer,
+            TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.In),
+            {Size = UDim2.new(0, 0, 0, 0)}
+        )
+        collapseTween:Play()
+        
+        wait(0.4)
+        
+        -- 清理资源
+        if particleConnections[notificationId] then
+            particleConnections[notificationId].Border:Disconnect()
+            particleConnections[notificationId].AvatarBorder:Disconnect()
+            particleConnections[notificationId].Particles:Disconnect()
+            particleConnections[notificationId] = nil
+        end
+        
+        -- 移除粒子
+        for _, particle in ipairs(particles) do
+            particle:Destroy()
+        end
+        
+        MainContainer:Destroy()
+        activeNotifications[notificationId] = nil
+        
+        -- 更新其他通知位置
+        for id, notification in pairs(activeNotifications) do
+            if notification.Position > currentOffset then
+                notification.Position = notification.Position - 1
+                TweenService:Create(
+                    notification.Container,                    TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                    {Position = UDim2.new(1, -25, 0, 25 + (notification.Position - 1) * 140)}
+                ):Play()
+            end
+        end
+        
+        notificationOffset = notificationOffset - 1
     end
+    
+    coroutine.wrap(animateNotification)()
 end
 return Nofitication
