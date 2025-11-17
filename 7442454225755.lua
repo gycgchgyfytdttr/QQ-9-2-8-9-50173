@@ -153,11 +153,11 @@ function Library.new(Library, name, theme)
         end
     end
     
-    -- 修改颜色主题为黑蓝
+    -- 修改颜色方案为黑蓝主题
     MainXEColor = Color3.fromRGB(0, 0, 0)  -- 纯黑色背景
-    Background = Color3.fromRGB(0, 0, 0)
-    zyColor = Color3.fromRGB(10, 20, 40)   -- 深蓝色
-    beijingColor = Color3.fromRGB(0, 50, 100)  -- 蓝色
+    Background = Color3.fromRGB(0, 0, 0)   -- 纯黑色
+    zyColor = Color3.fromRGB(20, 25, 45)   -- 深蓝色
+    beijingColor = Color3.fromRGB(30, 60, 120) -- 蓝色
     
     local dogent = Instance.new("ScreenGui")
     local MainXE = Instance.new("Frame")
@@ -180,10 +180,11 @@ function Library.new(Library, name, theme)
     local UIGradientTitle = Instance.new("UIGradient")
     local WelcomeLabel = Instance.new("TextLabel")
     
-    -- 创建厚边框
-    local ThickBorder = Instance.new("Frame")
-    local ThickBorderCorner = Instance.new("UICorner")
-    local ThickBorderGradient = Instance.new("UIGradient")
+    -- 新增：蓝黑边框元素
+    local BorderFrame = Instance.new("Frame")
+    local BorderCorner = Instance.new("UICorner")
+    local BorderGradient = Instance.new("UIGradient")
+    local BorderStroke = Instance.new("UIStroke")
 
     if syn and syn.protect_gui then
         syn.protect_gui(dogent)
@@ -205,30 +206,36 @@ function Library.new(Library, name, theme)
             dogent.Enabled = true
         end
     end
+    
     local Players = game:GetService("Players")
     local XA = Players.LocalPlayer
     local userRegion = game:GetService("LocalizationService"):GetCountryRegionForPlayerAsync(XA)
 
-    -- 创建厚边框
-    ThickBorder.Name = "ThickBorder"
-    ThickBorder.Parent = dogent
-    ThickBorder.AnchorPoint = Vector2.new(0.5, 0.5)
-    ThickBorder.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    ThickBorder.Position = UDim2.new(0.5, 0, 0.5, 0)
-    ThickBorder.Size = UDim2.new(0, 0, 0, 0)
-    ThickBorder.ZIndex = 0
-    ThickBorder.Visible = true
-
-    ThickBorderCorner.CornerRadius = UDim.new(0, 12)  -- 圆角边框
-    ThickBorderCorner.Parent = ThickBorder
-
-    ThickBorderGradient.Color = ColorSequence.new({
+    -- 创建蓝黑边框
+    BorderFrame.Name = "BorderFrame"
+    BorderFrame.Parent = dogent
+    BorderFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+    BorderFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    BorderFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+    BorderFrame.Size = UDim2.new(0, 0, 0, 0)
+    BorderFrame.ZIndex = 0
+    
+    BorderCorner.CornerRadius = UDim.new(0, 12)
+    BorderCorner.Parent = BorderFrame
+    
+    BorderStroke.Thickness = 8  -- 加粗边框
+    BorderStroke.Color = Color3.fromRGB(0, 100, 255)
+    BorderStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+    BorderStroke.LineJoinMode = Enum.LineJoinMode.Round
+    BorderStroke.Parent = BorderFrame
+    
+    BorderGradient.Color = ColorSequence.new({
         ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 0, 50)),
         ColorSequenceKeypoint.new(0.50, Color3.fromRGB(0, 100, 255)),
         ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 0, 50))
     })
-    ThickBorderGradient.Rotation = 0
-    ThickBorderGradient.Parent = ThickBorder
+    BorderGradient.Rotation = 0
+    BorderGradient.Parent = BorderStroke
 
     MainXE.Name = "MainXE"
     MainXE.Parent = dogent
@@ -236,7 +243,7 @@ function Library.new(Library, name, theme)
     MainXE.BackgroundColor3 = MainXEColor
     MainXE.Position = UDim2.new(0.5, 0, 0.5, 0)
     MainXE.Size = UDim2.new(0, 0, 0, 0)
-    MainXE.ZIndex = 2
+    MainXE.ZIndex = 1
     MainXE.Active = true
     MainXE.Draggable = true
     MainXE.Visible = true  
@@ -251,13 +258,13 @@ function Library.new(Library, name, theme)
     WelcomeLabel.TextSize = 32
     WelcomeLabel.BackgroundTransparency = 1
     WelcomeLabel.TextTransparency = 1
-    WelcomeLabel.TextStrokeTransparency = 0.5
-    WelcomeLabel.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+    WelcomeLabel.TextStrokeTransparency = 0.3
+    WelcomeLabel.TextStrokeColor3 = Color3.fromRGB(0, 0, 50)
     WelcomeLabel.Font = Enum.Font.GothamBold
     WelcomeLabel.Visible = true
 
     UICornerMainXE.Parent = MainXE
-    UICornerMainXE.CornerRadius = UDim.new(0, 10)  -- 增加圆角
+    UICornerMainXE.CornerRadius = UDim.new(0, 10)
 
     DropShadowHolder.Name = "DropShadowHolder"
     DropShadowHolder.Parent = MainXE
@@ -265,7 +272,7 @@ function Library.new(Library, name, theme)
     DropShadowHolder.BorderSizePixel = 0
     DropShadowHolder.Size = UDim2.new(1, 0, 1, 0)
     DropShadowHolder.BorderColor3 = Color3.fromRGB(255, 255, 255)
-    DropShadowHolder.ZIndex = 1
+    DropShadowHolder.ZIndex = 0
 
     DropShadow.Name = "DropShadow"
     DropShadow.Parent = DropShadowHolder
@@ -273,10 +280,10 @@ function Library.new(Library, name, theme)
     DropShadow.BackgroundTransparency = 1.000
     DropShadow.BorderSizePixel = 0
     DropShadow.Position = UDim2.new(0.5, 0, 0.5, 0)
-    DropShadow.Size = UDim2.new(1, 60, 1, 60)  -- 增加阴影大小使边框更厚
-    DropShadow.ZIndex = 1
+    DropShadow.Size = UDim2.new(1, 60, 1, 60)  -- 增大阴影尺寸
+    DropShadow.ZIndex = 0
     DropShadow.Image = "rbxassetid://6015897843"
-    DropShadow.ImageColor3 = Color3.fromRGB(255, 255, 255)
+    DropShadow.ImageColor3 = Color3.fromRGB(0, 50, 100)
     DropShadow.ImageTransparency = 0
     DropShadow.ScaleType = Enum.ScaleType.Slice
     DropShadow.SliceCenter = Rect.new(49, 49, 450, 450)
@@ -297,7 +304,7 @@ function Library.new(Library, name, theme)
     tween:Play()
 
     -- 边框动画
-    local borderTween = TweenService:Create(ThickBorderGradient, tweeninfo, {Rotation = 360})
+    local borderTween = TweenService:Create(BorderGradient, tweeninfo, {Rotation = 360})
     borderTween:Play()
 
     function toggleui()
@@ -317,10 +324,10 @@ function Library.new(Library, name, theme)
             }
         )
         Tween(
-            ThickBorder,
+            BorderFrame,
             {0.3, "Sine", "InOut"},
             {
-                Size = UDim2.new(0, 630, 0, (toggled and 526 or 0))  -- 边框比主UI稍大
+                Size = UDim2.new(0, 625, 0, (toggled and 520 or 0))  -- 边框比主UI稍大
             }
         )
     end
@@ -333,7 +340,7 @@ function Library.new(Library, name, theme)
     TabMainXE.Size = UDim2.new(0, 448, 0, 353)
     TabMainXE.Visible = false
 
-    MainXEC.CornerRadius = UDim.new(0, 8)  -- 增加圆角
+    MainXEC.CornerRadius = UDim.new(0, 8)
     MainXEC.Name = "MainXEC"
     MainXEC.Parent = MainXE
 
@@ -343,7 +350,7 @@ function Library.new(Library, name, theme)
     SB.BorderColor3 = MainXEColor
     SB.Size = UDim2.new(0, 0, 0, 0)
 
-    SBC.CornerRadius = UDim.new(0, 8)  -- 增加圆角
+    SBC.CornerRadius = UDim.new(0, 8)
     SBC.Name = "SBC"
     SBC.Parent = SB
 
@@ -362,36 +369,39 @@ function Library.new(Library, name, theme)
     SideG.Parent = Side
 
     -- 修改开启动画
-    MainXE:TweenSize(UDim2.new(0, 170, 0, 60), "Out", "Quad", 1.5, true, function()
-      WelcomeLabel.Visible = true
+    BorderFrame:TweenSize(UDim2.new(0, 190, 0, 80), "Out", "Quad", 1.5, true, function()
+        MainXE:TweenSize(UDim2.new(0, 170, 0, 60), "Out", "Quad", 1.5, true, function()
+            WelcomeLabel.Visible = true
 
-      local hideTween = TweenService:Create(
-          WelcomeLabel,
-          TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-          {TextTransparency = 0, TextStrokeTransparency = 1}
-      )
-      hideTween:Play()
-      hideTween.Completed:Wait()
-      wait(2)
-      local showTween = TweenService:Create(
-          WelcomeLabel,
-          TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.In),
-          {TextTransparency = 1, TextStrokeTransparency = 0.5}
-      )
-      showTween:Play()
-      showTween.Completed:Wait()
-      wait(0.3)
-          -- 边框动画
-          ThickBorder:TweenSize(UDim2.new(0, 590, 0, 378), "Out", "Quad", 0.9, true)
-          MainXE:TweenSize(UDim2.new(0, 570, 0, 358), "Out", "Quad", 0.9, true, function()
-              Side:TweenSize(UDim2.new(0, 110, 0, 357), "Out", "Quad", 0.4, true, function()
-                  SB:TweenSize(UDim2.new(0, 8, 0, 357), "Out", "Quad", 0.2, true, function()
-                      wait(1)
-                      TabMainXE.Visible = true
-                  end)
-              end)
-          end)
-      end)
+            local hideTween = TweenService:Create(
+                WelcomeLabel,
+                TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                {TextTransparency = 0, TextStrokeTransparency = 0.7}
+            )
+            hideTween:Play()
+            hideTween.Completed:Wait()
+            wait(2)
+            local showTween = TweenService:Create(
+                WelcomeLabel,
+                TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.In),
+                {TextTransparency = 1, TextStrokeTransparency = 0.3}
+            )
+            showTween:Play()
+            showTween.Completed:Wait()
+            wait(0.3)
+            UIGradient.Parent = DropShadow
+            BorderFrame:TweenSize(UDim2.new(0, 590, 0, 378), "Out", "Quad", 0.9, true, function()
+                MainXE:TweenSize(UDim2.new(0, 570, 0, 358), "Out", "Quad", 0.9, true, function()
+                    Side:TweenSize(UDim2.new(0, 110, 0, 357), "Out", "Quad", 0.4, true, function()
+                        SB:TweenSize(UDim2.new(0, 8, 0, 357), "Out", "Quad", 0.2, true, function()
+                            wait(1)
+                            TabMainXE.Visible = true
+                        end)
+                    end)
+                end)
+            end)
+        end)
+    end)
 
     TabBtns.Name = "TabBtns"
     TabBtns.Parent = Side
@@ -417,7 +427,7 @@ function Library.new(Library, name, theme)
     ScriptTitle.Size = UDim2.new(0, 102, 0, 20)
     ScriptTitle.Font = Enum.Font.GothamBold
     ScriptTitle.Text = name
-    ScriptTitle.TextColor3 = Color3.fromRGB(0, 150, 255)  -- 蓝色文字
+    ScriptTitle.TextColor3 = Color3.fromRGB(0, 150, 255)
     ScriptTitle.TextSize = 14.000
     ScriptTitle.TextScaled = true
     ScriptTitle.TextXAlignment = Enum.TextXAlignment.Left
@@ -442,6 +452,12 @@ function Library.new(Library, name, theme)
         local startingPos = Vector2.new(-1, 0)
         
         gradient.Offset = startingPos
+        gradient.Color = ColorSequence.new({
+            ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 50, 150)),
+            ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 150, 255)),
+            ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 50, 150))
+        })
+        
         local function animate()
             create:Play()
             create.Completed:Wait()
@@ -470,14 +486,14 @@ function Library.new(Library, name, theme)
 
     Open.Name = "Open"
     Open.Parent = dogent
-    Open.BackgroundColor3 = Color3.fromRGB(0, 0, 0)  -- 黑色背景
+    Open.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
     Open.BackgroundTransparency = 0
     Open.Position = UDim2.new(0.00829315186, 0, 0.31107837, 0)
     Open.Size = UDim2.new(0, 35, 0, 32)
     Open.Transparency = 1
     Open.Font = Enum.Font.GothamBold
     Open.Text = "隐藏"
-    Open.TextColor3 = Color3.fromRGB(0, 150, 255)  -- 蓝色文字
+    Open.TextColor3 = Color3.fromRGB(0, 150, 255)
     Open.TextTransparency = 0
     Open.TextSize = 28.000
     Open.Active = true
@@ -489,11 +505,11 @@ function Library.new(Library, name, theme)
     OpenCorner.Parent = Open
 
     -- 为打开按钮添加蓝黑边框
-    local OpenBorder = Instance.new("UIStroke")
-    OpenBorder.Thickness = 2
-    OpenBorder.Color = Color3.fromRGB(0, 100, 255)
-    OpenBorder.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-    OpenBorder.Parent = Open
+    local OpenStroke = Instance.new("UIStroke")
+    OpenStroke.Thickness = 2
+    OpenStroke.Color = Color3.fromRGB(0, 100, 255)
+    OpenStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+    OpenStroke.Parent = Open
 
     local uihide = false
     local isAnimating = false
@@ -501,8 +517,8 @@ function Library.new(Library, name, theme)
     local function blueTextAnimation()
         while true do
             for i = 0, 1, 0.01 do
-                local hue = (tick() % 5 / 5) * 0.5 + 0.5  -- 限制在蓝色范围
-                Open.TextColor3 = Color3.fromHSV(hue, 0.8, 1)
+                local hue = tick() % 5 / 5
+                Open.TextColor3 = Color3.fromHSV(0.6 + math.sin(tick()) * 0.1, 1, 1)  -- 蓝色系动画
                 wait(0.01)
             end
         end
@@ -517,12 +533,12 @@ function Library.new(Library, name, theme)
             TabMainXE.Position = UDim2.new(0.217000037, 0, 0, 3)
             uihide = true
             MainXE.Visible = false
-            ThickBorder.Visible = false
+            BorderFrame.Visible = false
         else
             Open.Text = "隐藏"
             TabMainXE.Position = UDim2.new(0.217000037, 0, 0, 3)
             MainXE.Visible = true
-            ThickBorder.Visible = true
+            BorderFrame.Visible = true
             uihide = false
         end
     end)
@@ -712,7 +728,7 @@ function Library.new(Library, name, theme)
                 local BtnModule = Instance.new("Frame")
                 local Btn = Instance.new("TextButton")
                 local BtnC = Instance.new("UICorner")
-                local BtnBorder = Instance.new("UIStroke")  -- 添加边框
+                local BtnStroke = Instance.new("UIStroke")  -- 添加边框
 
                 BtnModule.Name = "BtnModule"
                 BtnModule.Parent = Objs
@@ -739,10 +755,10 @@ function Library.new(Library, name, theme)
                 BtnC.Parent = Btn
 
                 -- 添加蓝黑边框
-                BtnBorder.Thickness = 1
-                BtnBorder.Color = Color3.fromRGB(0, 100, 255)
-                BtnBorder.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-                BtnBorder.Parent = Btn
+                BtnStroke.Thickness = 1
+                BtnStroke.Color = Color3.fromRGB(0, 100, 255)
+                BtnStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+                BtnStroke.Parent = Btn
 
                 Btn.MouseButton1Click:Connect(
                     function()
@@ -760,7 +776,7 @@ function Library.new(Library, name, theme)
                 local LabelModuleE = Instance.new("Frame")
                 local TextLabelE = Instance.new("TextLabel")
                 local LabelCE = Instance.new("UICorner")
-                local LabelBorder = Instance.new("UIStroke")  -- 添加边框
+                local LabelStroke = Instance.new("UIStroke")  -- 添加边框
 
                 LabelModuleE.Name = "LabelModuleE"
                 LabelModuleE.Parent = Objs
@@ -785,10 +801,10 @@ function Library.new(Library, name, theme)
                 LabelCE.Parent = TextLabelE
 
                 -- 添加蓝黑边框
-                LabelBorder.Thickness = 1
-                LabelBorder.Color = Color3.fromRGB(0, 100, 255)
-                LabelBorder.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-                LabelBorder.Parent = TextLabelE
+                LabelStroke.Thickness = 1
+                LabelStroke.Color = Color3.fromRGB(0, 100, 255)
+                LabelStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+                LabelStroke.Parent = TextLabelE
 
                 return TextLabelE
             end
@@ -797,7 +813,7 @@ function Library.new(Library, name, theme)
                 local LabelModule = Instance.new("Frame")
                 local TextLabelE = Instance.new("TextLabel")
                 local LabelCE = Instance.new("UICorner")
-                local LabelBorder = Instance.new("UIStroke")  -- 添加边框
+                local LabelStroke = Instance.new("UIStroke")  -- 添加边框
 
                 LabelModule.Name = "LabelModule"
                 LabelModule.Parent = Objs
@@ -821,10 +837,10 @@ function Library.new(Library, name, theme)
                 LabelCE.Parent = TextLabelE
 
                 -- 添加蓝黑边框
-                LabelBorder.Thickness = 1
-                LabelBorder.Color = Color3.fromRGB(0, 100, 255)
-                LabelBorder.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-                LabelBorder.Parent = TextLabelE
+                LabelStroke.Thickness = 1
+                LabelStroke.Color = Color3.fromRGB(0, 100, 255)
+                LabelStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+                LabelStroke.Parent = TextLabelE
 
                 return TextLabelE
             end
@@ -841,12 +857,12 @@ function Library.new(Library, name, theme)
                 local ToggleModule = Instance.new("Frame")
                 local ToggleBtn = Instance.new("TextButton")
                 local ToggleBtnC = Instance.new("UICorner")
-                local ToggleBtnBorder = Instance.new("UIStroke")  -- 添加边框
+                local ToggleBtnStroke = Instance.new("UIStroke")  -- 添加边框
                 local ToggleDisable = Instance.new("Frame")
                 local ToggleSwitch = Instance.new("Frame")
                 local ToggleSwitchC = Instance.new("UICorner")
                 local ToggleDisableC = Instance.new("UICorner")
-                local ToggleDisableBorder = Instance.new("UIStroke")  -- 添加边框
+                local ToggleDisableStroke = Instance.new("UIStroke")  -- 添加边框
 
                 ToggleModule.Name = "ToggleModule"
                 ToggleModule.Parent = Objs
@@ -873,10 +889,10 @@ function Library.new(Library, name, theme)
                 ToggleBtnC.Parent = ToggleBtn
 
                 -- 添加蓝黑边框
-                ToggleBtnBorder.Thickness = 1
-                ToggleBtnBorder.Color = Color3.fromRGB(0, 100, 255)
-                ToggleBtnBorder.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-                ToggleBtnBorder.Parent = ToggleBtn
+                ToggleBtnStroke.Thickness = 1
+                ToggleBtnStroke.Color = Color3.fromRGB(0, 100, 255)
+                ToggleBtnStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+                ToggleBtnStroke.Parent = ToggleBtn
 
                 ToggleDisable.Name = "ToggleDisable"
                 ToggleDisable.Parent = ToggleBtn
@@ -885,24 +901,24 @@ function Library.new(Library, name, theme)
                 ToggleDisable.Position = UDim2.new(0.901869178, 0, 0.208881587, 0)
                 ToggleDisable.Size = UDim2.new(0, 36, 0, 22)
 
+                -- 添加开关边框
+                ToggleDisableStroke.Thickness = 1
+                ToggleDisableStroke.Color = Color3.fromRGB(0, 100, 255)
+                ToggleDisableStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+                ToggleDisableStroke.Parent = ToggleDisable
+
                 ToggleSwitch.Name = "ToggleSwitch"
                 ToggleSwitch.Parent = ToggleDisable
-                ToggleSwitch.BackgroundColor3 = Color3.fromRGB(0, 100, 255)  -- 蓝色开关
+                ToggleSwitch.BackgroundColor3 = beijingColor
                 ToggleSwitch.Size = UDim2.new(0, 24, 0, 22)
 
-                ToggleSwitchC.CornerRadius = UDim.new(0, 6)  -- 增加圆角
+                ToggleSwitchC.CornerRadius = UDim.new(0, 6)  -- 开关圆角
                 ToggleSwitchC.Name = "ToggleSwitchC"
                 ToggleSwitchC.Parent = ToggleSwitch
 
-                ToggleDisableC.CornerRadius = UDim.new(0, 6)  -- 增加圆角
+                ToggleDisableC.CornerRadius = UDim.new(0, 6)  -- 开关背景圆角
                 ToggleDisableC.Name = "ToggleDisableC"
                 ToggleDisableC.Parent = ToggleDisable
-
-                -- 为开关添加边框
-                ToggleDisableBorder.Thickness = 1
-                ToggleDisableBorder.Color = Color3.fromRGB(0, 100, 255)
-                ToggleDisableBorder.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-                ToggleDisableBorder.Parent = ToggleDisable
 
                 local funcs = {
                     SetState = function(self, state)
@@ -917,7 +933,7 @@ function Library.new(Library, name, theme)
                             TweenInfo.new(0.2),
                             {
                                 Position = UDim2.new(0, (state and ToggleSwitch.Size.X.Offset / 2 or 0), 0, 0),
-                                BackgroundColor3 = (state and Color3.fromRGB(0, 200, 255) or Color3.fromRGB(0, 100, 255))  -- 蓝色主题
+                                BackgroundColor3 = (state and Color3.fromRGB(0, 200, 255) or beijingColor)  -- 激活时亮蓝色
                             }
                         ):Play()
                         Library.flags[flag] = state
@@ -975,10 +991,10 @@ function Library.new(Library, name, theme)
                 local KeybindModule = Instance.new("Frame")
                 local KeybindBtn = Instance.new("TextButton")
                 local KeybindBtnC = Instance.new("UICorner")
-                local KeybindBtnBorder = Instance.new("UIStroke")  -- 添加边框
+                local KeybindBtnStroke = Instance.new("UIStroke")  -- 添加边框
                 local KeybindValue = Instance.new("TextButton")
                 local KeybindValueC = Instance.new("UICorner")
-                local KeybindValueBorder = Instance.new("UIStroke")  -- 添加边框
+                local KeybindValueStroke = Instance.new("UIStroke")  -- 添加边框
                 local KeybindL = Instance.new("UIListLayout")
                 local UIPadding = Instance.new("UIPadding")
 
@@ -1007,10 +1023,10 @@ function Library.new(Library, name, theme)
                 KeybindBtnC.Parent = KeybindBtn
 
                 -- 添加蓝黑边框
-                KeybindBtnBorder.Thickness = 1
-                KeybindBtnBorder.Color = Color3.fromRGB(0, 100, 255)
-                KeybindBtnBorder.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-                KeybindBtnBorder.Parent = KeybindBtn
+                KeybindBtnStroke.Thickness = 1
+                KeybindBtnStroke.Color = Color3.fromRGB(0, 100, 255)
+                KeybindBtnStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+                KeybindBtnStroke.Parent = KeybindBtn
 
                 KeybindValue.Name = "KeybindValue"
                 KeybindValue.Parent = KeybindBtn
@@ -1024,15 +1040,15 @@ function Library.new(Library, name, theme)
                 KeybindValue.TextColor3 = Color3.fromRGB(0, 150, 255)  -- 蓝色文字
                 KeybindValue.TextSize = 14.000
 
-                KeybindValueC.CornerRadius = UDim.new(0, 6)  -- 增加圆角
+                KeybindValueC.CornerRadius = UDim.new(0, 6)
                 KeybindValueC.Name = "KeybindValueC"
                 KeybindValueC.Parent = KeybindValue
 
-                -- 为键绑值添加边框
-                KeybindValueBorder.Thickness = 1
-                KeybindValueBorder.Color = Color3.fromRGB(0, 100, 255)
-                KeybindValueBorder.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-                KeybindValueBorder.Parent = KeybindValue
+                -- 添加按键边框
+                KeybindValueStroke.Thickness = 1
+                KeybindValueStroke.Color = Color3.fromRGB(0, 100, 255)
+                KeybindValueStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+                KeybindValueStroke.Parent = KeybindValue
 
                 KeybindL.Name = "KeybindL"
                 KeybindL.Parent = KeybindBtn
@@ -1097,10 +1113,10 @@ function Library.new(Library, name, theme)
                 local TextboxModule = Instance.new("Frame")
                 local TextboxBack = Instance.new("TextButton")
                 local TextboxBackC = Instance.new("UICorner")
-                local TextboxBackBorder = Instance.new("UIStroke")  -- 添加边框
+                local TextboxBackStroke = Instance.new("UIStroke")  -- 添加边框
                 local BoxBG = Instance.new("TextButton")
                 local BoxBGC = Instance.new("UICorner")
-                local BoxBGBorder = Instance.new("UIStroke")  -- 添加边框
+                local BoxBGStroke = Instance.new("UIStroke")  -- 添加边框
                 local TextBox = Instance.new("TextBox")
                 local TextboxBackL = Instance.new("UIListLayout")
                 local TextboxBackP = Instance.new("UIPadding")
@@ -1130,10 +1146,10 @@ function Library.new(Library, name, theme)
                 TextboxBackC.Parent = TextboxBack
 
                 -- 添加蓝黑边框
-                TextboxBackBorder.Thickness = 1
-                TextboxBackBorder.Color = Color3.fromRGB(0, 100, 255)
-                TextboxBackBorder.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-                TextboxBackBorder.Parent = TextboxBack
+                TextboxBackStroke.Thickness = 1
+                TextboxBackStroke.Color = Color3.fromRGB(0, 100, 255)
+                TextboxBackStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+                TextboxBackStroke.Parent = TextboxBack
 
                 BoxBG.Name = "BoxBG"
                 BoxBG.Parent = TextboxBack
@@ -1147,15 +1163,15 @@ function Library.new(Library, name, theme)
                 BoxBG.TextColor3 = Color3.fromRGB(255, 255, 255)
                 BoxBG.TextSize = 14.000
 
-                BoxBGC.CornerRadius = UDim.new(0, 6)  -- 增加圆角
+                BoxBGC.CornerRadius = UDim.new(0, 6)
                 BoxBGC.Name = "BoxBGC"
                 BoxBGC.Parent = BoxBG
 
-                -- 为文本框添加边框
-                BoxBGBorder.Thickness = 1
-                BoxBGBorder.Color = Color3.fromRGB(0, 100, 255)
-                BoxBGBorder.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-                BoxBGBorder.Parent = BoxBG
+                -- 添加输入框边框
+                BoxBGStroke.Thickness = 1
+                BoxBGStroke.Color = Color3.fromRGB(0, 100, 255)
+                BoxBGStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+                BoxBGStroke.Parent = BoxBG
 
                 TextBox.Parent = BoxBG
                 TextBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -1216,15 +1232,15 @@ function Library.new(Library, name, theme)
                 local SliderModule = Instance.new("Frame")
                 local SliderBack = Instance.new("TextButton")
                 local SliderBackC = Instance.new("UICorner")
-                local SliderBackBorder = Instance.new("UIStroke")  -- 添加边框
+                local SliderBackStroke = Instance.new("UIStroke")  -- 添加边框
                 local SliderBar = Instance.new("Frame")
                 local SliderBarC = Instance.new("UICorner")
-                local SliderBarBorder = Instance.new("UIStroke")  -- 添加边框
+                local SliderBarStroke = Instance.new("UIStroke")  -- 添加边框
                 local SliderPart = Instance.new("Frame")
                 local SliderPartC = Instance.new("UICorner")
                 local SliderValBG = Instance.new("TextButton")
                 local SliderValBGC = Instance.new("UICorner")
-                local SliderValBGBorder = Instance.new("UIStroke")  -- 添加边框
+                local SliderValBGStroke = Instance.new("UIStroke")  -- 添加边框
                 local SliderValue = Instance.new("TextBox")
                 local MinSlider = Instance.new("TextButton")
                 local AddSlider = Instance.new("TextButton")
@@ -1254,10 +1270,10 @@ function Library.new(Library, name, theme)
                 SliderBackC.Parent = SliderBack
 
                 -- 添加蓝黑边框
-                SliderBackBorder.Thickness = 1
-                SliderBackBorder.Color = Color3.fromRGB(0, 100, 255)
-                SliderBackBorder.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-                SliderBackBorder.Parent = SliderBack
+                SliderBackStroke.Thickness = 1
+                SliderBackStroke.Color = Color3.fromRGB(0, 100, 255)
+                SliderBackStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+                SliderBackStroke.Parent = SliderBack
 
                 SliderBar.Name = "SliderBar"
                 SliderBar.Parent = SliderBack
@@ -1271,19 +1287,19 @@ function Library.new(Library, name, theme)
                 SliderBarC.Name = "SliderBarC"
                 SliderBarC.Parent = SliderBar
 
-                -- 为滑动条添加边框
-                SliderBarBorder.Thickness = 1
-                SliderBarBorder.Color = Color3.fromRGB(0, 100, 255)
-                SliderBarBorder.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-                SliderBarBorder.Parent = SliderBar
+                -- 添加滑块条边框
+                SliderBarStroke.Thickness = 1
+                SliderBarStroke.Color = Color3.fromRGB(0, 100, 255)
+                SliderBarStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+                SliderBarStroke.Parent = SliderBar
 
                 SliderPart.Name = "SliderPart"
                 SliderPart.Parent = SliderBar
-                SliderPart.BackgroundColor3 = Color3.fromRGB(0, 100, 255)  -- 蓝色滑块
+                SliderPart.BackgroundColor3 = Color3.fromRGB(0, 150, 255)  -- 蓝色滑块
                 SliderPart.BorderSizePixel = 0
                 SliderPart.Size = UDim2.new(0, 54, 0, 13)
 
-                SliderPartC.CornerRadius = UDim.new(0, 6)  -- 增加圆角
+                SliderPartC.CornerRadius = UDim.new(0, 6)
                 SliderPartC.Name = "SliderPartC"
                 SliderPartC.Parent = SliderPart
 
@@ -1299,15 +1315,15 @@ function Library.new(Library, name, theme)
                 SliderValBG.TextColor3 = Color3.fromRGB(255, 255, 255)
                 SliderValBG.TextSize = 14.000
 
-                SliderValBGC.CornerRadius = UDim.new(0, 6)  -- 增加圆角
+                SliderValBGC.CornerRadius = UDim.new(0, 6)
                 SliderValBGC.Name = "SliderValBGC"
                 SliderValBGC.Parent = SliderValBG
 
-                -- 为值框添加边框
-                SliderValBGBorder.Thickness = 1
-                SliderValBGBorder.Color = Color3.fromRGB(0, 100, 255)
-                SliderValBGBorder.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-                SliderValBGBorder.Parent = SliderValBG
+                -- 添加数值框边框
+                SliderValBGStroke.Thickness = 1
+                SliderValBGStroke.Color = Color3.fromRGB(0, 100, 255)
+                SliderValBGStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+                SliderValBGStroke.Parent = SliderValBG
 
                 SliderValue.Name = "SliderValue"
                 SliderValue.Parent = SliderValBG
@@ -1492,13 +1508,13 @@ function Library.new(Library, name, theme)
                 local DropdownModule = Instance.new("Frame")
                 local DropdownTop = Instance.new("TextButton")
                 local DropdownTopC = Instance.new("UICorner")
-                local DropdownTopBorder = Instance.new("UIStroke")  -- 添加边框
+                local DropdownTopStroke = Instance.new("UIStroke")  -- 添加边框
                 local DropdownOpen = Instance.new("TextButton")
                 local DropdownText = Instance.new("TextBox")
                 local DropdownModuleL = Instance.new("UIListLayout")
                 local Option = Instance.new("TextButton")
                 local OptionC = Instance.new("UICorner")
-                local OptionBorder = Instance.new("UIStroke")  -- 添加边框
+                local OptionStroke = Instance.new("UIStroke")  -- 添加边框
 
                 DropdownModule.Name = "DropdownModule"
                 DropdownModule.Parent = Objs
@@ -1526,10 +1542,10 @@ function Library.new(Library, name, theme)
                 DropdownTopC.Parent = DropdownTop
 
                 -- 添加蓝黑边框
-                DropdownTopBorder.Thickness = 1
-                DropdownTopBorder.Color = Color3.fromRGB(0, 100, 255)
-                DropdownTopBorder.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-                DropdownTopBorder.Parent = DropdownTop
+                DropdownTopStroke.Thickness = 1
+                DropdownTopStroke.Color = Color3.fromRGB(0, 100, 255)
+                DropdownTopStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+                DropdownTopStroke.Parent = DropdownTop
 
                 DropdownOpen.Name = "DropdownOpen"
                 DropdownOpen.Parent = DropdownTop
@@ -1636,7 +1652,7 @@ function Library.new(Library, name, theme)
                 funcs.AddOption = function(self, option)
                     local Option = Instance.new("TextButton")
                     local OptionC = Instance.new("UICorner")
-                    local OptionBorder = Instance.new("UIStroke")  -- 添加边框
+                    local OptionStroke = Instance.new("UIStroke")  -- 添加边框
 
                     Option.Name = "Option_" .. option
                     Option.Parent = DropdownModule
@@ -1650,15 +1666,15 @@ function Library.new(Library, name, theme)
                     Option.TextColor3 = Color3.fromRGB(0, 150, 255)  -- 蓝色文字
                     Option.TextSize = 14.000
 
-                    OptionC.CornerRadius = UDim.new(0, 6)  -- 增加圆角
+                    OptionC.CornerRadius = UDim.new(0, 6)
                     OptionC.Name = "OptionC"
                     OptionC.Parent = Option
 
-                    -- 为选项添加边框
-                    OptionBorder.Thickness = 1
-                    OptionBorder.Color = Color3.fromRGB(0, 100, 255)
-                    OptionBorder.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-                    OptionBorder.Parent = Option
+                    -- 添加选项边框
+                    OptionStroke.Thickness = 1
+                    OptionStroke.Color = Color3.fromRGB(0, 100, 255)
+                    OptionStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+                    OptionStroke.Parent = Option
 
                     Option.MouseButton1Click:Connect(
                         function()
