@@ -154,10 +154,10 @@ function Library.new(Library, name, theme)
     end
     
     -- 科技感黑蓝主题颜色方案
-    MainXEColor = Color3.fromRGB(10, 15, 30)  -- 深蓝黑色背景
-    Background = Color3.fromRGB(5, 10, 25)   -- 更深的蓝黑色
-    zyColor = Color3.fromRGB(20, 30, 60)   -- 侧边栏深蓝色
-    beijingColor = Color3.fromRGB(30, 60, 120) -- 蓝色
+    local MainXEColor = Color3.fromRGB(10, 15, 25)  -- 深蓝黑背景
+    local Background = Color3.fromRGB(5, 10, 20)   -- 纯黑蓝
+    local zyColor = Color3.fromRGB(15, 25, 45)     -- 侧边栏深蓝
+    local beijingColor = Color3.fromRGB(20, 40, 80) -- 控件蓝色
     
     local dogent = Instance.new("ScreenGui")
     local MainXE = Instance.new("Frame")
@@ -180,13 +180,13 @@ function Library.new(Library, name, theme)
     local UIGradientTitle = Instance.new("UIGradient")
     local WelcomeLabel = Instance.new("TextLabel")
     
-    -- 新增：科技感边框元素
+    -- 科技感边框元素
     local BorderFrame = Instance.new("Frame")
     local BorderCorner = Instance.new("UICorner")
     local BorderGradient = Instance.new("UIGradient")
     local BorderStroke = Instance.new("UIStroke")
 
-    -- 新增：玩家信息显示
+    -- 玩家信息区域
     local PlayerInfoFrame = Instance.new("Frame")
     local PlayerAvatar = Instance.new("ImageLabel")
     local PlayerAvatarCorner = Instance.new("UICorner")
@@ -218,13 +218,20 @@ function Library.new(Library, name, theme)
     
     local Players = game:GetService("Players")
     local LocalPlayer = Players.LocalPlayer
-    local userRegion = game:GetService("LocalizationService"):GetCountryRegionForPlayerAsync(LocalPlayer)
+    local playerName = LocalPlayer.Name
+    local displayName = LocalPlayer.DisplayName
+
+    -- 处理长用户名
+    local shortName = playerName
+    if #playerName > 10 then
+        shortName = string.sub(playerName, 1, 8) .. "..."
+    end
 
     -- 创建科技感边框
     BorderFrame.Name = "BorderFrame"
     BorderFrame.Parent = dogent
     BorderFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-    BorderFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    BorderFrame.BackgroundColor3 = Color3.fromRGB(5, 10, 20)
     BorderFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
     BorderFrame.Size = UDim2.new(0, 0, 0, 0)
     BorderFrame.ZIndex = 0
@@ -243,7 +250,7 @@ function Library.new(Library, name, theme)
         ColorSequenceKeypoint.new(0.50, Color3.fromRGB(0, 150, 255)),
         ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 50, 100))
     })
-    BorderGradient.Rotation = 45
+    BorderGradient.Transparency = NumberSequence.new(0.3)
     BorderGradient.Parent = BorderStroke
 
     MainXE.Name = "MainXE"
@@ -257,18 +264,32 @@ function Library.new(Library, name, theme)
     MainXE.Draggable = true
     MainXE.Visible = true  
 
+    -- 科技感内发光效果
+    local InnerGlow = Instance.new("Frame")
+    InnerGlow.Name = "InnerGlow"
+    InnerGlow.Parent = MainXE
+    InnerGlow.BackgroundColor3 = Color3.fromRGB(0, 100, 255)
+    InnerGlow.BackgroundTransparency = 0.9
+    InnerGlow.BorderSizePixel = 0
+    InnerGlow.Size = UDim2.new(1, 0, 1, 0)
+    InnerGlow.ZIndex = 0
+    
+    local InnerGlowCorner = Instance.new("UICorner")
+    InnerGlowCorner.CornerRadius = UDim.new(0, 10)
+    InnerGlowCorner.Parent = InnerGlow
+
     WelcomeLabel.Name = "WelcomeLabel"
     WelcomeLabel.Parent = MainXE
     WelcomeLabel.AnchorPoint = Vector2.new(0.5, 0.5)
     WelcomeLabel.Position = UDim2.new(0.5, 0, 0.5, 0)
     WelcomeLabel.Size = UDim2.new(1, 0, 1, 0)
-    WelcomeLabel.Text = "欢迎使用云脚本"
+    WelcomeLabel.Text = "SYSTEM INITIALIZED"
     WelcomeLabel.TextColor3 = Color3.fromRGB(0, 200, 255)
-    WelcomeLabel.TextSize = 32
+    WelcomeLabel.TextSize = 24
     WelcomeLabel.BackgroundTransparency = 1
     WelcomeLabel.TextTransparency = 1
-    WelcomeLabel.TextStrokeTransparency = 0.3
-    WelcomeLabel.TextStrokeColor3 = Color3.fromRGB(0, 0, 50)
+    WelcomeLabel.TextStrokeTransparency = 0.5
+    WelcomeLabel.TextStrokeColor3 = Color3.fromRGB(0, 50, 100)
     WelcomeLabel.Font = Enum.Font.GothamBold
     WelcomeLabel.Visible = true
 
@@ -280,7 +301,6 @@ function Library.new(Library, name, theme)
     DropShadowHolder.BackgroundTransparency = 1.000
     DropShadowHolder.BorderSizePixel = 0
     DropShadowHolder.Size = UDim2.new(1, 0, 1, 0)
-    DropShadowHolder.BorderColor3 = Color3.fromRGB(255, 255, 255)
     DropShadowHolder.ZIndex = 0
 
     DropShadow.Name = "DropShadow"
@@ -289,15 +309,15 @@ function Library.new(Library, name, theme)
     DropShadow.BackgroundTransparency = 1.000
     DropShadow.BorderSizePixel = 0
     DropShadow.Position = UDim2.new(0.5, 0, 0.5, 0)
-    DropShadow.Size = UDim2.new(1, 60, 1, 60)
+    DropShadow.Size = UDim2.new(1, 80, 1, 80)
     DropShadow.ZIndex = 0
     DropShadow.Image = "rbxassetid://6015897843"
-    DropShadow.ImageColor3 = Color3.fromRGB(0, 50, 100)
-    DropShadow.ImageTransparency = 0
+    DropShadow.ImageColor3 = Color3.fromRGB(0, 50, 150)
+    DropShadow.ImageTransparency = 0.3
     DropShadow.ScaleType = Enum.ScaleType.Slice
     DropShadow.SliceCenter = Rect.new(49, 49, 450, 450)
 
-    -- 科技感渐变效果
+    -- 科技感渐变
     UIGradient.Color = ColorSequence.new({
         ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 30, 60)),
         ColorSequenceKeypoint.new(0.25, Color3.fromRGB(0, 80, 160)),
@@ -308,7 +328,7 @@ function Library.new(Library, name, theme)
     UIGradient.Parent = DropShadow
 
     local TweenService = game:GetService("TweenService")
-    local tweeninfo = TweenInfo.new(5, Enum.EasingStyle.Linear, Enum.EasingDirection.In, -1)
+    local tweeninfo = TweenInfo.new(8, Enum.EasingStyle.Linear, Enum.EasingDirection.In, -1)
     local tween = TweenService:Create(UIGradient, tweeninfo, {Rotation = 360})
     tween:Play()
 
@@ -365,21 +385,78 @@ function Library.new(Library, name, theme)
 
     Side.Name = "Side"
     Side.Parent = SB
-    Side.BackgroundColor3 = Color3.fromRGB(10, 20, 40)  -- 更深的侧边栏颜色
+    Side.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     Side.BorderColor3 = Color3.fromRGB(255, 255, 255)
     Side.BorderSizePixel = 0
     Side.ClipsDescendants = true
     Side.Position = UDim2.new(1, 0, 0, 0)
     Side.Size = UDim2.new(0, 0, 0, 0)
 
-    SideG.Color = ColorSequence.new {ColorSequenceKeypoint.new(0.00, Color3.fromRGB(15, 25, 50)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(25, 40, 80))}
+    -- 科技感侧边栏渐变
+    SideG.Color = ColorSequence.new {
+        ColorSequenceKeypoint.new(0.00, Color3.fromRGB(10, 20, 40)),
+        ColorSequenceKeypoint.new(1.00, Color3.fromRGB(15, 30, 60))
+    }
     SideG.Rotation = 90
     SideG.Name = "SideG"
     SideG.Parent = Side
 
+    -- 创建玩家信息区域
+    PlayerInfoFrame.Name = "PlayerInfoFrame"
+    PlayerInfoFrame.Parent = Side
+    PlayerInfoFrame.BackgroundTransparency = 1
+    PlayerInfoFrame.Size = UDim2.new(1, 0, 0, 80)
+    PlayerInfoFrame.Position = UDim2.new(0, 0, 1, -80)
+
+    -- 玩家头像
+    PlayerAvatar.Name = "PlayerAvatar"
+    PlayerAvatar.Parent = PlayerInfoFrame
+    PlayerAvatar.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    PlayerAvatar.BackgroundTransparency = 1
+    PlayerAvatar.Position = UDim2.new(0, 10, 0, 10)
+    PlayerAvatar.Size = UDim2.new(0, 40, 0, 40)
+    PlayerAvatar.Image = "https://www.roblox.com/headshot-thumbnail/image?userId=" .. LocalPlayer.UserId .. "&width=420&height=420&format=png"
+
+    PlayerAvatarCorner.CornerRadius = UDim.new(1, 0)
+    PlayerAvatarCorner.Parent = PlayerAvatar
+
+    PlayerAvatarStroke.Thickness = 2
+    PlayerAvatarStroke.Color = Color3.fromRGB(0, 150, 255)
+    PlayerAvatarStroke.Parent = PlayerAvatar
+
+    -- 玩家名称区域
+    PlayerNameFrame.Name = "PlayerNameFrame"
+    PlayerNameFrame.Parent = PlayerInfoFrame
+    PlayerNameFrame.BackgroundTransparency = 1
+    PlayerNameFrame.Position = UDim2.new(0, 60, 0, 10)
+    PlayerNameFrame.Size = UDim2.new(0, 140, 0, 40)
+
+    PlayerDisplayName.Name = "PlayerDisplayName"
+    PlayerDisplayName.Parent = PlayerNameFrame
+    PlayerDisplayName.BackgroundTransparency = 1
+    PlayerDisplayName.Size = UDim2.new(1, 0, 0, 20)
+    PlayerDisplayName.Font = Enum.Font.GothamBold
+    PlayerDisplayName.Text = displayName
+    PlayerDisplayName.TextColor3 = Color3.fromRGB(0, 200, 255)
+    PlayerDisplayName.TextSize = 14
+    PlayerDisplayName.TextXAlignment = Enum.TextXAlignment.Left
+    PlayerDisplayName.TextTruncate = Enum.TextTruncate.AtEnd
+
+    PlayerUserName.Name = "PlayerUserName"
+    PlayerUserName.Parent = PlayerNameFrame
+    PlayerUserName.BackgroundTransparency = 1
+    PlayerUserName.Position = UDim2.new(0, 0, 0, 20)
+    PlayerUserName.Size = UDim2.new(1, 0, 0, 16)
+    PlayerUserName.Font = Enum.Font.Gotham
+    PlayerUserName.Text = "@" .. shortName
+    PlayerUserName.TextColor3 = Color3.fromRGB(150, 200, 255)
+    PlayerUserName.TextSize = 12
+    PlayerUserName.TextXAlignment = Enum.TextXAlignment.Left
+    PlayerUserName.TextTruncate = Enum.TextTruncate.AtEnd
+
     -- 修改开启动画
-    BorderFrame:TweenSize(UDim2.new(0, 190, 0, 80), "Out", "Quad", 1.5, true, function()
-        MainXE:TweenSize(UDim2.new(0, 170, 0, 60), "Out", "Quad", 1.5, true, function()
+    BorderFrame:TweenSize(UDim2.new(0, 200, 0, 100), "Out", "Quad", 1.5, true, function()
+        MainXE:TweenSize(UDim2.new(0, 180, 0, 80), "Out", "Quad", 1.5, true, function()
             WelcomeLabel.Visible = true
 
             local hideTween = TweenService:Create(
@@ -389,21 +466,21 @@ function Library.new(Library, name, theme)
             )
             hideTween:Play()
             hideTween.Completed:Wait()
-            wait(2)
+            wait(1.5)
             local showTween = TweenService:Create(
                 WelcomeLabel,
                 TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.In),
-                {TextTransparency = 1, TextStrokeTransparency = 0.3}
+                {TextTransparency = 1, TextStrokeTransparency = 1}
             )
             showTween:Play()
             showTween.Completed:Wait()
             wait(0.3)
             UIGradient.Parent = DropShadow
-            BorderFrame:TweenSize(UDim2.new(0, 590, 0, 378), "Out", "Quad", 0.9, true, function()
-                MainXE:TweenSize(UDim2.new(0, 570, 0, 358), "Out", "Quad", 0.9, true, function()
-                    Side:TweenSize(UDim2.new(0, 110, 0, 357), "Out", "Quad", 0.4, true, function()
-                        SB:TweenSize(UDim2.new(0, 8, 0, 357), "Out", "Quad", 0.2, true, function()
-                            wait(1)
+            BorderFrame:TweenSize(UDim2.new(0, 625, 0, 520), "Out", "Quad", 0.9, true, function()
+                MainXE:TweenSize(UDim2.new(0, 609, 0, 505), "Out", "Quad", 0.9, true, function()
+                    Side:TweenSize(UDim2.new(0, 160, 0, 505), "Out", "Quad", 0.4, true, function()
+                        SB:TweenSize(UDim2.new(0, 8, 0, 505), "Out", "Quad", 0.2, true, function()
+                            wait(0.5)
                             TabMainXE.Visible = true
                         end)
                     end)
@@ -419,7 +496,7 @@ function Library.new(Library, name, theme)
     TabBtns.BackgroundTransparency = 1.000
     TabBtns.BorderSizePixel = 0
     TabBtns.Position = UDim2.new(0, 0, 0.0973535776, 0)
-    TabBtns.Size = UDim2.new(0, 110, 0, 318)
+    TabBtns.Size = UDim2.new(0, 160, 0, 400)
     TabBtns.CanvasSize = UDim2.new(0, 0, 1, 0)
     TabBtns.ScrollBarThickness = 0
 
@@ -433,18 +510,18 @@ function Library.new(Library, name, theme)
     ScriptTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     ScriptTitle.BackgroundTransparency = 1.000
     ScriptTitle.Position = UDim2.new(0, 0, 0.00953488424, 0)
-    ScriptTitle.Size = UDim2.new(0, 102, 0, 20)
+    ScriptTitle.Size = UDim2.new(0, 152, 0, 24)
     ScriptTitle.Font = Enum.Font.GothamBold
     ScriptTitle.Text = name
     ScriptTitle.TextColor3 = Color3.fromRGB(0, 200, 255)
-    ScriptTitle.TextSize = 14.000
+    ScriptTitle.TextSize = 16.000
     ScriptTitle.TextScaled = true
     ScriptTitle.TextXAlignment = Enum.TextXAlignment.Left
 
-    -- 科技感标题渐变效果
+    -- 科技感标题渐变
     UIGradientTitle.Color = ColorSequence.new({
         ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 150, 255)),
-        ColorSequenceKeypoint.new(0.50, Color3.fromRGB(0, 230, 255)),
+        ColorSequenceKeypoint.new(0.50, Color3.fromRGB(0, 255, 255)),
         ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 150, 255))
     })
     UIGradientTitle.Parent = ScriptTitle
@@ -455,7 +532,7 @@ function Library.new(Library, name, theme)
         local button = script.Parent
         local gradient = button.UIGradient
         local ts = game:GetService("TweenService")
-        local ti = TweenInfo.new(2, Enum.EasingStyle.Linear, Enum.EasingDirection.Out)
+        local ti = TweenInfo.new(3, Enum.EasingStyle.Linear, Enum.EasingDirection.Out)
         local offset = {Offset = Vector2.new(1, 0)}
         local create = ts:Create(gradient, ti, offset)
         local startingPos = Vector2.new(-1, 0)
@@ -463,7 +540,7 @@ function Library.new(Library, name, theme)
         gradient.Offset = startingPos
         gradient.Color = ColorSequence.new({
             ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 80, 160)),
-            ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 180, 255)),
+            ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 200, 255)),
             ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 80, 160))
         })
         
@@ -482,7 +559,10 @@ function Library.new(Library, name, theme)
     end
     coroutine.wrap(NPLHKB_fake_script)()
 
-    SBG.Color = ColorSequence.new {ColorSequenceKeypoint.new(0.00, Color3.fromRGB(15, 25, 50)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(25, 40, 80))}
+    SBG.Color = ColorSequence.new {
+        ColorSequenceKeypoint.new(0.00, Color3.fromRGB(10, 20, 40)),
+        ColorSequenceKeypoint.new(1.00, Color3.fromRGB(15, 30, 60))
+    }
     SBG.Rotation = 90
     SBG.Name = "SBG"
     SBG.Parent = SB
@@ -493,112 +573,26 @@ function Library.new(Library, name, theme)
         end
     )
 
-    -- 创建玩家信息显示
-    PlayerInfoFrame.Name = "PlayerInfoFrame"
-    PlayerInfoFrame.Parent = MainXE
-    PlayerInfoFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    PlayerInfoFrame.BackgroundTransparency = 1.000
-    PlayerInfoFrame.Position = UDim2.new(0.7, 0, 0.85, 0)
-    PlayerInfoFrame.Size = UDim2.new(0, 150, 0, 50)
-    PlayerInfoFrame.Visible = false
-
-    PlayerAvatar.Name = "PlayerAvatar"
-    PlayerAvatar.Parent = PlayerInfoFrame
-    PlayerAvatar.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    PlayerAvatar.BackgroundTransparency = 1.000
-    PlayerAvatar.Position = UDim2.new(0, 0, 0, 0)
-    PlayerAvatar.Size = UDim2.new(0, 50, 0, 50)
-    PlayerAvatar.Image = "rbxasset://textures/ui/GuiImagePlaceholder.png"
-
-    PlayerAvatarCorner.CornerRadius = UDim.new(1, 0)
-    PlayerAvatarCorner.Name = "PlayerAvatarCorner"
-    PlayerAvatarCorner.Parent = PlayerAvatar
-
-    PlayerAvatarStroke.Thickness = 2
-    PlayerAvatarStroke.Color = Color3.fromRGB(0, 150, 255)
-    PlayerAvatarStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-    PlayerAvatarStroke.Parent = PlayerAvatar
-
-    PlayerNameFrame.Name = "PlayerNameFrame"
-    PlayerNameFrame.Parent = PlayerInfoFrame
-    PlayerNameFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    PlayerNameFrame.BackgroundTransparency = 1.000
-    PlayerNameFrame.Position = UDim2.new(0.4, 0, 0, 0)
-    PlayerNameFrame.Size = UDim2.new(0, 90, 0, 50)
-
-    PlayerDisplayName.Name = "PlayerDisplayName"
-    PlayerDisplayName.Parent = PlayerNameFrame
-    PlayerDisplayName.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    PlayerDisplayName.BackgroundTransparency = 1.000
-    PlayerDisplayName.Position = UDim2.new(0, 0, 0, 5)
-    PlayerDisplayName.Size = UDim2.new(0, 90, 0, 20)
-    PlayerDisplayName.Font = Enum.Font.GothamBold
-    PlayerDisplayName.Text = "玩家昵称"
-    PlayerDisplayName.TextColor3 = Color3.fromRGB(0, 200, 255)
-    PlayerDisplayName.TextSize = 12.000
-    PlayerDisplayName.TextXAlignment = Enum.TextXAlignment.Left
-
-    PlayerUserName.Name = "PlayerUserName"
-    PlayerUserName.Parent = PlayerNameFrame
-    PlayerUserName.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    PlayerUserName.BackgroundTransparency = 1.000
-    PlayerUserName.Position = UDim2.new(0, 0, 0, 25)
-    PlayerUserName.Size = UDim2.new(0, 90, 0, 20)
-    PlayerUserName.Font = Enum.Font.Gotham
-    PlayerUserName.Text = "用户名"
-    PlayerUserName.TextColor3 = Color3.fromRGB(150, 200, 255)
-    PlayerUserName.TextSize = 10.000
-    PlayerUserName.TextXAlignment = Enum.TextXAlignment.Left
-
-    -- 加载玩家头像和名称
-    spawn(function()
-        local userId = LocalPlayer.UserId
-        local thumbType = Enum.ThumbnailType.HeadShot
-        local thumbSize = Enum.ThumbnailSize.Size420x420
-        local content, isReady = Players:GetUserThumbnailAsync(userId, thumbType, thumbSize)
-        
-        PlayerAvatar.Image = content
-        
-        local displayName = LocalPlayer.DisplayName
-        local userName = LocalPlayer.Name
-        
-        -- 如果显示名过长则截断
-        if string.len(displayName) > 8 then
-            displayName = string.sub(displayName, 1, 8) .. "..."
-        end
-        
-        -- 如果用户名过长则截断
-        if string.len(userName) > 10 then
-            userName = string.sub(userName, 1, 10) .. "..."
-        end
-        
-        PlayerDisplayName.Text = displayName
-        PlayerUserName.Text = "@" .. userName
-        
-        PlayerInfoFrame.Visible = true
-    end)
-
     Open.Name = "Open"
     Open.Parent = dogent
     Open.BackgroundColor3 = Color3.fromRGB(10, 20, 40)
     Open.BackgroundTransparency = 0
     Open.Position = UDim2.new(0.00829315186, 0, 0.31107837, 0)
-    Open.Size = UDim2.new(0, 35, 0, 32)
+    Open.Size = UDim2.new(0, 40, 0, 36)
     Open.Transparency = 1
     Open.Font = Enum.Font.GothamBold
-    Open.Text = "隐藏"
+    Open.Text = "◀"
     Open.TextColor3 = Color3.fromRGB(0, 200, 255)
     Open.TextTransparency = 0
-    Open.TextSize = 28.000
+    Open.TextSize = 20.000
     Open.Active = true
     Open.Draggable = true
 
-    -- 为打开按钮添加圆角
+    -- 为打开按钮添加科技感样式
     local OpenCorner = Instance.new("UICorner")
-    OpenCorner.CornerRadius = UDim.new(0, 8)
+    OpenCorner.CornerRadius = UDim.new(0, 6)
     OpenCorner.Parent = Open
 
-    -- 为打开按钮添加科技感边框
     local OpenStroke = Instance.new("UIStroke")
     OpenStroke.Thickness = 2
     OpenStroke.Color = Color3.fromRGB(0, 150, 255)
@@ -611,9 +605,8 @@ function Library.new(Library, name, theme)
     local function blueTextAnimation()
         while true do
             for i = 0, 1, 0.01 do
-                local hue = tick() % 5 / 5
                 Open.TextColor3 = Color3.fromHSV(0.6 + math.sin(tick()) * 0.1, 1, 1)
-                wait(0.01)
+                wait(0.02)
             end
         end
     end
@@ -623,23 +616,23 @@ function Library.new(Library, name, theme)
     Open.MouseButton1Click:Connect(function()
         isAnimating = true 
         if uihide == false then
-            Open.Text = "打开"
+            Open.Text = "▶"
             TabMainXE.Position = UDim2.new(0.217000037, 0, 0, 3)
             uihide = true
             MainXE.Visible = false
             BorderFrame.Visible = false
-            PlayerInfoFrame.Visible = false
         else
-            Open.Text = "隐藏"
+            Open.Text = "◀"
             TabMainXE.Position = UDim2.new(0.217000037, 0, 0, 3)
             MainXE.Visible = true
             BorderFrame.Visible = true
-            PlayerInfoFrame.Visible = true
             uihide = false
         end
     end)
 
+    -- 确保边框和主UI一起拖动
     drag(MainXE)
+    drag(BorderFrame)
 
     UIG.Parent = Open
 
@@ -664,16 +657,17 @@ function Library.new(Library, name, theme)
         TabIco.Parent = TabBtns
         TabIco.BackgroundTransparency = 1.000
         TabIco.BorderSizePixel = 0
-        TabIco.Size = UDim2.new(0, 24, 0, 24)
+        TabIco.Size = UDim2.new(0, 28, 0, 28)
         TabIco.Image = ("rbxassetid://%s"):format((icon or 4370341699))
         TabIco.ImageTransparency = 0.2
+        TabIco.ImageColor3 = Color3.fromRGB(0, 150, 255)
 
         TabText.Name = "TabText"
         TabText.Parent = TabIco
         TabText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
         TabText.BackgroundTransparency = 1.000
-        TabText.Position = UDim2.new(1.41666663, 0, 0, 0)
-        TabText.Size = UDim2.new(0, 76, 0, 24)
+        TabText.Position = UDim2.new(1.2, 0, 0, 0)
+        TabText.Size = UDim2.new(0, 120, 0, 28)
         TabText.Font = Enum.Font.GothamBold
         TabText.Text = name
         TabText.TextColor3 = Color3.fromRGB(0, 200, 255)
@@ -686,7 +680,7 @@ function Library.new(Library, name, theme)
         TabBtn.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
         TabBtn.BackgroundTransparency = 1.000
         TabBtn.BorderSizePixel = 0
-        TabBtn.Size = UDim2.new(0, 110, 0, 24)
+        TabBtn.Size = UDim2.new(0, 160, 0, 28)
         TabBtn.AutoButtonColor = false
         TabBtn.Font = Enum.Font.GothamBold
         TabBtn.Text = ""
@@ -732,8 +726,8 @@ function Library.new(Library, name, theme)
 
             Section.Name = "Section"
             Section.Parent = Tab
-            Section.BackgroundColor3 = Color3.fromRGB(20, 30, 60)
-            Section.BackgroundTransparency = 0.8
+            Section.BackgroundColor3 = zyColor
+            Section.BackgroundTransparency = 1.000
             Section.BorderSizePixel = 0
             Section.ClipsDescendants = true
             Section.Size = UDim2.new(0.981000006, 0, 0, 36)
@@ -836,7 +830,7 @@ function Library.new(Library, name, theme)
 
                 Btn.Name = "Btn"
                 Btn.Parent = BtnModule
-                Btn.BackgroundColor3 = Color3.fromRGB(20, 30, 60)
+                Btn.BackgroundColor3 = zyColor
                 Btn.BorderSizePixel = 0
                 Btn.Size = UDim2.new(0, 428, 0, 38)
                 Btn.AutoButtonColor = false
@@ -882,7 +876,7 @@ function Library.new(Library, name, theme)
                 LabelModuleE.Size = UDim2.new(0, 428, 0, 19)
 
                 TextLabelE.Parent = LabelModuleE
-                TextLabelE.BackgroundColor3 = Color3.fromRGB(20, 30, 60)
+                TextLabelE.BackgroundColor3 = zyColor
                 TextLabelE.Size = UDim2.new(0, 428, 0, 22)
                 TextLabelE.Font = Enum.Font.GothamBold
                 TextLabelE.Transparency = 0
@@ -918,7 +912,7 @@ function Library.new(Library, name, theme)
                 LabelModule.Size = UDim2.new(0, 428, 0, 19)
 
                 TextLabelE.Parent = LabelModule
-                TextLabelE.BackgroundColor3 = Color3.fromRGB(20, 30, 60)
+                TextLabelE.BackgroundColor3 = zyColor
                 TextLabelE.Size = UDim2.new(0, 428, 0, 22)
                 TextLabelE.Font = Enum.Font.GothamBold
                 TextLabelE.Text = "   "..text
@@ -967,7 +961,7 @@ function Library.new(Library, name, theme)
 
                 ToggleBtn.Name = "ToggleBtn"
                 ToggleBtn.Parent = ToggleModule
-                ToggleBtn.BackgroundColor3 = Color3.fromRGB(20, 30, 60)
+                ToggleBtn.BackgroundColor3 = zyColor
                 ToggleBtn.BorderSizePixel = 0
                 ToggleBtn.Size = UDim2.new(0, 428, 0, 38)
                 ToggleBtn.AutoButtonColor = false
@@ -988,7 +982,7 @@ function Library.new(Library, name, theme)
 
                 ToggleDisable.Name = "ToggleDisable"
                 ToggleDisable.Parent = ToggleBtn
-                ToggleDisable.BackgroundColor3 = Color3.fromRGB(10, 20, 40)
+                ToggleDisable.BackgroundColor3 = Background
                 ToggleDisable.BorderSizePixel = 0
                 ToggleDisable.Position = UDim2.new(0.901869178, 0, 0.208881587, 0)
                 ToggleDisable.Size = UDim2.new(0, 36, 0, 22)
@@ -1000,7 +994,7 @@ function Library.new(Library, name, theme)
 
                 ToggleSwitch.Name = "ToggleSwitch"
                 ToggleSwitch.Parent = ToggleDisable
-                ToggleSwitch.BackgroundColor3 = Color3.fromRGB(30, 60, 120)
+                ToggleSwitch.BackgroundColor3 = beijingColor
                 ToggleSwitch.Size = UDim2.new(0, 24, 0, 22)
 
                 ToggleSwitchC.CornerRadius = UDim.new(0, 6)
@@ -1024,7 +1018,7 @@ function Library.new(Library, name, theme)
                             TweenInfo.new(0.2),
                             {
                                 Position = UDim2.new(0, (state and ToggleSwitch.Size.X.Offset / 2 or 0), 0, 0),
-                                BackgroundColor3 = (state and Color3.fromRGB(0, 230, 255) or Color3.fromRGB(30, 60, 120))
+                                BackgroundColor3 = (state and Color3.fromRGB(0, 255, 255) or beijingColor)
                             }
                         ):Play()
                         Library.flags[flag] = state
@@ -1099,7 +1093,7 @@ function Library.new(Library, name, theme)
 
                 KeybindBtn.Name = "KeybindBtn"
                 KeybindBtn.Parent = KeybindModule
-                KeybindBtn.BackgroundColor3 = Color3.fromRGB(20, 30, 60)
+                KeybindBtn.BackgroundColor3 = zyColor
                 KeybindBtn.BorderSizePixel = 0
                 KeybindBtn.Size = UDim2.new(0, 428, 0, 38)
                 KeybindBtn.AutoButtonColor = false
@@ -1120,7 +1114,7 @@ function Library.new(Library, name, theme)
 
                 KeybindValue.Name = "KeybindValue"
                 KeybindValue.Parent = KeybindBtn
-                KeybindValue.BackgroundColor3 = Color3.fromRGB(10, 20, 40)
+                KeybindValue.BackgroundColor3 = Background
                 KeybindValue.BorderSizePixel = 0
                 KeybindValue.Position = UDim2.new(0.763033211, 0, 0.289473683, 0)
                 KeybindValue.Size = UDim2.new(0, 100, 0, 28)
@@ -1220,7 +1214,7 @@ function Library.new(Library, name, theme)
 
                 TextboxBack.Name = "TextboxBack"
                 TextboxBack.Parent = TextboxModule
-                TextboxBack.BackgroundColor3 = Color3.fromRGB(20, 30, 60)
+                TextboxBack.BackgroundColor3 = zyColor
                 TextboxBack.BorderSizePixel = 0
                 TextboxBack.Size = UDim2.new(0, 428, 0, 38)
                 TextboxBack.AutoButtonColor = false
@@ -1241,7 +1235,7 @@ function Library.new(Library, name, theme)
 
                 BoxBG.Name = "BoxBG"
                 BoxBG.Parent = TextboxBack
-                BoxBG.BackgroundColor3 = Color3.fromRGB(10, 20, 40)
+                BoxBG.BackgroundColor3 = Background
                 BoxBG.BorderSizePixel = 0
                 BoxBG.Position = UDim2.new(0.763033211, 0, 0.289473683, 0)
                 BoxBG.Size = UDim2.new(0, 100, 0, 28)
@@ -1342,7 +1336,7 @@ function Library.new(Library, name, theme)
 
                 SliderBack.Name = "SliderBack"
                 SliderBack.Parent = SliderModule
-                SliderBack.BackgroundColor3 = Color3.fromRGB(20, 30, 60)
+                SliderBack.BackgroundColor3 = zyColor
                 SliderBack.BorderSizePixel = 0
                 SliderBack.Size = UDim2.new(0, 428, 0, 38)
                 SliderBack.AutoButtonColor = false
@@ -1364,7 +1358,7 @@ function Library.new(Library, name, theme)
                 SliderBar.Name = "SliderBar"
                 SliderBar.Parent = SliderBack
                 SliderBar.AnchorPoint = Vector2.new(0, 0.5)
-                SliderBar.BackgroundColor3 = Color3.fromRGB(10, 20, 40)
+                SliderBar.BackgroundColor3 = Background
                 SliderBar.BorderSizePixel = 0
                 SliderBar.Position = UDim2.new(0.369000018, 40, 0.5, 0)
                 SliderBar.Size = UDim2.new(0, 140, 0, 12)
@@ -1390,7 +1384,7 @@ function Library.new(Library, name, theme)
 
                 SliderValBG.Name = "SliderValBG"
                 SliderValBG.Parent = SliderBack
-                SliderValBG.BackgroundColor3 = Color3.fromRGB(10, 20, 40)
+                SliderValBG.BackgroundColor3 = Background
                 SliderValBG.BorderSizePixel = 0
                 SliderValBG.Position = UDim2.new(0.883177578, 0, 0.131578952, 0)
                 SliderValBG.Size = UDim2.new(0, 44, 0, 28)
@@ -1611,7 +1605,7 @@ function Library.new(Library, name, theme)
 
                 DropdownTop.Name = "DropdownTop"
                 DropdownTop.Parent = DropdownModule
-                DropdownTop.BackgroundColor3 = Color3.fromRGB(20, 30, 60)
+                DropdownTop.BackgroundColor3 = zyColor
                 DropdownTop.BorderSizePixel = 0
                 DropdownTop.Size = UDim2.new(0, 428, 0, 38)
                 DropdownTop.AutoButtonColor = false
@@ -1739,7 +1733,7 @@ function Library.new(Library, name, theme)
 
                     Option.Name = "Option_" .. option
                     Option.Parent = DropdownModule
-                    Option.BackgroundColor3 = Color3.fromRGB(20, 30, 60)
+                    Option.BackgroundColor3 = zyColor
                     Option.BorderSizePixel = 0
                     Option.Position = UDim2.new(0, 0, 0.328125, 0)
                     Option.Size = UDim2.new(0, 428, 0, 26)
