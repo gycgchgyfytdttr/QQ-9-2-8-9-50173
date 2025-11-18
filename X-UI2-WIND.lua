@@ -9839,13 +9839,13 @@ end
 repeat task.wait()until au
 end
 
-local ay=at(as)
+local ay = at(as)
 
-aa.Transparent=as.Transparent
-aa.Window=ay
+aa.Transparent = as.Transparent
+aa.Window = ay
 
 if as.Acrylic then
-al.init()
+    al.init()
 end
 
 -- 添加彩虹边框功能
@@ -9871,7 +9871,6 @@ local function initRainbowBorder(window)
         })
     }
     
-    local currentScheme = "rainbow"
     local rainbowBorderAnimation
     
     local function createRainbowBorder()
@@ -10017,8 +10016,5 @@ end
 
 -- 初始化彩虹边框
 aa.RainbowBorder = initRainbowBorder(ay)
-
-return ay
-end
 
 return aa
