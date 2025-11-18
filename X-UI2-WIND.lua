@@ -9839,187 +9839,6 @@ end
 repeat task.wait()until au
 end
 
-local ay=at(as)
-
-aa.Transparent=as.Transparent
-aa.Window=ay
-
-if as.Acrylic then
-al.init()
-end
-
--- 添加彩虹边框功能
-local function initRainbowBorder(window)
-    if not window or not window.UIElements then return end
-    
-    local rainbowBorderConfig = {
-        enabled = true,
-        thickness = 1.5,
-        animationSpeed = 2,
-        cornerRadius = 16
-    }
-    
-    local colorSchemes = {
-        rainbow = ColorSequence.new({
-            ColorSequenceKeypoint.new(0, Color3.fromHex("FF0000")),
-            ColorSequenceKeypoint.new(0.16, Color3.fromHex("FFA500")),
-            ColorSequenceKeypoint.new(0.33, Color3.fromHex("FFFF00")),
-            ColorSequenceKeypoint.new(0.5, Color3.fromHex("00FF00")),
-            ColorSequenceKeypoint.new(0.66, Color3.fromHex("0000FF")),
-            ColorSequenceKeypoint.new(0.83, Color3.fromHex("4B0082")),
-            ColorSequenceKeypoint.new(1, Color3.fromHex("EE82EE"))
-        })
-    }
-    
-    local currentScheme = "rainbow"
-    local rainbowBorderAnimation
-    
-    local function createRainbowBorder()
-        local mainFrame = window.UIElements.Main
-        if not mainFrame then return nil end
-        
-        local existingStroke = mainFrame:FindFirstChild("RainbowBorderStroke")
-        if existingStroke then
-            return existingStroke
-        end
-        
-        if not mainFrame:FindFirstChildOfClass("UICorner") then
-            local corner = Instance.new("UICorner")
-            corner.CornerRadius = UDim.new(0, rainbowBorderConfig.cornerRadius)
-            corner.Parent = mainFrame
-        end
-        
-        local rainbowStroke = Instance.new("UIStroke")
-        rainbowStroke.Name = "RainbowBorderStroke"
-        rainbowStroke.Thickness = rainbowBorderConfig.thickness
-        rainbowStroke.Color = Color3.new(1, 1, 1)
-        rainbowStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-        rainbowStroke.LineJoinMode = Enum.LineJoinMode.Round
-        rainbowStroke.Enabled = rainbowBorderConfig.enabled
-        
-        local gradient = Instance.new("UIGradient")
-        gradient.Name = "RainbowGradient"
-        gradient.Color = colorSchemes.rainbow
-        gradient.Rotation = 0
-        gradient.Parent = rainbowStroke
-        
-        rainbowStroke.Parent = mainFrame
-        return rainbowStroke
-    end
-    
-    local function startBorderAnimation()
-        local mainFrame = window.UIElements.Main
-        if not mainFrame then return nil end
-        
-        local rainbowStroke = mainFrame:FindFirstChild("RainbowBorderStroke")
-        if not rainbowStroke or not rainbowStroke.Enabled then return nil end
-        
-        local gradient = rainbowStroke:FindFirstChild("RainbowGradient")
-        if not gradient then return nil end
-        
-        if rainbowBorderAnimation then
-            rainbowBorderAnimation:Disconnect()
-        end
-        
-        rainbowBorderAnimation = game:GetService("RunService").Heartbeat:Connect(function()
-            if not rainbowStroke or rainbowStroke.Parent == nil or not rainbowStroke.Enabled then
-                rainbowBorderAnimation:Disconnect()
-                return
-            end
-            
-            local time = tick()
-            gradient.Rotation = (time * rainbowBorderConfig.animationSpeed * 60) % 360
-        end)
-        
-        return rainbowBorderAnimation
-    end
-    
-    -- 延迟初始化，确保UI完全加载
-    spawn(function()
-        wait(0.5)
-        local rainbowStroke = createRainbowBorder()
-        if rainbowStroke then
-            startBorderAnimation()
-        end
-    end)
-    
-    -- 返回控制函数
-    return {
-        setEnabled = function(enabled)
-            rainbowBorderConfig.enabled = enabled
-            local mainFrame = window.UIElements and window.UIElements.Main
-            if mainFrame then
-                local rainbowStroke = mainFrame:FindFirstChild("RainbowBorderStroke")
-                if rainbowStroke then
-                    rainbowStroke.Enabled = enabled
-                    if enabled and not rainbowBorderAnimation then
-                        startBorderAnimation()
-                    elseif not enabled and rainbowBorderAnimation then
-                        rainbowBorderAnimation:Disconnect()
-                        rainbowBorderAnimation = nil
-                    end
-                end
-            end
-        end,
-        
-        setAnimationSpeed = function(speed)
-            rainbowBorderConfig.animationSpeed = math.clamp(speed, 0.1, 10)
-            if rainbowBorderAnimation then
-                rainbowBorderAnimation:Disconnect()
-                rainbowBorderAnimation = nil
-            end
-            if rainbowBorderConfig.enabled then
-                startBorderAnimation()
-            end
-        end,
-        
-        setThickness = function(thickness)
-            rainbowBorderConfig.thickness = math.clamp(thickness, 1, 5)
-            local mainFrame = window.UIElements and window.UIElements.Main
-            if mainFrame then
-                local rainbowStroke = mainFrame:FindFirstChild("RainbowBorderStroke")
-                if rainbowStroke then
-                    rainbowStroke.Thickness = rainbowBorderConfig.thickness
-                end
-            end
-        end,
-        
-        setColorScheme = function(schemeName)
-            if schemeName == "rainbow" then
-                local mainFrame = window.UIElements and window.UIElements.Main
-                if mainFrame then
-                    local rainbowStroke = mainFrame:FindFirstChild("RainbowBorderStroke")
-                    if rainbowStroke then
-                        local gradient = rainbowStroke:FindFirstChild("RainbowGradient")
-                        if gradient then
-                            gradient.Color = colorSchemes.rainbow
-                        end
-                    end
-                end
-            end
-        end,
-        
-        destroy = function()
-            if rainbowBorderAnimation then
-                rainbowBorderAnimation:Disconnect()
-                rainbowBorderAnimation = nil
-            end
-            local mainFrame = window.UIElements and window.UIElements.Main
-            if mainFrame then
-                local rainbowStroke = mainFrame:FindFirstChild("RainbowBorderStroke")
-                if rainbowStroke then
-                    rainbowStroke:Destroy()
-                end
-            end
-        end
-    }
-end
-
--- 初始化彩虹边框
-aa.RainbowBorder = initRainbowBorder(ay)
-
-return ay
-end
 -- UI设置功能模块
 local UISettings = {}
 
@@ -10352,7 +10171,7 @@ function UISettings.createSettingsTab(window)
         Color = "White"
     })
 
-    -- 各种设置控件...
+    -- 边框设置
     Settings:Toggle({
         Title = "启用边框",
         Value = UISettings.borderEnabled,
@@ -10375,7 +10194,129 @@ function UISettings.createSettingsTab(window)
         end
     })
 
-    -- 更多设置控件...
+    -- 边框颜色方案
+    local colorOptions = {}
+    for schemeName, _ in pairs(UISettings.COLOR_SCHEMES) do
+        table.insert(colorOptions, schemeName)
+    end
+    
+    Settings:Dropdown({
+        Title = "边框颜色",
+        List = colorOptions,
+        Value = UISettings.currentBorderColorScheme,
+        Callback = function(value)
+            UISettings.currentBorderColorScheme = value
+            local mainFrame = window.UIElements and window.UIElements.Main
+            if mainFrame then
+                local rainbowStroke = mainFrame:FindFirstChild("RainbowStroke")
+                if rainbowStroke then
+                    local glowEffect = rainbowStroke:FindFirstChild("GlowEffect")
+                    if glowEffect then
+                        local schemeData = UISettings.COLOR_SCHEMES[value]
+                        if schemeData then
+                            glowEffect.Color = schemeData[1]
+                        end
+                    end
+                end
+            end
+            UISettings.playSound()
+        end
+    })
+
+    -- 动画速度
+    Settings:Slider({
+        Title = "动画速度",
+        Min = 0.1,
+        Max = 10,
+        Value = UISettings.animationSpeed,
+        Callback = function(value)
+            UISettings.animationSpeed = value
+            if UISettings.rainbowBorderAnimation then
+                UISettings.rainbowBorderAnimation:Disconnect()
+                UISettings.rainbowBorderAnimation = nil
+            end
+            if UISettings.borderEnabled then
+                UISettings.startBorderAnimation(window, value)
+            end
+            UISettings.playSound()
+        end
+    })
+
+    -- 字体颜色设置
+    Settings:Toggle({
+        Title = "启用字体颜色",
+        Value = UISettings.fontColorEnabled,
+        Callback = function(value)
+            UISettings.fontColorEnabled = value
+            UISettings.applyFontColorsToWindow(window, UISettings.currentFontColorScheme)
+            UISettings.playSound()
+        end
+    })
+
+    -- 字体颜色方案
+    Settings:Dropdown({
+        Title = "字体颜色",
+        List = colorOptions,
+        Value = UISettings.currentFontColorScheme,
+        Callback = function(value)
+            UISettings.currentFontColorScheme = value
+            if UISettings.fontColorEnabled then
+                UISettings.applyFontColorsToWindow(window, value)
+            end
+            UISettings.playSound()
+        end
+    })
+
+    -- 字体样式
+    local fontOptions = {}
+    for _, fontName in ipairs(UISettings.FONT_STYLES) do
+        table.insert(fontOptions, fontName)
+    end
+    
+    Settings:Dropdown({
+        Title = "字体样式",
+        List = fontOptions,
+        Value = UISettings.currentFontStyle,
+        Callback = function(value)
+            UISettings.currentFontStyle = value
+            local success, total = UISettings.applyFontStyleToWindow(window, value)
+            UISettings.playSound()
+        end
+    })
+
+    -- UI缩放
+    Settings:Slider({
+        Title = "UI缩放",
+        Min = 0.5,
+        Max = 2,
+        Value = UISettings.uiScale,
+        Callback = function(value)
+            UISettings.uiScale = value
+            UISettings.applyUIScale(window, value)
+            UISettings.playSound()
+        end
+    })
+
+    -- 模糊效果
+    Settings:Toggle({
+        Title = "背景模糊",
+        Value = UISettings.blurEnabled,
+        Callback = function(value)
+            UISettings.blurEnabled = value
+            UISettings.applyBlurEffect(value)
+            UISettings.playSound()
+        end
+    })
+
+    -- 音效设置
+    Settings:Toggle({
+        Title = "启用音效",
+        Value = UISettings.soundEnabled,
+        Callback = function(value)
+            UISettings.soundEnabled = value
+            UISettings.playSound()
+        end
+    })
 
     return Settings
 end
@@ -10395,5 +10336,28 @@ function UISettings.cleanup()
     UISettings.applyBlurEffect(false)
 end
 
-return UISettings
-return aa
+-- 集成到现有代码中
+local function integrateUISettings(aa, as, al, at)
+    local ay = at(as)
+
+    aa.Transparent = as.Transparent
+    aa.Window = ay
+
+    if as.Acrylic then
+        al.init()
+    end
+
+    -- 初始化彩虹边框
+    UISettings.initializeRainbowBorder(ay, UISettings.currentBorderColorScheme, UISettings.animationSpeed)
+    
+    -- 创建UI设置标签页
+    UISettings.createSettingsTab(ay)
+    
+    -- 将UISettings功能附加到窗口对象
+    aa.UISettings = UISettings
+    
+    return ay
+end
+
+-- 如果这是模块的入口，返回集成函数
+return integrateUISettings
