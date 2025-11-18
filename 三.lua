@@ -116,7 +116,7 @@ function Nofitication:Notify(nofdebug, middledebug, all)
     sound:Play()
     game:GetService("Debris"):AddItem(sound, 2)
 
-    -- 创建主容器
+    -- 创建主容器 - 修改为右下角定位
     local MainContainer = Instance.new("Frame")
     MainContainer.Name = "MainContainer_" .. notificationId
     MainContainer.Parent = GUI
@@ -124,8 +124,8 @@ function Nofitication:Notify(nofdebug, middledebug, all)
     MainContainer.BackgroundTransparency = 0.1
     MainContainer.BorderSizePixel = 0
     MainContainer.Size = UDim2.new(0, 0, 0, 0)
-    MainContainer.AnchorPoint = Vector2.new(1, 0)
-    MainContainer.Position = UDim2.new(1, -25, 0, 25 + currentOffset * 140)
+    MainContainer.AnchorPoint = Vector2.new(1, 1) -- 右下角锚点
+    MainContainer.Position = UDim2.new(1, -25, 1, -25 - currentOffset * 140) -- 从右下角开始
     MainContainer.ClipsDescendants = true
     MainContainer.ZIndex = 100 + notificationId
     
@@ -140,19 +140,7 @@ function Nofitication:Notify(nofdebug, middledebug, all)
     UIStroke.Color = rainbowColors[1]
     UIStroke.Parent = MainContainer
     
-    -- 内部发光效果
-    local InnerGlow = Instance.new("ImageLabel")
-    InnerGlow.Name = "InnerGlow"
-    InnerGlow.Parent = MainContainer
-    InnerGlow.BackgroundTransparency = 1
-    InnerGlow.BorderSizePixel = 0
-    InnerGlow.Size = UDim2.new(1, 0, 1, 0)
-    InnerGlow.Image = "rbxassetid://8992231221"
-    InnerGlow.ImageColor3 = Color3.fromRGB(30, 30, 40)
-    InnerGlow.ImageTransparency = 0.8
-    InnerGlow.ScaleType = Enum.ScaleType.Slice
-    InnerGlow.SliceCenter = Rect.new(10, 10, 118, 118)
-    InnerGlow.ZIndex = 1
+    -- 移除InnerGlow，避免覆盖文字
     
     -- 窗口内容
     local Window = Instance.new("Frame")
@@ -231,7 +219,7 @@ function Nofitication:Notify(nofdebug, middledebug, all)
         PlayerAvatar.Image = "https://www.roblox.com/headshot-thumbnail/image?userId=" .. userId .. "&width=150&height=150&format=png"
     end
     
-    -- 标题
+    -- 标题 - 提高ZIndex确保文字显示在最上方
     local WindowTitle = Instance.new("TextLabel")
     WindowTitle.Name = "WindowTitle"
     WindowTitle.Parent = Window
@@ -239,7 +227,7 @@ function Nofitication:Notify(nofdebug, middledebug, all)
     WindowTitle.BorderSizePixel = 0
     WindowTitle.Position = UDim2.new(0, 70, 0, 12)
     WindowTitle.Size = UDim2.new(1, -80, 0, 22)
-    WindowTitle.ZIndex = 4
+    WindowTitle.ZIndex = 10  -- 提高ZIndex
     WindowTitle.Font = Enum.Font.GothamBold
     WindowTitle.Text = nofdebug.Title or "通知"
     WindowTitle.TextColor3 = Color3.fromRGB(245, 245, 245)
@@ -247,7 +235,7 @@ function Nofitication:Notify(nofdebug, middledebug, all)
     WindowTitle.TextXAlignment = Enum.TextXAlignment.Left
     WindowTitle.TextTransparency = 1
     
-    -- 描述
+    -- 描述 - 提高ZIndex确保文字显示在最上方
     local WindowDescription = Instance.new("TextLabel")
     WindowDescription.Name = "WindowDescription"
     WindowDescription.Parent = Window
@@ -255,7 +243,7 @@ function Nofitication:Notify(nofdebug, middledebug, all)
     WindowDescription.BorderSizePixel = 0
     WindowDescription.Position = UDim2.new(0, 70, 0, 38)
     WindowDescription.Size = UDim2.new(1, -80, 1, -60)
-    WindowDescription.ZIndex = 4
+    WindowDescription.ZIndex = 10  -- 提高ZIndex
     WindowDescription.Font = Enum.Font.Gotham
     WindowDescription.Text = nofdebug.Description or ""
     WindowDescription.TextColor3 = Color3.fromRGB(200, 200, 210)
@@ -318,7 +306,7 @@ function Nofitication:Notify(nofdebug, middledebug, all)
             Particles = particleAnimation
         }
         
-        -- 展开动画
+        -- 展开动画 - 从右下角展开
         local expandTween = TweenService:Create(
             MainContainer,
             TweenInfo.new(0.6, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
@@ -361,7 +349,7 @@ function Nofitication:Notify(nofdebug, middledebug, all)
                 ImageIcon.Position = UDim2.new(0, 40, 0, 15)
                 ImageIcon.Image = all.Image
                 ImageIcon.ImageColor3 = all.ImageColor or Color3.fromRGB(255, 255, 255)
-                ImageIcon.ZIndex = 5
+                ImageIcon.ZIndex = 11  -- 提高ZIndex
             end
             
             local progressTween = TweenService:Create(
@@ -382,7 +370,7 @@ function Nofitication:Notify(nofdebug, middledebug, all)
             ButtonContainer.BackgroundTransparency = 1
             ButtonContainer.Size = UDim2.new(1, -80, 0, 32)
             ButtonContainer.Position = UDim2.new(0, 70, 1, -40)
-            ButtonContainer.ZIndex = 5
+            ButtonContainer.ZIndex = 11  -- 提高ZIndex
             
             local AcceptButton = Instance.new("TextButton")
             AcceptButton.Name = "AcceptButton"
@@ -395,7 +383,7 @@ function Nofitication:Notify(nofdebug, middledebug, all)
             AcceptButton.Font = Enum.Font.GothamBold
             AcceptButton.TextSize = 13
             AcceptButton.AutoButtonColor = false
-            AcceptButton.ZIndex = 6
+            AcceptButton.ZIndex = 12  -- 提高ZIndex
             
             local AcceptCorner = Instance.new("UICorner")
             AcceptCorner.CornerRadius = UDim.new(0, 8)
@@ -412,7 +400,7 @@ function Nofitication:Notify(nofdebug, middledebug, all)
             DeclineButton.Font = Enum.Font.GothamBold
             DeclineButton.TextSize = 13
             DeclineButton.AutoButtonColor = false
-            DeclineButton.ZIndex = 6
+            DeclineButton.ZIndex = 12  -- 提高ZIndex
             
             local DeclineCorner = Instance.new("UICorner")
             DeclineCorner.CornerRadius = UDim.new(0, 8)
@@ -467,7 +455,7 @@ function Nofitication:Notify(nofdebug, middledebug, all)
         
         wait(0.3)
         
-        -- 收缩动画
+        -- 收缩动画 - 向右下角收缩
         local collapseTween = TweenService:Create(
             MainContainer,
             TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.In),
@@ -493,13 +481,14 @@ function Nofitication:Notify(nofdebug, middledebug, all)
         MainContainer:Destroy()
         activeNotifications[notificationId] = nil
         
-        -- 更新其他通知位置
+        -- 更新其他通知位置 - 调整为从下往上排列
         for id, notification in pairs(activeNotifications) do
             if notification.Position > currentOffset then
                 notification.Position = notification.Position - 1
                 TweenService:Create(
-                    notification.Container,                    TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-                    {Position = UDim2.new(1, -25, 0, 25 + (notification.Position - 1) * 140)}
+                    notification.Container,
+                    TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                    {Position = UDim2.new(1, -25, 1, -25 - (notification.Position - 1) * 140)}
                 ):Play()
             end
         end
@@ -509,4 +498,5 @@ function Nofitication:Notify(nofdebug, middledebug, all)
     
     coroutine.wrap(animateNotification)()
 end
+
 return Nofitication
