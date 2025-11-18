@@ -9839,525 +9839,186 @@ end
 repeat task.wait()until au
 end
 
--- UI设置功能模块
-local UISettings = {}
+local ay=at(as)
 
--- 初始化变量
-UISettings.rainbowBorderAnimation = nil
-UISettings.currentBorderColorScheme = "彩虹颜色"
-UISettings.currentFontColorScheme = "彩虹颜色"
-UISettings.borderInitialized = false
-UISettings.animationSpeed = 2
-UISettings.borderEnabled = true
-UISettings.fontColorEnabled = false
-UISettings.uiScale = 1
-UISettings.blurEnabled = false
-UISettings.soundEnabled = true
+aa.Transparent=as.Transparent
+aa.Window=ay
 
--- 字体样式定义
-UISettings.FONT_STYLES = {
-    "SourceSansBold","SourceSansItalic","SourceSansLight","SourceSans",
-    "GothamSSm","GothamSSm-Bold","GothamSSm-Medium","GothamSSm-Light",
-    "GothamSSm-Black","GothamSSm-Book","GothamSSm-XLight","GothamSSm-Thin",
-    "GothamSSm-Ultra","GothamSSm-SemiBold","GothamSSm-ExtraLight","GothamSSm-Heavy",
-    "GothamSSm-ExtraBold","GothamSSm-Regular","Gotham","GothamBold",
-    "GothamMedium","GothamBlack","GothamLight","Arial","ArialBold",
-    "Code","CodeLight","CodeBold","Highway","HighwayBold","HighwayLight",
-    "SciFi","SciFiBold","SciFiItalic","Cartoon","CartoonBold","Handwritten"
-}
-
-UISettings.FONT_DESCRIPTIONS = {
-    ["SourceSansBold"] = "标准粗体",["SourceSansItalic"] = "斜体",["SourceSansLight"] = "细体",
-    ["SourceSans"] = "标准体",["GothamSSm"] = "哥特标准",["GothamSSm-Bold"] = "哥特粗体",
-    ["GothamSSm-Medium"] = "哥特中等",["GothamSSm-Light"] = "哥特细体",["GothamSSm-Black"] = "哥特黑体",
-    ["GothamSSm-Book"] = "哥特书本体",["GothamSSm-XLight"] = "哥特超细体",["GothamSSm-Thin"] = "哥特极细体",
-    ["GothamSSm-Ultra"] = "哥特超黑体",["GothamSSm-SemiBold"] = "哥特半粗体",["GothamSSm-ExtraLight"] = "哥特特细体",
-    ["GothamSSm-Heavy"] = "哥特粗重体",["GothamSSm-ExtraBold"] = "哥特特粗体",["GothamSSm-Regular"] = "哥特常规体",
-    ["Gotham"] = "经典哥特体",["GothamBold"] = "经典哥特粗体",["GothamMedium"] = "经典哥特中等",
-    ["GothamBlack"] = "经典哥特黑体",["GothamLight"] = "经典哥特细体",["Arial"] = "标准Arial体",
-    ["ArialBold"] = "Arial粗体",["Code"] = "代码字体",["CodeLight"] = "代码细体",
-    ["CodeBold"] = "代码粗体",["Highway"] = "高速公路体",["HighwayBold"] = "高速公路粗体",
-    ["HighwayLight"] = "高速公路细体",["SciFi"] = "科幻字体",["SciFiBold"] = "科幻粗体",
-    ["SciFiItalic"] = "科幻斜体",["Cartoon"] = "卡通字体",["CartoonBold"] = "卡通粗体",
-    ["Handwritten"] = "手写体"
-}
-
-UISettings.currentFontStyle = "SourceSansBold"
-
--- 颜色方案定义
-UISettings.COLOR_SCHEMES = {
-    ["彩虹颜色"] = {ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.fromHex("FF0000")),ColorSequenceKeypoint.new(0.16, Color3.fromHex("FFA500")),ColorSequenceKeypoint.new(0.33, Color3.fromHex("FFFF00")),ColorSequenceKeypoint.new(0.5, Color3.fromHex("00FF00")),ColorSequenceKeypoint.new(0.66, Color3.fromHex("0000FF")),ColorSequenceKeypoint.new(0.83, Color3.fromHex("4B0082")),ColorSequenceKeypoint.new(1, Color3.fromHex("EE82EE"))}),"palette"},
-    ["黑红颜色"] = {ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.fromHex("000000")),ColorSequenceKeypoint.new(0.5, Color3.fromHex("FF0000")),ColorSequenceKeypoint.new(1, Color3.fromHex("000000"))}),"alert-triangle"},
-    ["蓝白颜色"] = {ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.fromHex("FFFFFF")),ColorSequenceKeypoint.new(0.5, Color3.fromHex("1E90FF")),ColorSequenceKeypoint.new(1, Color3.fromHex("FFFFFF"))}),"droplet"},
-    ["紫金颜色"] = {ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.fromHex("FFD700")),ColorSequenceKeypoint.new(0.5, Color3.fromHex("8A2BE2")),ColorSequenceKeypoint.new(1, Color3.fromHex("FFD700"))}),"crown"},
-    ["蓝黑颜色"] = {ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.fromHex("000000")),ColorSequenceKeypoint.new(0.5, Color3.fromHex("0000FF")),ColorSequenceKeypoint.new(1, Color3.fromHex("000000"))}),"moon"},
-    ["绿紫颜色"] = {ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.fromHex("00FF00")),ColorSequenceKeypoint.new(0.5, Color3.fromHex("800080")),ColorSequenceKeypoint.new(1, Color3.fromHex("00FF00"))}),"zap"},
-    ["粉蓝颜色"] = {ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.fromHex("FF69B4")),ColorSequenceKeypoint.new(0.5, Color3.fromHex("00BFFF")),ColorSequenceKeypoint.new(1, Color3.fromHex("FF69B4"))}),"heart"},
-    ["橙青颜色"] = {ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.fromHex("FF4500")),ColorSequenceKeypoint.new(0.5, Color3.fromHex("00CED1")),ColorSequenceKeypoint.new(1, Color3.fromHex("FF4500"))}),"sun"},
-    ["红金颜色"] = {ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.fromHex("FF0000")),ColorSequenceKeypoint.new(0.5, Color3.fromHex("FFD700")),ColorSequenceKeypoint.new(1, Color3.fromHex("FF0000"))}),"award"},
-    ["银蓝颜色"] = {ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.fromHex("C0C0C0")),ColorSequenceKeypoint.new(0.5, Color3.fromHex("4682B4")),ColorSequenceKeypoint.new(1, Color3.fromHex("C0C0C0"))}),"star"},
-    ["霓虹颜色"] = {ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.fromHex("FF00FF")),ColorSequenceKeypoint.new(0.25, Color3.fromHex("00FFFF")),ColorSequenceKeypoint.new(0.5, Color3.fromHex("FFFF00")),ColorSequenceKeypoint.new(0.75, Color3.fromHex("FF00FF")),ColorSequenceKeypoint.new(1, Color3.fromHex("00FFFF"))}),"sparkles"},
-    ["森林颜色"] = {ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.fromHex("228B22")),ColorSequenceKeypoint.new(0.5, Color3.fromHex("32CD32")),ColorSequenceKeypoint.new(1, Color3.fromHex("228B22"))}),"tree"},
-    ["火焰颜色"] = {ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.fromHex("FF4500")),ColorSequenceKeypoint.new(0.5, Color3.fromHex("FF0000")),ColorSequenceKeypoint.new(1, Color3.fromHex("FF8C00"))}),"flame"},
-    ["海洋颜色"] = {ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.fromHex("000080")),ColorSequenceKeypoint.new(0.5, Color3.fromHex("1E90FF")),ColorSequenceKeypoint.new(1, Color3.fromHex("00BFFF"))}),"waves"},
-    ["日落颜色"] = {ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.fromHex("FF4500")),ColorSequenceKeypoint.new(0.5, Color3.fromHex("FF8C00")),ColorSequenceKeypoint.new(1, Color3.fromHex("FFD700"))}),"sunset"},
-    ["银河颜色"] = {ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.fromHex("4B0082")),ColorSequenceKeypoint.new(0.5, Color3.fromHex("8A2BE2")),ColorSequenceKeypoint.new(1, Color3.fromHex("9370DB"))}),"galaxy"},
-    ["糖果颜色"] = {ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.fromHex("FF69B4")),ColorSequenceKeypoint.new(0.5, Color3.fromHex("FF1493")),ColorSequenceKeypoint.new(1, Color3.fromHex("FFB6C1"))}),"candy"},
-    ["金属颜色"] = {ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.fromHex("C0C0C0")),ColorSequenceKeypoint.new(0.5, Color3.fromHex("A9A9A9")),ColorSequenceKeypoint.new(1, Color3.fromHex("696969"))}),"shield"}
-}
-
-UISettings.fontColorAnimations = {}
-
--- 应用字体颜色渐变
-function UISettings.applyFontColorGradient(textElement, colorScheme)
-    if not textElement or not textElement:IsA("TextLabel") and not textElement:IsA("TextButton") and not textElement:IsA("TextBox") then
-        return
-    end
-    
-    local existingGradient = textElement:FindFirstChild("FontColorGradient")
-    if existingGradient then
-        existingGradient:Destroy()
-    end
-    
-    if UISettings.fontColorAnimations[textElement] then
-        UISettings.fontColorAnimations[textElement]:Disconnect()
-        UISettings.fontColorAnimations[textElement] = nil
-    end
-    
-    if not UISettings.fontColorEnabled then
-        textElement.TextColor3 = Color3.new(1, 1, 1)
-        return
-    end
-    
-    local schemeData = UISettings.COLOR_SCHEMES[colorScheme or UISettings.currentFontColorScheme]
-    if not schemeData then return end
-    
-    local fontGradient = Instance.new("UIGradient")
-    fontGradient.Name = "FontColorGradient"
-    fontGradient.Color = schemeData[1]
-    fontGradient.Rotation = 0
-    fontGradient.Parent = textElement
-    
-    textElement.TextColor3 = Color3.new(1, 1, 1)
-    
-    local animation
-    animation = game:GetService("RunService").Heartbeat:Connect(function()
-        if not textElement or textElement.Parent == nil then
-            animation:Disconnect()
-            UISettings.fontColorAnimations[textElement] = nil
-            return
-        end
-        
-        if not fontGradient or fontGradient.Parent == nil then
-            animation:Disconnect()
-            UISettings.fontColorAnimations[textElement] = nil
-            return
-        end
-        
-        local time = tick()
-        fontGradient.Rotation = (time * UISettings.animationSpeed * 30) % 360
-    end)
-    
-    UISettings.fontColorAnimations[textElement] = animation
+if as.Acrylic then
+al.init()
 end
 
--- 应用字体样式到窗口
-function UISettings.applyFontStyleToWindow(window, fontStyle)
-    if not window or not window.UIElements then 
-        wait(0.5)
-        if not window or not window.UIElements then
-            return false
-        end
-    end
-    
-    local successCount = 0
-    local totalCount = 0
-    
-    local function processElement(element)
-        for _, child in ipairs(element:GetDescendants()) do
-            if child:IsA("TextLabel") or child:IsA("TextButton") or child:IsA("TextBox") then
-                totalCount = totalCount + 1
-                pcall(function()
-                    child.Font = Enum.Font[fontStyle]
-                    successCount = successCount + 1
-                end)
-            end
-        end
-    end
-    
-    processElement(window.UIElements.Main)
-    
-    return successCount, totalCount
-end
-
--- 应用字体颜色到窗口
-function UISettings.applyFontColorsToWindow(window, colorScheme)
+-- 添加彩虹边框功能
+local function initRainbowBorder(window)
     if not window or not window.UIElements then return end
     
-    local function processElement(element)
-        for _, child in ipairs(element:GetDescendants()) do
-            if child:IsA("TextLabel") or child:IsA("TextButton") or child:IsA("TextBox") then
-                UISettings.applyFontColorGradient(child, colorScheme)
-            end
-        end
-    end
+    local rainbowBorderConfig = {
+        enabled = true,
+        thickness = 1.5,
+        animationSpeed = 2,
+        cornerRadius = 16
+    }
     
-    processElement(window.UIElements.Main)
-end
-
--- 创建彩虹边框
-function UISettings.createRainbowBorder(window, colorScheme, speed)
-    if not window or not window.UIElements then
-        wait(1)
-        if not window or not window.UIElements then
-            return nil, nil
-        end
-    end
+    local colorSchemes = {
+        rainbow = ColorSequence.new({
+            ColorSequenceKeypoint.new(0, Color3.fromHex("FF0000")),
+            ColorSequenceKeypoint.new(0.16, Color3.fromHex("FFA500")),
+            ColorSequenceKeypoint.new(0.33, Color3.fromHex("FFFF00")),
+            ColorSequenceKeypoint.new(0.5, Color3.fromHex("00FF00")),
+            ColorSequenceKeypoint.new(0.66, Color3.fromHex("0000FF")),
+            ColorSequenceKeypoint.new(0.83, Color3.fromHex("4B0082")),
+            ColorSequenceKeypoint.new(1, Color3.fromHex("EE82EE"))
+        })
+    }
     
-    local mainFrame = window.UIElements.Main
-    if not mainFrame then
-        return nil, nil
-    end
+    local currentScheme = "rainbow"
+    local rainbowBorderAnimation
     
-    local existingStroke = mainFrame:FindFirstChild("RainbowStroke")
-    if existingStroke then
-        local glowEffect = existingStroke:FindFirstChild("GlowEffect")
-        if glowEffect then
-            local schemeData = UISettings.COLOR_SCHEMES[colorScheme or UISettings.currentBorderColorScheme]
-            if schemeData then
-                glowEffect.Color = schemeData[1]
-            end
-        end
-        return existingStroke, UISettings.rainbowBorderAnimation
-    end
-    
-    if not mainFrame:FindFirstChildOfClass("UICorner") then
-        local corner = Instance.new("UICorner")
-        corner.CornerRadius = UDim.new(0, 16)
-        corner.Parent = mainFrame
-    end
-    
-    local rainbowStroke = Instance.new("UIStroke")
-    rainbowStroke.Name = "RainbowStroke"
-    rainbowStroke.Thickness = 1.5
-    rainbowStroke.Color = Color3.new(1, 1, 1)
-    rainbowStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-    rainbowStroke.LineJoinMode = Enum.LineJoinMode.Round
-    rainbowStroke.Enabled = UISettings.borderEnabled
-    rainbowStroke.Parent = mainFrame
-    
-    local glowEffect = Instance.new("UIGradient")
-    glowEffect.Name = "GlowEffect"
-    
-    local schemeData = UISettings.COLOR_SCHEMES[colorScheme or UISettings.currentBorderColorScheme]
-    if schemeData then
-        glowEffect.Color = schemeData[1]
-    else
-        glowEffect.Color = UISettings.COLOR_SCHEMES["彩虹颜色"][1]
-    end
-    
-    glowEffect.Rotation = 0
-    glowEffect.Parent = rainbowStroke
-    
-    return rainbowStroke, nil
-end
-
--- 开始边框动画
-function UISettings.startBorderAnimation(window, speed)
-    if not window or not window.UIElements then
-        return nil
-    end
-    
-    local mainFrame = window.UIElements.Main
-    if not mainFrame then
-        return nil
-    end
-    
-    local rainbowStroke = mainFrame:FindFirstChild("RainbowStroke")
-    if not rainbowStroke or not rainbowStroke.Enabled then
-        return nil
-    end
-    
-    local glowEffect = rainbowStroke:FindFirstChild("GlowEffect")
-    if not glowEffect then
-        return nil
-    end
-    
-    if UISettings.rainbowBorderAnimation then
-        UISettings.rainbowBorderAnimation:Disconnect()
-        UISettings.rainbowBorderAnimation = nil
-    end
-    
-    local animation
-    animation = game:GetService("RunService").Heartbeat:Connect(function()
-        if not rainbowStroke or rainbowStroke.Parent == nil or not rainbowStroke.Enabled then
-            animation:Disconnect()
-            return
+    local function createRainbowBorder()
+        local mainFrame = window.UIElements.Main
+        if not mainFrame then return nil end
+        
+        local existingStroke = mainFrame:FindFirstChild("RainbowBorderStroke")
+        if existingStroke then
+            return existingStroke
         end
         
-        local time = tick()
-        glowEffect.Rotation = (time * speed * 60) % 360
+        if not mainFrame:FindFirstChildOfClass("UICorner") then
+            local corner = Instance.new("UICorner")
+            corner.CornerRadius = UDim.new(0, rainbowBorderConfig.cornerRadius)
+            corner.Parent = mainFrame
+        end
+        
+        local rainbowStroke = Instance.new("UIStroke")
+        rainbowStroke.Name = "RainbowBorderStroke"
+        rainbowStroke.Thickness = rainbowBorderConfig.thickness
+        rainbowStroke.Color = Color3.new(1, 1, 1)
+        rainbowStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+        rainbowStroke.LineJoinMode = Enum.LineJoinMode.Round
+        rainbowStroke.Enabled = rainbowBorderConfig.enabled
+        
+        local gradient = Instance.new("UIGradient")
+        gradient.Name = "RainbowGradient"
+        gradient.Color = colorSchemes.rainbow
+        gradient.Rotation = 0
+        gradient.Parent = rainbowStroke
+        
+        rainbowStroke.Parent = mainFrame
+        return rainbowStroke
+    end
+    
+    local function startBorderAnimation()
+        local mainFrame = window.UIElements.Main
+        if not mainFrame then return nil end
+        
+        local rainbowStroke = mainFrame:FindFirstChild("RainbowBorderStroke")
+        if not rainbowStroke or not rainbowStroke.Enabled then return nil end
+        
+        local gradient = rainbowStroke:FindFirstChild("RainbowGradient")
+        if not gradient then return nil end
+        
+        if rainbowBorderAnimation then
+            rainbowBorderAnimation:Disconnect()
+        end
+        
+        rainbowBorderAnimation = game:GetService("RunService").Heartbeat:Connect(function()
+            if not rainbowStroke or rainbowStroke.Parent == nil or not rainbowStroke.Enabled then
+                rainbowBorderAnimation:Disconnect()
+                return
+            end
+            
+            local time = tick()
+            gradient.Rotation = (time * rainbowBorderConfig.animationSpeed * 60) % 360
+        end)
+        
+        return rainbowBorderAnimation
+    end
+    
+    -- 延迟初始化，确保UI完全加载
+    spawn(function()
+        wait(0.5)
+        local rainbowStroke = createRainbowBorder()
+        if rainbowStroke then
+            startBorderAnimation()
+        end
     end)
     
-    UISettings.rainbowBorderAnimation = animation
-    return animation
-end
-
--- 初始化彩虹边框
-function UISettings.initializeRainbowBorder(window, scheme, speed)
-    speed = speed or UISettings.animationSpeed
-    
-    local rainbowStroke, _ = UISettings.createRainbowBorder(window, scheme, speed)
-    if rainbowStroke then
-        if UISettings.borderEnabled then
-            UISettings.startBorderAnimation(window, speed)
-        end
-        UISettings.borderInitialized = true
-        return true
-    end
-    return false
-end
-
--- 播放音效
-function UISettings.playSound()
-    if UISettings.soundEnabled then
-        pcall(function()
-            local sound = Instance.new("Sound")
-            sound.SoundId = "rbxassetid://9047002353"
-            sound.Volume = 0.3
-            sound.Parent = game:GetService("SoundService")
-            sound:Play()
-            game:GetService("Debris"):AddItem(sound, 2)
-        end)
-    end
-end
-
--- 应用模糊效果
-function UISettings.applyBlurEffect(enabled)
-    if enabled then
-        pcall(function()
-            local blur = Instance.new("BlurEffect")
-            blur.Size = 8
-            blur.Name = "UIFrostBlur"
-            blur.Parent = game:GetService("Lighting")
-        end)
-    else
-        pcall(function()
-            local existingBlur = game:GetService("Lighting"):FindFirstChild("UIFrostBlur")
-            if existingBlur then
-                existingBlur:Destroy()
-            end
-        end)
-    end
-end
-
--- 应用UI缩放
-function UISettings.applyUIScale(window, scale)
-    if window and window.UIElements and window.UIElements.Main then
-        local mainFrame = window.UIElements.Main
-        mainFrame.Size = UDim2.new(0, 600 * scale, 0, 400 * scale)
-    end
-end
-
--- 创建UI设置标签页
-function UISettings.createSettingsTab(window)
-    local Settings = window:Tab({Title = "UI设置", Icon = "palette"})
-    
-    Settings:Paragraph({
-        Title = "UI设置",
-        Desc = "二改wind原版UI",
-        Image = "settings",
-        ImageSize = 20,
-        Color = "White"
-    })
-
-    -- 边框设置
-    Settings:Toggle({
-        Title = "启用边框",
-        Value = UISettings.borderEnabled,
-        Callback = function(value)
-            UISettings.borderEnabled = value
+    -- 返回控制函数
+    return {
+        setEnabled = function(enabled)
+            rainbowBorderConfig.enabled = enabled
             local mainFrame = window.UIElements and window.UIElements.Main
             if mainFrame then
-                local rainbowStroke = mainFrame:FindFirstChild("RainbowStroke")
+                local rainbowStroke = mainFrame:FindFirstChild("RainbowBorderStroke")
                 if rainbowStroke then
-                    rainbowStroke.Enabled = value
-                    if value and window.windowOpen and not UISettings.rainbowBorderAnimation then
-                        UISettings.startBorderAnimation(window, UISettings.animationSpeed)
-                    elseif not value and UISettings.rainbowBorderAnimation then
-                        UISettings.rainbowBorderAnimation:Disconnect()
-                        UISettings.rainbowBorderAnimation = nil
+                    rainbowStroke.Enabled = enabled
+                    if enabled and not rainbowBorderAnimation then
+                        startBorderAnimation()
+                    elseif not enabled and rainbowBorderAnimation then
+                        rainbowBorderAnimation:Disconnect()
+                        rainbowBorderAnimation = nil
                     end
                 end
             end
-            UISettings.playSound()
-        end
-    })
-
-    -- 边框颜色方案
-    local colorOptions = {}
-    for schemeName, _ in pairs(UISettings.COLOR_SCHEMES) do
-        table.insert(colorOptions, schemeName)
-    end
-    
-    Settings:Dropdown({
-        Title = "边框颜色",
-        List = colorOptions,
-        Value = UISettings.currentBorderColorScheme,
-        Callback = function(value)
-            UISettings.currentBorderColorScheme = value
+        end,
+        
+        setAnimationSpeed = function(speed)
+            rainbowBorderConfig.animationSpeed = math.clamp(speed, 0.1, 10)
+            if rainbowBorderAnimation then
+                rainbowBorderAnimation:Disconnect()
+                rainbowBorderAnimation = nil
+            end
+            if rainbowBorderConfig.enabled then
+                startBorderAnimation()
+            end
+        end,
+        
+        setThickness = function(thickness)
+            rainbowBorderConfig.thickness = math.clamp(thickness, 1, 5)
             local mainFrame = window.UIElements and window.UIElements.Main
             if mainFrame then
-                local rainbowStroke = mainFrame:FindFirstChild("RainbowStroke")
+                local rainbowStroke = mainFrame:FindFirstChild("RainbowBorderStroke")
                 if rainbowStroke then
-                    local glowEffect = rainbowStroke:FindFirstChild("GlowEffect")
-                    if glowEffect then
-                        local schemeData = UISettings.COLOR_SCHEMES[value]
-                        if schemeData then
-                            glowEffect.Color = schemeData[1]
+                    rainbowStroke.Thickness = rainbowBorderConfig.thickness
+                end
+            end
+        end,
+        
+        setColorScheme = function(schemeName)
+            if schemeName == "rainbow" then
+                local mainFrame = window.UIElements and window.UIElements.Main
+                if mainFrame then
+                    local rainbowStroke = mainFrame:FindFirstChild("RainbowBorderStroke")
+                    if rainbowStroke then
+                        local gradient = rainbowStroke:FindFirstChild("RainbowGradient")
+                        if gradient then
+                            gradient.Color = colorSchemes.rainbow
                         end
                     end
                 end
             end
-            UISettings.playSound()
-        end
-    })
-
-    -- 动画速度
-    Settings:Slider({
-        Title = "动画速度",
-        Min = 0.1,
-        Max = 10,
-        Value = UISettings.animationSpeed,
-        Callback = function(value)
-            UISettings.animationSpeed = value
-            if UISettings.rainbowBorderAnimation then
-                UISettings.rainbowBorderAnimation:Disconnect()
-                UISettings.rainbowBorderAnimation = nil
+        end,
+        
+        destroy = function()
+            if rainbowBorderAnimation then
+                rainbowBorderAnimation:Disconnect()
+                rainbowBorderAnimation = nil
             end
-            if UISettings.borderEnabled then
-                UISettings.startBorderAnimation(window, value)
+            local mainFrame = window.UIElements and window.UIElements.Main
+            if mainFrame then
+                local rainbowStroke = mainFrame:FindFirstChild("RainbowBorderStroke")
+                if rainbowStroke then
+                    rainbowStroke:Destroy()
+                end
             end
-            UISettings.playSound()
         end
-    })
-
-    -- 字体颜色设置
-    Settings:Toggle({
-        Title = "启用字体颜色",
-        Value = UISettings.fontColorEnabled,
-        Callback = function(value)
-            UISettings.fontColorEnabled = value
-            UISettings.applyFontColorsToWindow(window, UISettings.currentFontColorScheme)
-            UISettings.playSound()
-        end
-    })
-
-    -- 字体颜色方案
-    Settings:Dropdown({
-        Title = "字体颜色",
-        List = colorOptions,
-        Value = UISettings.currentFontColorScheme,
-        Callback = function(value)
-            UISettings.currentFontColorScheme = value
-            if UISettings.fontColorEnabled then
-                UISettings.applyFontColorsToWindow(window, value)
-            end
-            UISettings.playSound()
-        end
-    })
-
-    -- 字体样式
-    local fontOptions = {}
-    for _, fontName in ipairs(UISettings.FONT_STYLES) do
-        table.insert(fontOptions, fontName)
-    end
-    
-    Settings:Dropdown({
-        Title = "字体样式",
-        List = fontOptions,
-        Value = UISettings.currentFontStyle,
-        Callback = function(value)
-            UISettings.currentFontStyle = value
-            local success, total = UISettings.applyFontStyleToWindow(window, value)
-            UISettings.playSound()
-        end
-    })
-
-    -- UI缩放
-    Settings:Slider({
-        Title = "UI缩放",
-        Min = 0.5,
-        Max = 2,
-        Value = UISettings.uiScale,
-        Callback = function(value)
-            UISettings.uiScale = value
-            UISettings.applyUIScale(window, value)
-            UISettings.playSound()
-        end
-    })
-
-    -- 模糊效果
-    Settings:Toggle({
-        Title = "背景模糊",
-        Value = UISettings.blurEnabled,
-        Callback = function(value)
-            UISettings.blurEnabled = value
-            UISettings.applyBlurEffect(value)
-            UISettings.playSound()
-        end
-    })
-
-    -- 音效设置
-    Settings:Toggle({
-        Title = "启用音效",
-        Value = UISettings.soundEnabled,
-        Callback = function(value)
-            UISettings.soundEnabled = value
-            UISettings.playSound()
-        end
-    })
-
-    return Settings
+    }
 end
 
--- 清理资源
-function UISettings.cleanup()
-    if UISettings.rainbowBorderAnimation then
-        UISettings.rainbowBorderAnimation:Disconnect()
-        UISettings.rainbowBorderAnimation = nil
-    end
-    
-    for _, animation in pairs(UISettings.fontColorAnimations) do
-        animation:Disconnect()
-    end
-    UISettings.fontColorAnimations = {}
-    
-    UISettings.applyBlurEffect(false)
+-- 初始化彩虹边框
+aa.RainbowBorder = initRainbowBorder(ay)
+
+return ay
 end
 
--- 集成到现有代码中
-local function integrateUISettings(aa, as, al, at)
-    local ay = at(as)
-
-    aa.Transparent = as.Transparent
-    aa.Window = ay
-
-    if as.Acrylic then
-        al.init()
-    end
-
-    -- 初始化彩虹边框
-    UISettings.initializeRainbowBorder(ay, UISettings.currentBorderColorScheme, UISettings.animationSpeed)
-    
-    -- 创建UI设置标签页
-    UISettings.createSettingsTab(ay)
-    
-    -- 将UISettings功能附加到窗口对象
-    aa.UISettings = UISettings
-    
-    return ay
-end
-
--- 如果这是模块的入口，返回集成函数
-return integrateUISettings
+return aa
