@@ -159,6 +159,18 @@ function lib:Window(text, preset, closebind)
     local Title = Instance.new("TextLabel")
     local TabFolder = Instance.new("Folder")
     local DragFrame = Instance.new("Frame")
+    
+    -- 最小化按钮
+    local MinimizeBtn = Instance.new("TextButton")
+    local MinimizeLabel = Instance.new("TextLabel")
+    
+    -- 最小化状态容器
+    local MinimizedUI = Instance.new("Frame")
+    local MinimizedCorner = Instance.new("UICorner")
+    local MinimizedStroke = Instance.new("UIStroke")
+    local MinimizedTitle = Instance.new("TextLabel")
+    local ExpandBtn = Instance.new("TextButton")
+    local ExpandLabel = Instance.new("TextLabel")
 
     -- 创建主窗口
     Main.Name = "Main"
@@ -210,12 +222,36 @@ function lib:Window(text, preset, closebind)
     })
     TitleBarGradient.Parent = TitleBar
 
+    -- 最小化按钮
+    MinimizeBtn.Name = "MinimizeBtn"
+    MinimizeBtn.Parent = TitleBar
+    MinimizeBtn.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    MinimizeBtn.BackgroundTransparency = 1
+    MinimizeBtn.Position = UDim2.new(0.92, 0, 0.1, 0)
+    MinimizeBtn.Size = UDim2.new(0, 30, 0, 30)
+    MinimizeBtn.Font = Enum.Font.SourceSans
+    MinimizeBtn.Text = ""
+    MinimizeBtn.TextColor3 = Color3.fromRGB(0, 0, 0)
+    MinimizeBtn.TextSize = 14.000
+    
+    MinimizeLabel.Name = "MinimizeLabel"
+    MinimizeLabel.Parent = MinimizeBtn
+    MinimizeLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    MinimizeLabel.BackgroundTransparency = 1
+    MinimizeLabel.Size = UDim2.new(1, 0, 1, 0)
+    MinimizeLabel.Font = Enum.Font.GothamBlack
+    MinimizeLabel.Text = "-"
+    MinimizeLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    MinimizeLabel.TextSize = 24
+    MinimizeLabel.TextStrokeTransparency = 0.3
+    MinimizeLabel.TextStrokeColor3 = Color3.fromRGB(0, 100, 255)
+
     TabHold.Name = "TabHold"
     TabHold.Parent = Main
     TabHold.BackgroundColor3 = Color3.fromRGB(0, 100, 255)
     TabHold.BackgroundTransparency = 1.000
-    TabHold.Position = UDim2.new(0.0339285731, 0, 0.147335425, 0)
-    TabHold.Size = UDim2.new(0, 107, 0, 254)
+    TabHold.Position = UDim2.new(0.033, 0, 0.147, 0)
+    TabHold.Size = UDim2.new(0, 120, 0, 254) -- 调整宽度
 
     TabHoldLayout.Name = "TabHoldLayout"
     TabHoldLayout.Parent = TabHold
@@ -226,7 +262,7 @@ function lib:Window(text, preset, closebind)
     Title.Parent = TitleBar
     Title.BackgroundColor3 = Color3.fromRGB(0, 100, 255)
     Title.BackgroundTransparency = 1.000
-    Title.Position = UDim2.new(0.0339285731, 0, 0, 0)
+    Title.Position = UDim2.new(0.033, 0, 0, 0)
     Title.Size = UDim2.new(0, 200, 0, 40)
     Title.Font = Enum.Font.GothamBlack
     Title.Text = text
@@ -240,11 +276,111 @@ function lib:Window(text, preset, closebind)
     DragFrame.Parent = TitleBar
     DragFrame.BackgroundColor3 = Color3.fromRGB(0, 100, 255)
     DragFrame.BackgroundTransparency = 1.000
-    DragFrame.Size = UDim2.new(0, 560, 0, 40)
+    DragFrame.Size = UDim2.new(0, 500, 0, 40) -- 调整拖拽区域
+    
+    -- 创建最小化UI
+    MinimizedUI.Name = "MinimizedUI"
+    MinimizedUI.Parent = ui
+    MinimizedUI.AnchorPoint = Vector2.new(0.5, 0.5)
+    MinimizedUI.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    MinimizedUI.BackgroundTransparency = 0.1
+    MinimizedUI.Position = UDim2.new(0.5, 0, 0.1, 0)
+    MinimizedUI.Size = UDim2.new(0, 0, 0, 40)
+    MinimizedUI.Visible = false
+    MinimizedUI.ClipsDescendants = true
+    
+    MinimizedCorner.CornerRadius = UDim.new(0, 15)
+    MinimizedCorner.Parent = MinimizedUI
+    
+    MinimizedStroke.Thickness = 2
+    MinimizedStroke.Color = Color3.fromRGB(0, 100, 255)
+    MinimizedStroke.Parent = MinimizedUI
+    
+    MinimizedTitle.Name = "MinimizedTitle"
+    MinimizedTitle.Parent = MinimizedUI
+    MinimizedTitle.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    MinimizedTitle.BackgroundTransparency = 1
+    MinimizedTitle.Position = UDim2.new(0.05, 0, 0, 0)
+    MinimizedTitle.Size = UDim2.new(0, 150, 0, 40)
+    MinimizedTitle.Font = Enum.Font.GothamBlack
+    MinimizedTitle.Text = text
+    MinimizedTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+    MinimizedTitle.TextSize = 16
+    MinimizedTitle.TextXAlignment = Enum.TextXAlignment.Left
+    MinimizedTitle.TextStrokeTransparency = 0.3
+    MinimizedTitle.TextStrokeColor3 = Color3.fromRGB(0, 100, 255)
+    
+    ExpandBtn.Name = "ExpandBtn"
+    ExpandBtn.Parent = MinimizedUI
+    ExpandBtn.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    ExpandBtn.BackgroundTransparency = 1
+    ExpandBtn.Size = UDim2.new(1, 0, 1, 0)
+    ExpandBtn.Font = Enum.Font.SourceSans
+    ExpandBtn.Text = ""
+    ExpandBtn.TextColor3 = Color3.fromRGB(0, 0, 0)
+    ExpandBtn.TextSize = 14
+    
+    ExpandLabel.Name = "ExpandLabel"
+    ExpandLabel.Parent = ExpandBtn
+    ExpandLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    ExpandLabel.BackgroundTransparency = 1
+    ExpandLabel.Size = UDim2.new(1, 0, 1, 0)
+    ExpandLabel.Font = Enum.Font.GothamBlack
+    ExpandLabel.Text = text .. "  +"
+    ExpandLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    ExpandLabel.TextSize = 16
+    ExpandLabel.TextXAlignment = Enum.TextXAlignment.Center
+    ExpandLabel.TextStrokeTransparency = 0.3
+    ExpandLabel.TextStrokeColor3 = Color3.fromRGB(0, 100, 255)
+    
+    -- 最小化功能
+    local isMinimized = false
+    MinimizeBtn.MouseButton1Click:Connect(function()
+        if not isMinimized then
+            -- 最小化动画
+            Main.Visible = false
+            MinimizedUI.Visible = true
+            
+            -- 计算标题文本宽度
+            local textSize = game:GetService("TextService"):GetTextSize(text, 16, Enum.Font.GothamBlack, Vector2.new(1000, 40))
+            local newWidth = math.max(200, textSize.X + 80) -- 最小宽度200，加上边距
+            
+            MinimizedUI:TweenSize(
+                UDim2.new(0, newWidth, 0, 40),
+                Enum.EasingDirection.Out,
+                Enum.EasingStyle.Quart,
+                0.3,
+                true
+            )
+            
+            ExpandLabel.Text = text .. "  +"
+            isMinimized = true
+        end
+    end)
+    
+    ExpandBtn.MouseButton1Click:Connect(function()
+        if isMinimized then
+            -- 展开动画
+            MinimizedUI:TweenSize(
+                UDim2.new(0, 0, 0, 40),
+                Enum.EasingDirection.Out,
+                Enum.EasingStyle.Quart,
+                0.3,
+                true,
+                function()
+                    MinimizedUI.Visible = false
+                    Main.Visible = true
+                    isMinimized = false
+                end
+            )
+        end
+    end)
+    
+    MakeDraggable(DragFrame, Main)
+    MakeDraggable(MinimizedUI, MinimizedUI)
     
     -- 开启动画
-    Main:TweenSize(UDim2.new(0, 580, 0, 350), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, .6, true)
-    MakeDraggable(DragFrame, Main)
+    Main:TweenSize(UDim2.new(0, 600, 0, 370), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, .6, true)
     
     local uitoggled = false
     UserInputService.InputBegan:Connect(
@@ -269,7 +405,7 @@ function lib:Window(text, preset, closebind)
                     ui.Enabled = true
                 
                     Main:TweenSize(
-                        UDim2.new(0, 580, 0, 350),
+                        UDim2.new(0, 600, 0, 370),
                         Enum.EasingDirection.Out,
                         Enum.EasingStyle.Quart,
                         .6,
@@ -303,7 +439,7 @@ function lib:Window(text, preset, closebind)
         NotificationHold.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
         NotificationHold.BackgroundTransparency = 1.000
         NotificationHold.BorderSizePixel = 0
-        NotificationHold.Size = UDim2.new(0, 580, 0, 350)
+        NotificationHold.Size = UDim2.new(0, 600, 0, 370)
         NotificationHold.AutoButtonColor = false
         NotificationHold.Font = Enum.Font.SourceSans
         NotificationHold.Text = ""
@@ -323,7 +459,7 @@ function lib:Window(text, preset, closebind)
         NotificationFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
         NotificationFrame.BorderSizePixel = 0
         NotificationFrame.ClipsDescendants = true
-        NotificationFrame.Position = UDim2.new(0.5, 0, 0.498432577, 0)
+        NotificationFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
 
         NotificationCorner.CornerRadius = UDim.new(0, 15)
         NotificationCorner.Parent = NotificationFrame
@@ -452,7 +588,7 @@ function lib:Window(text, preset, closebind)
         TabBtn.Parent = TabHold
         TabBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
         TabBtn.BackgroundTransparency = 0
-        TabBtn.Size = UDim2.new(0, 107, 0, 35)
+        TabBtn.Size = UDim2.new(0, 120, 0, 35) -- 调整宽度
         TabBtn.AutoButtonColor = false
         TabBtn.Font = Enum.Font.SourceSans
         TabBtn.Text = ""
@@ -470,7 +606,7 @@ function lib:Window(text, preset, closebind)
         TabTitle.Parent = TabBtn
         TabTitle.BackgroundColor3 = Color3.fromRGB(0, 100, 255)
         TabTitle.BackgroundTransparency = 1.000
-        TabTitle.Size = UDim2.new(0, 107, 0, 35)
+        TabTitle.Size = UDim2.new(0, 120, 0, 35) -- 调整宽度
         TabTitle.Font = Enum.Font.GothamBlack
         TabTitle.Text = text
         TabTitle.TextColor3 = Color3.fromRGB(150, 150, 150)
@@ -508,8 +644,8 @@ function lib:Window(text, preset, closebind)
         Tab.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
         Tab.BackgroundTransparency = 0.1
         Tab.BorderSizePixel = 0
-        Tab.Position = UDim2.new(0.31400001, 0, 0.147, 0)
-        Tab.Size = UDim2.new(0, 400, 0, 254)
+        Tab.Position = UDim2.new(0.25, 0, 0.147, 0) -- 调整位置
+        Tab.Size = UDim2.new(0, 430, 0, 254) -- 调整宽度
         Tab.CanvasSize = UDim2.new(0, 0, 0, 0)
         Tab.ScrollBarThickness = 3
         Tab.Visible = false
@@ -582,7 +718,7 @@ function lib:Window(text, preset, closebind)
             Button.Name = "Button"
             Button.Parent = Tab
             Button.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
-            Button.Size = UDim2.new(0, 380, 0, 42)
+            Button.Size = UDim2.new(0, 410, 0, 42) -- 调整宽度
             Button.AutoButtonColor = false
             Button.Font = Enum.Font.SourceSans
             Button.Text = ""
@@ -602,8 +738,8 @@ function lib:Window(text, preset, closebind)
             ButtonTitle.Parent = Button
             ButtonTitle.BackgroundColor3 = Color3.fromRGB(0, 100, 255)
             ButtonTitle.BackgroundTransparency = 1.000
-            ButtonTitle.Position = UDim2.new(0.0358126722, 0, 0, 0)
-            ButtonTitle.Size = UDim2.new(0, 350, 0, 42)
+            ButtonTitle.Position = UDim2.new(0.035, 0, 0, 0)
+            ButtonTitle.Size = UDim2.new(0, 380, 0, 42) -- 调整宽度
             ButtonTitle.Font = Enum.Font.GothamBlack
             ButtonTitle.Text = text
             ButtonTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -660,8 +796,8 @@ function lib:Window(text, preset, closebind)
             Toggle.Name = "Toggle"
             Toggle.Parent = Tab
             Toggle.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
-            Toggle.Position = UDim2.new(0.215625003, 0, 0.446271926, 0)
-            Toggle.Size = UDim2.new(0, 380, 0, 42)
+            Toggle.Position = UDim2.new(0, 0, 0, 0)
+            Toggle.Size = UDim2.new(0, 410, 0, 42) -- 调整宽度
             Toggle.AutoButtonColor = false
             Toggle.Font = Enum.Font.SourceSans
             Toggle.Text = ""
@@ -681,7 +817,7 @@ function lib:Window(text, preset, closebind)
             ToggleTitle.Parent = Toggle
             ToggleTitle.BackgroundColor3 = Color3.fromRGB(0, 100, 255)
             ToggleTitle.BackgroundTransparency = 1.000
-            ToggleTitle.Position = UDim2.new(0.0358126722, 0, 0, 0)
+            ToggleTitle.Position = UDim2.new(0.035, 0, 0, 0)
             ToggleTitle.Size = UDim2.new(0, 250, 0, 42)
             ToggleTitle.Font = Enum.Font.GothamBlack
             ToggleTitle.Text = text
@@ -869,8 +1005,8 @@ function lib:Window(text, preset, closebind)
             Slider.Name = "Slider"
             Slider.Parent = Tab
             Slider.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
-            Slider.Position = UDim2.new(-0.48035714, 0, -0.570532918, 0)
-            Slider.Size = UDim2.new(0, 380, 0, 60)
+            Slider.Position = UDim2.new(0, 0, 0, 0)
+            Slider.Size = UDim2.new(0, 410, 0, 60) -- 调整宽度
             Slider.AutoButtonColor = false
             Slider.Font = Enum.Font.SourceSans
             Slider.Text = ""
@@ -890,7 +1026,7 @@ function lib:Window(text, preset, closebind)
             SliderTitle.Parent = Slider
             SliderTitle.BackgroundColor3 = Color3.fromRGB(0, 100, 255)
             SliderTitle.BackgroundTransparency = 1.000
-            SliderTitle.Position = UDim2.new(0.0358126722, 0, 0, 0)
+            SliderTitle.Position = UDim2.new(0.035, 0, 0, 0)
             SliderTitle.Size = UDim2.new(0, 250, 0, 30)
             SliderTitle.Font = Enum.Font.GothamBlack
             SliderTitle.Text = text
@@ -904,8 +1040,8 @@ function lib:Window(text, preset, closebind)
             SliderValue.Parent = Slider
             SliderValue.BackgroundColor3 = Color3.fromRGB(0, 100, 255)
             SliderValue.BackgroundTransparency = 1.000
-            SliderValue.Position = UDim2.new(0.0358126722, 0, 0, 0)
-            SliderValue.Size = UDim2.new(0, 350, 0, 30)
+            SliderValue.Position = UDim2.new(0.035, 0, 0, 0)
+            SliderValue.Size = UDim2.new(0, 370, 0, 30) -- 调整宽度
             SliderValue.Font = Enum.Font.GothamBlack
             SliderValue.Text = tostring(start and math.floor((start / max) * (max - min) + min) or 0)
             SliderValue.TextColor3 = Color3.fromRGB(200, 200, 200)
@@ -918,8 +1054,8 @@ function lib:Window(text, preset, closebind)
             SlideFrame.Parent = Slider
             SlideFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 45)
             SlideFrame.BorderSizePixel = 0
-            SlideFrame.Position = UDim2.new(0.0342647657, 0, 0.7, 0)
-            SlideFrame.Size = UDim2.new(0, 350, 0, 6)
+            SlideFrame.Position = UDim2.new(0.034, 0, 0.7, 0)
+            SlideFrame.Size = UDim2.new(0, 370, 0, 6) -- 调整宽度
 
             SlideFrameCorner.CornerRadius = UDim.new(1, 0)
             SlideFrameCorner.Parent = SlideFrame
@@ -1017,8 +1153,8 @@ function lib:Window(text, preset, closebind)
             Dropdown.Parent = Tab
             Dropdown.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
             Dropdown.ClipsDescendants = true
-            Dropdown.Position = UDim2.new(-0.541071415, 0, -0.532915354, 0)
-            Dropdown.Size = UDim2.new(0, 380, 0, 42)
+            Dropdown.Position = UDim2.new(0, 0, 0, 0)
+            Dropdown.Size = UDim2.new(0, 410, 0, 42) -- 调整宽度
             Dropdown.BackgroundTransparency = 0
 
             DropdownCorner.CornerRadius = UDim.new(0, 8)
@@ -1033,7 +1169,7 @@ function lib:Window(text, preset, closebind)
             DropdownBtn.Parent = Dropdown
             DropdownBtn.BackgroundColor3 = Color3.fromRGB(0, 100, 255)
             DropdownBtn.BackgroundTransparency = 1.000
-            DropdownBtn.Size = UDim2.new(0, 380, 0, 42)
+            DropdownBtn.Size = UDim2.new(0, 410, 0, 42) -- 调整宽度
             DropdownBtn.Font = Enum.Font.SourceSans
             DropdownBtn.Text = ""
             DropdownBtn.TextColor3 = Color3.fromRGB(0, 0, 0)
@@ -1043,7 +1179,7 @@ function lib:Window(text, preset, closebind)
             DropdownTitle.Parent = Dropdown
             DropdownTitle.BackgroundColor3 = Color3.fromRGB(0, 100, 255)
             DropdownTitle.BackgroundTransparency = 1.000
-            DropdownTitle.Position = UDim2.new(0.0358126722, 0, 0, 0)
+            DropdownTitle.Position = UDim2.new(0.035, 0, 0, 0)
             DropdownTitle.Size = UDim2.new(0, 300, 0, 42)
             DropdownTitle.Font = Enum.Font.GothamBlack
             DropdownTitle.Text = text
@@ -1068,8 +1204,8 @@ function lib:Window(text, preset, closebind)
             DropItemHolder.BackgroundColor3 = Color3.fromRGB(0, 100, 255)
             DropItemHolder.BackgroundTransparency = 1
             DropItemHolder.BorderSizePixel = 0
-            DropItemHolder.Position = UDim2.new(-0.00400000019, 0, 1.04999995, 0)
-            DropItemHolder.Size = UDim2.new(0, 360, 0, 0)
+            DropItemHolder.Position = UDim2.new(-0.004, 0, 1.05, 0)
+            DropItemHolder.Size = UDim2.new(0, 380, 0, 0) -- 调整宽度
             DropItemHolder.CanvasSize = UDim2.new(0, 0, 0, 0)
             DropItemHolder.ScrollBarThickness = 3
 
@@ -1082,7 +1218,7 @@ function lib:Window(text, preset, closebind)
                 function()
                     if droptog == false then
                         Dropdown:TweenSize(
-                            UDim2.new(0, 380, 0, 55 + framesize),
+                            UDim2.new(0, 410, 0, 55 + framesize), -- 调整宽度
                             Enum.EasingDirection.Out,
                             Enum.EasingStyle.Quart,
                             .2,
@@ -1097,7 +1233,7 @@ function lib:Window(text, preset, closebind)
                         Tab.CanvasSize = UDim2.new(0, 0, 0, TabLayout.AbsoluteContentSize.Y)
                     else
                         Dropdown:TweenSize(
-                            UDim2.new(0, 380, 0, 42),
+                            UDim2.new(0, 410, 0, 42), -- 调整宽度
                             Enum.EasingDirection.Out,
                             Enum.EasingStyle.Quart,
                             .2,
@@ -1119,7 +1255,7 @@ function lib:Window(text, preset, closebind)
                 itemcount = itemcount + 1
                 if itemcount <= 3 then
                     framesize = framesize + 26
-                    DropItemHolder.Size = UDim2.new(0, 360, 0, framesize)
+                    DropItemHolder.Size = UDim2.new(0, 380, 0, framesize) -- 调整宽度
                     DropItemHolder.BackgroundTransparency = 1
                 end
                 local Item = Instance.new("TextButton")
@@ -1130,7 +1266,7 @@ function lib:Window(text, preset, closebind)
                 Item.Parent = DropItemHolder
                 Item.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
                 Item.ClipsDescendants = true
-                Item.Size = UDim2.new(0, 350, 0, 25)
+                Item.Size = UDim2.new(0, 370, 0, 25) -- 调整宽度
                 Item.AutoButtonColor = false
                 Item.Font = Enum.Font.GothamBlack
                 Item.Text = v
@@ -1174,7 +1310,7 @@ function lib:Window(text, preset, closebind)
                         DropdownTitle.Text = text .. " - " .. v
                         pcall(callback, v)
                         Dropdown:TweenSize(
-                            UDim2.new(0, 380, 0, 42),
+                            UDim2.new(0, 410, 0, 42), -- 调整宽度
                             Enum.EasingDirection.Out,
                             Enum.EasingStyle.Quart,
                             .2,
@@ -1240,8 +1376,8 @@ function lib:Window(text, preset, closebind)
             Colorpicker.Parent = Tab
             Colorpicker.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
             Colorpicker.ClipsDescendants = true
-            Colorpicker.Position = UDim2.new(-0.541071415, 0, -0.532915354, 0)
-            Colorpicker.Size = UDim2.new(0, 380, 0, 42)
+            Colorpicker.Position = UDim2.new(0, 0, 0, 0)
+            Colorpicker.Size = UDim2.new(0, 410, 0, 42) -- 调整宽度
             Colorpicker.BackgroundTransparency = 0
 
             ColorpickerCorner.CornerRadius = UDim.new(0, 8)
@@ -1256,7 +1392,7 @@ function lib:Window(text, preset, closebind)
             ColorpickerTitle.Parent = Colorpicker
             ColorpickerTitle.BackgroundColor3 = Color3.fromRGB(0, 100, 255)
             ColorpickerTitle.BackgroundTransparency = 1.000
-            ColorpickerTitle.Position = UDim2.new(0.0358126722, 0, 0, 0)
+            ColorpickerTitle.Position = UDim2.new(0.035, 0, 0, 0)
             ColorpickerTitle.Size = UDim2.new(0, 250, 0, 42)
             ColorpickerTitle.Font = Enum.Font.GothamBlack
             ColorpickerTitle.Text = text
@@ -1307,7 +1443,7 @@ function lib:Window(text, preset, closebind)
             ColorpickerBtn.Parent = ColorpickerTitle
             ColorpickerBtn.BackgroundColor3 = Color3.fromRGB(0, 100, 255)
             ColorpickerBtn.BackgroundTransparency = 1.000
-            ColorpickerBtn.Size = UDim2.new(0, 380, 0, 42)
+            ColorpickerBtn.Size = UDim2.new(0, 410, 0, 42) -- 调整宽度
             ColorpickerBtn.Font = Enum.Font.SourceSans
             ColorpickerBtn.Text = ""
             ColorpickerBtn.TextColor3 = Color3.fromRGB(0, 0, 0)
@@ -1452,7 +1588,7 @@ function lib:Window(text, preset, closebind)
                         ColorSelection.Visible = true
                         HueSelection.Visible = true
                         Colorpicker:TweenSize(
-                            UDim2.new(0, 380, 0, 180),
+                            UDim2.new(0, 410, 0, 180), -- 调整宽度
                             Enum.EasingDirection.Out,
                             Enum.EasingStyle.Quart,
                             .2,
@@ -1464,7 +1600,7 @@ function lib:Window(text, preset, closebind)
                         ColorSelection.Visible = false
                         HueSelection.Visible = false
                         Colorpicker:TweenSize(
-                            UDim2.new(0, 380, 0, 42),
+                            UDim2.new(0, 410, 0, 42), -- 调整宽度
                             Enum.EasingDirection.Out,
                             Enum.EasingStyle.Quart,
                             .2,
@@ -1681,7 +1817,7 @@ function lib:Window(text, preset, closebind)
                     ColorSelection.Visible = false
                     HueSelection.Visible = false
                     Colorpicker:TweenSize(
-                        UDim2.new(0, 380, 0, 42),
+                        UDim2.new(0, 410, 0, 42), -- 调整宽度
                         Enum.EasingDirection.Out,
                         Enum.EasingStyle.Quart,
                         .2,
@@ -1703,7 +1839,7 @@ function lib:Window(text, preset, closebind)
             Label.Name = "Button"
             Label.Parent = Tab
             Label.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
-            Label.Size = UDim2.new(0, 380, 0, 42)
+            Label.Size = UDim2.new(0, 410, 0, 42) -- 调整宽度
             Label.AutoButtonColor = false
             Label.Font = Enum.Font.SourceSans
             Label.Text = ""
@@ -1723,8 +1859,8 @@ function lib:Window(text, preset, closebind)
             LabelTitle.Parent = Label
             LabelTitle.BackgroundColor3 = Color3.fromRGB(0, 100, 255)
             LabelTitle.BackgroundTransparency = 1.000
-            LabelTitle.Position = UDim2.new(0.0358126722, 0, 0, 0)
-            LabelTitle.Size = UDim2.new(0, 350, 0, 42)
+            LabelTitle.Position = UDim2.new(0.035, 0, 0, 0)
+            LabelTitle.Size = UDim2.new(0, 380, 0, 42) -- 调整宽度
             LabelTitle.Font = Enum.Font.GothamBlack
             LabelTitle.Text = text
             LabelTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -1749,8 +1885,8 @@ function lib:Window(text, preset, closebind)
             Textbox.Parent = Tab
             Textbox.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
             Textbox.ClipsDescendants = true
-            Textbox.Position = UDim2.new(-0.541071415, 0, -0.532915354, 0)
-            Textbox.Size = UDim2.new(0, 380, 0, 42)
+            Textbox.Position = UDim2.new(0, 0, 0, 0)
+            Textbox.Size = UDim2.new(0, 410, 0, 42) -- 调整宽度
             Textbox.BackgroundTransparency = 0
 
             TextboxCorner.CornerRadius = UDim.new(0, 8)
@@ -1765,7 +1901,7 @@ function lib:Window(text, preset, closebind)
             TextboxTitle.Parent = Textbox
             TextboxTitle.BackgroundColor3 = Color3.fromRGB(0, 100, 255)
             TextboxTitle.BackgroundTransparency = 1.000
-            TextboxTitle.Position = UDim2.new(0.0358126722, 0, 0, 0)
+            TextboxTitle.Position = UDim2.new(0.035, 0, 0, 0)
             TextboxTitle.Size = UDim2.new(0, 200, 0, 42)
             TextboxTitle.Font = Enum.Font.GothamBlack
             TextboxTitle.Text = text
@@ -1824,7 +1960,7 @@ function lib:Window(text, preset, closebind)
             Bind.Name = "Bind"
             Bind.Parent = Tab
             Bind.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
-            Bind.Size = UDim2.new(0, 380, 0, 42)
+            Bind.Size = UDim2.new(0, 410, 0, 42) -- 调整宽度
             Bind.AutoButtonColor = false
             Bind.Font = Enum.Font.SourceSans
             Bind.Text = ""
@@ -1844,7 +1980,7 @@ function lib:Window(text, preset, closebind)
             BindTitle.Parent = Bind
             BindTitle.BackgroundColor3 = Color3.fromRGB(0, 100, 255)
             BindTitle.BackgroundTransparency = 1.000
-            BindTitle.Position = UDim2.new(0.0358126722, 0, 0, 0)
+            BindTitle.Position = UDim2.new(0.035, 0, 0, 0)
             BindTitle.Size = UDim2.new(0, 200, 0, 42)
             BindTitle.Font = Enum.Font.GothamBlack
             BindTitle.Text = text
@@ -1858,8 +1994,8 @@ function lib:Window(text, preset, closebind)
             BindText.Parent = Bind
             BindText.BackgroundColor3 = Color3.fromRGB(0, 100, 255)
             BindText.BackgroundTransparency = 1.000
-            BindText.Position = UDim2.new(0.0358126722, 0, 0, 0)
-            BindText.Size = UDim2.new(0, 350, 0, 42)
+            BindText.Position = UDim2.new(0.035, 0, 0, 0)
+            BindText.Size = UDim2.new(0, 370, 0, 42) -- 调整宽度
             BindText.Font = Enum.Font.GothamBlack
             BindText.Text = Key
             BindText.TextColor3 = Color3.fromRGB(200, 200, 200)
