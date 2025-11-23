@@ -40,6 +40,79 @@ local gradientColors = {
     Color3.fromRGB(120, 200, 255),  -- 浅蓝
 }
 
+-- 彩虹颜色方案
+local COLOR_SCHEMES = {
+    ["彩虹颜色"] = ColorSequence.new({
+        ColorSequenceKeypoint.new(0, Color3.fromHex("FF0000")),
+        ColorSequenceKeypoint.new(0.16, Color3.fromHex("FFA500")),
+        ColorSequenceKeypoint.new(0.33, Color3.fromHex("FFFF00")),
+        ColorSequenceKeypoint.new(0.5, Color3.fromHex("00FF00")),
+        ColorSequenceKeypoint.new(0.66, Color3.fromHex("0000FF")),
+        ColorSequenceKeypoint.new(0.83, Color3.fromHex("4B0082")),
+        ColorSequenceKeypoint.new(1, Color3.fromHex("EE82EE"))
+    })
+}
+
+-- 彩虹边框动画存储
+local rainbowBorderAnimations = {}
+local currentBorderColorScheme = "彩虹颜色"
+local animationSpeed = 2
+local borderEnabled = true
+
+-- 创建彩虹边框
+local function createRainbowBorder(parent, colorScheme)
+    local existingStroke = parent:FindFirstChild("RainbowBorder")
+    if existingStroke then
+        return existingStroke
+    end
+    
+    local rainbowStroke = Instance.new("UIStroke")
+    rainbowStroke.Name = "RainbowBorder"
+    rainbowStroke.Thickness = 3
+    rainbowStroke.Color = Color3.new(1, 1, 1)
+    rainbowStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+    rainbowStroke.LineJoinMode = Enum.LineJoinMode.Round
+    rainbowStroke.Enabled = borderEnabled
+    
+    local glowEffect = Instance.new("UIGradient")
+    glowEffect.Name = "GlowEffect"
+    
+    local schemeData = COLOR_SCHEMES[colorScheme or currentBorderColorScheme]
+    if schemeData then
+        glowEffect.Color = schemeData
+    else
+        glowEffect.Color = COLOR_SCHEMES["彩虹颜色"]
+    end
+    
+    glowEffect.Rotation = 0
+    glowEffect.Parent = rainbowStroke
+    
+    rainbowStroke.Parent = parent
+    
+    return rainbowStroke
+end
+
+-- 启动彩虹边框动画
+local function startRainbowBorderAnimation(stroke, speed)
+    if not stroke or not stroke.Enabled then return nil end
+    
+    local glowEffect = stroke:FindFirstChild("GlowEffect")
+    if not glowEffect then return nil end
+    
+    local animation
+    animation = RunService.Heartbeat:Connect(function()
+        if not stroke or stroke.Parent == nil or not stroke.Enabled then
+            animation:Disconnect()
+            return
+        end
+        
+        local time = tick()
+        glowEffect.Rotation = (time * speed * 60) % 360
+    end)
+    
+    return animation
+end
+
 -- 创建发光效果
 local function createGlowEffect(parent, color)
     local glow = Instance.new("ImageLabel")
@@ -140,6 +213,9 @@ function Notification:Notify(config)
     if #activeNotifications >= maxNotifications then
         local oldestId = next(activeNotifications)
         if oldestId then
+            if activeNotifications[oldestId].RainbowAnimation then
+                activeNotifications[oldestId].RainbowAnimation:Disconnect()
+            end
             activeNotifications[oldestId].Container:Destroy()
             activeNotifications[oldestId] = nil
         end
@@ -163,32 +239,26 @@ function Notification:Notify(config)
     mainContainer.BackgroundColor3 = colorPalette.primary
     mainContainer.BackgroundTransparency = 0.1
     mainContainer.BorderSizePixel = 0
-    mainContainer.Size = UDim2.new(0, 320, 0, 0)  -- 稍微加宽
-    mainContainer.Position = UDim2.new(1, -340, 0, positionY)  -- 调整位置
+    mainContainer.Size = UDim2.new(0, 320, 0, 0)
+    mainContainer.Position = UDim2.new(1, -340, 0, positionY)
     mainContainer.AnchorPoint = Vector2.new(1, 0)
     mainContainer.ClipsDescendants = true
     mainContainer.ZIndex = 100
     
     -- 圆角
     local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0, 16)  -- 增加圆角半径
+    corner.CornerRadius = UDim.new(0, 16)
     corner.Parent = mainContainer
     
-    -- 边框
-    local stroke = Instance.new("UIStroke")
-    stroke.Thickness = 2
-    stroke.Color = colorPalette.secondary
-    stroke.Parent = mainContainer
-    
-    -- 发光效果
-    local glow = createGlowEffect(mainContainer, colorPalette.accent)
+    -- 创建彩虹边框
+    local rainbowBorder = createRainbowBorder(mainContainer, currentBorderColorScheme)
     
     -- 内容容器
     local content = Instance.new("Frame")
     content.Name = "Content"
     content.Parent = mainContainer
     content.BackgroundTransparency = 1
-    content.Size = UDim2.new(1, -24, 1, -24)  -- 增加内边距
+    content.Size = UDim2.new(1, -24, 1, -24)
     content.Position = UDim2.new(0, 12, 0, 12)
     content.ZIndex = 2
     
@@ -197,12 +267,12 @@ function Notification:Notify(config)
     iconLabel.Name = "Icon"
     iconLabel.Parent = content
     iconLabel.BackgroundTransparency = 1
-    iconLabel.Size = UDim2.new(0, 36, 0, 36)  -- 增大图标
+    iconLabel.Size = UDim2.new(0, 36, 0, 36)
     iconLabel.Position = UDim2.new(0, 0, 0, 3)
     iconLabel.Font = Enum.Font.GothamBold
     iconLabel.Text = icons[notificationType] or icons.info
     iconLabel.TextColor3 = colorPalette.accent
-    iconLabel.TextSize = 22  -- 增大字体
+    iconLabel.TextSize = 22
     iconLabel.TextTransparency = 1
     iconLabel.ZIndex = 3
     
@@ -211,12 +281,12 @@ function Notification:Notify(config)
     titleLabel.Name = "Title"
     titleLabel.Parent = content
     titleLabel.BackgroundTransparency = 1
-    titleLabel.Size = UDim2.new(1, -45, 0, 26)  -- 调整尺寸
-    titleLabel.Position = UDim2.new(0, 40, 0, 3)  -- 调整位置
+    titleLabel.Size = UDim2.new(1, -45, 0, 26)
+    titleLabel.Position = UDim2.new(0, 40, 0, 3)
     titleLabel.Font = Enum.Font.GothamBold
     titleLabel.Text = title
     titleLabel.TextColor3 = colorPalette.text
-    titleLabel.TextSize = 15  -- 增大字体
+    titleLabel.TextSize = 15
     titleLabel.TextXAlignment = Enum.TextXAlignment.Left
     titleLabel.TextTransparency = 1
     titleLabel.ZIndex = 3
@@ -226,12 +296,12 @@ function Notification:Notify(config)
     messageLabel.Name = "Message"
     messageLabel.Parent = content
     messageLabel.BackgroundTransparency = 1
-    messageLabel.Size = UDim2.new(1, -40, 1, -40)  -- 调整尺寸
-    messageLabel.Position = UDim2.new(0, 40, 0, 28)  -- 调整位置
+    messageLabel.Size = UDim2.new(1, -40, 1, -40)
+    messageLabel.Position = UDim2.new(0, 40, 0, 28)
     messageLabel.Font = Enum.Font.Gotham
     messageLabel.Text = message
     messageLabel.TextColor3 = colorPalette.textSecondary
-    messageLabel.TextSize = 13  -- 增大字体
+    messageLabel.TextSize = 13
     messageLabel.TextXAlignment = Enum.TextXAlignment.Left
     messageLabel.TextYAlignment = Enum.TextYAlignment.Top
     messageLabel.TextWrapped = true
@@ -244,14 +314,14 @@ function Notification:Notify(config)
     progressBarContainer.Parent = mainContainer
     progressBarContainer.BackgroundColor3 = colorPalette.secondary
     progressBarContainer.BorderSizePixel = 0
-    progressBarContainer.Size = UDim2.new(1, -24, 0, 6)  -- 调整尺寸
-    progressBarContainer.Position = UDim2.new(0, 12, 1, -12)  -- 调整位置
+    progressBarContainer.Size = UDim2.new(1, -24, 0, 6)
+    progressBarContainer.Position = UDim2.new(0, 12, 1, -12)
     progressBarContainer.ZIndex = 4
     progressBarContainer.AnchorPoint = Vector2.new(0, 1)
     
     -- 进度条容器圆角
     local progressContainerCorner = Instance.new("UICorner")
-    progressContainerCorner.CornerRadius = UDim.new(1, 0)  -- 完全圆角
+    progressContainerCorner.CornerRadius = UDim.new(1, 0)
     progressContainerCorner.Parent = progressBarContainer
     
     -- 进度条
@@ -265,7 +335,7 @@ function Notification:Notify(config)
     
     -- 进度条圆角
     local progressCorner = Instance.new("UICorner")
-    progressCorner.CornerRadius = UDim.new(1, 0)  -- 完全圆角
+    progressCorner.CornerRadius = UDim.new(1, 0)
     progressCorner.Parent = progressBar
     
     -- 根据类型设置颜色
@@ -279,7 +349,6 @@ function Notification:Notify(config)
     local accentColor = typeColors[notificationType] or colorPalette.accent
     progressBar.BackgroundColor3 = accentColor
     iconLabel.TextColor3 = accentColor
-    glow.ImageColor3 = accentColor
     
     -- 创建粒子
     local particles, particleContainer = createParticles(content)
@@ -289,11 +358,18 @@ function Notification:Notify(config)
         Container = mainContainer,
         Particles = particles,
         ParticleContainer = particleContainer,
-        PositionY = positionY
+        PositionY = positionY,
+        RainbowBorder = rainbowBorder
     }
     
     -- 动画协程
     coroutine.wrap(function()
+        -- 启动彩虹边框动画
+        local rainbowAnimation = startRainbowBorderAnimation(rainbowBorder, animationSpeed)
+        if rainbowAnimation then
+            activeNotifications[notificationId].RainbowAnimation = rainbowAnimation
+        end
+        
         -- 粒子动画
         local particleConnection = animateParticles(particles, particleContainer)
         
@@ -301,7 +377,7 @@ function Notification:Notify(config)
         local enterTween = TweenService:Create(
             mainContainer,
             TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
-            {Size = UDim2.new(0, 320, 0, 90)}  -- 调整高度
+            {Size = UDim2.new(0, 320, 0, 90)}
         )
         enterTween:Play()
         
@@ -361,6 +437,9 @@ function Notification:Notify(config)
         wait(0.4)
         
         -- 清理资源
+        if rainbowAnimation then
+            rainbowAnimation:Disconnect()
+        end
         particleConnection:Disconnect()
         mainContainer:Destroy()
         activeNotifications[notificationId] = nil
@@ -421,6 +500,47 @@ function Notification:Error(title, message, duration)
         Duration = duration,
         Type = "error"
     })
+end
+
+-- 彩虹边框控制方法
+function Notification:SetBorderEnabled(enabled)
+    borderEnabled = enabled
+    for _, notification in pairs(activeNotifications) do
+        if notification.RainbowBorder then
+            notification.RainbowBorder.Enabled = enabled
+            if enabled and not notification.RainbowAnimation then
+                notification.RainbowAnimation = startRainbowBorderAnimation(notification.RainbowBorder, animationSpeed)
+            elseif not enabled and notification.RainbowAnimation then
+                notification.RainbowAnimation:Disconnect()
+                notification.RainbowAnimation = nil
+            end
+        end
+    end
+end
+
+function Notification:SetBorderColorScheme(scheme)
+    currentBorderColorScheme = scheme
+    for _, notification in pairs(activeNotifications) do
+        if notification.RainbowBorder then
+            local glowEffect = notification.RainbowBorder:FindFirstChild("GlowEffect")
+            if glowEffect then
+                local schemeData = COLOR_SCHEMES[scheme]
+                if schemeData then
+                    glowEffect.Color = schemeData
+                end
+            end
+        end
+    end
+end
+
+function Notification:SetAnimationSpeed(speed)
+    animationSpeed = speed
+    for _, notification in pairs(activeNotifications) do
+        if notification.RainbowAnimation then
+            notification.RainbowAnimation:Disconnect()
+            notification.RainbowAnimation = startRainbowBorderAnimation(notification.RainbowBorder, speed)
+        end
+    end
 end
 
 return Notification
