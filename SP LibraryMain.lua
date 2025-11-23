@@ -10,30 +10,6 @@ local PlayerMouse = Player:GetMouse()
 
 local splib = {
 	Themes = {
-		Red = {
-			["Color Hub 1"] = ColorSequence.new({
-				ColorSequenceKeypoint.new(0.00, Color3.fromRGB(13, 13, 13)),
-				ColorSequenceKeypoint.new(0.50, Color3.fromRGB(32.5, 32.5, 32.5)),
-				ColorSequenceKeypoint.new(1.00, Color3.fromRGB(13, 13, 13))
-			}),
-			["Color Hub 2"] = Color3.fromRGB(30, 30, 30),
-			["Color Stroke"] = Color3.fromRGB(13, 13, 13),
-			["Color Theme"] = Color3.fromRGB(0, 162, 255),
-			["Color Text"] = Color3.fromRGB(193, 61, 66),
-			["Color Dark Text"] = Color3.fromRGB(180, 180, 180)
-		},
-		Darker = {
-			["Color Hub 1"] = ColorSequence.new({
-				ColorSequenceKeypoint.new(0.00, Color3.fromRGB(25, 25, 25)),
-				ColorSequenceKeypoint.new(0.50, Color3.fromRGB(32.5, 32.5, 32.5)),
-				ColorSequenceKeypoint.new(1.00, Color3.fromRGB(25, 25, 25))
-			}),
-			["Color Hub 2"] = Color3.fromRGB(30, 30, 30),
-			["Color Stroke"] = Color3.fromRGB(40, 40, 40),
-			["Color Theme"] = Color3.fromRGB(88, 101, 242),
-			["Color Text"] = Color3.fromRGB(243, 243, 243),
-			["Color Dark Text"] = Color3.fromRGB(180, 180, 180)
-		},
 		Dark = {
 			["Color Hub 1"] = ColorSequence.new({
 				ColorSequenceKeypoint.new(0.00, Color3.fromRGB(40, 40, 40)),
@@ -45,147 +21,15 @@ local splib = {
 			["Color Theme"] = Color3.fromRGB(65, 150, 255),
 			["Color Text"] = Color3.fromRGB(245, 245, 245),
 			["Color Dark Text"] = Color3.fromRGB(190, 190, 190)
-		},
-		Purple = {
-			["Color Hub 1"] = ColorSequence.new({
-				ColorSequenceKeypoint.new(0.00, Color3.fromRGB(27.5, 25)),
-				ColorSequenceKeypoint.new(0.50, Color3.fromRGB(32.5, 32.5, 32.5)),
-				ColorSequenceKeypoint.new(1.00, Color3.fromRGB(27.5, 25, 30))
-			}),
-			["Color Hub 2"] = Color3.fromRGB(30, 30, 30),
-			["Color Stroke"] = Color3.fromRGB(40, 40, 40),
-			["Color Theme"] = Color3.fromRGB(150, 0, 255),
-			["Color Text"] = Color3.fromRGB(150, 0, 255),
-			["Color Dark Text"] = Color3.fromRGB(150, 0, 255)
-		},
-		Green = {
-			["Color Hub 1"] = ColorSequence.new({
-				ColorSequenceKeypoint.new(0.00, Color3.fromRGB(15, 25, 15)),
-				ColorSequenceKeypoint.new(0.50, Color3.fromRGB(20, 35, 20)),
-				ColorSequenceKeypoint.new(1.00, Color3.fromRGB(15, 25, 15))
-			}),
-			["Color Hub 2"] = Color3.fromRGB(25, 35, 25),
-			["Color Stroke"] = Color3.fromRGB(20, 40, 20),
-			["Color Theme"] = Color3.fromRGB(0, 200, 100),
-			["Color Text"] = Color3.fromRGB(0, 255, 128),
-			["Color Dark Text"] = Color3.fromRGB(180, 255, 210)
-		},
-		Orange = {
-			["Color Hub 1"] = ColorSequence.new({
-				ColorSequenceKeypoint.new(0.00, Color3.fromRGB(30, 20, 10)),
-				ColorSequenceKeypoint.new(0.50, Color3.fromRGB(45, 30, 15)),
-				ColorSequenceKeypoint.new(1.00, Color3.fromRGB(30, 20, 10))
-			}),
-			["Color Hub 2"] = Color3.fromRGB(50, 30, 20),
-			["Color Stroke"] = Color3.fromRGB(70, 40, 25),
-			["Color Theme"] = Color3.fromRGB(255, 140, 0),
-			["Color Text"] = Color3.fromRGB(255, 165, 0),
-			["Color Dark Text"] = Color3.fromRGB(255, 200, 100)
-		},
-		Pink = {
-			["Color Hub 1"] = ColorSequence.new({
-				ColorSequenceKeypoint.new(0.00, Color3.fromRGB(30, 20, 25)),
-				ColorSequenceKeypoint.new(0.50, Color3.fromRGB(45, 30, 40)),
-				ColorSequenceKeypoint.new(1.00, Color3.fromRGB(30, 20, 25))
-			}),
-			["Color Hub 2"] = Color3.fromRGB(45, 25, 35),
-			["Color Stroke"] = Color3.fromRGB(70, 40, 60),
-			["Color Theme"] = Color3.fromRGB(255, 105, 180),
-			["Color Text"] = Color3.fromRGB(255, 182, 193),
-			["Color Dark Text"] = Color3.fromRGB(255, 210, 220)
-		},
-		Gold = {
-			["Color Hub 1"] = ColorSequence.new({
-				ColorSequenceKeypoint.new(0.00, Color3.fromRGB(40, 35, 20)),
-				ColorSequenceKeypoint.new(0.50, Color3.fromRGB(60, 55, 30)),
-				ColorSequenceKeypoint.new(1.00, Color3.fromRGB(40, 35, 20))
-			}),
-			["Color Hub 2"] = Color3.fromRGB(65, 60, 35),
-			["Color Stroke"] = Color3.fromRGB(80, 70, 40),
-			["Color Theme"] = Color3.fromRGB(255, 215, 0),
-			["Color Text"] = Color3.fromRGB(255, 223, 100),
-			["Color Dark Text"] = Color3.fromRGB(255, 240, 150)
-		},
-		Cyan = {
-			["Color Hub 1"] = ColorSequence.new({
-				ColorSequenceKeypoint.new(0.00, Color3.fromRGB(20, 30, 35)),
-				ColorSequenceKeypoint.new(0.50, Color3.fromRGB(30, 45, 50)),
-				ColorSequenceKeypoint.new(1.00, Color3.fromRGB(20, 30, 35))
-			}),
-			["Color Hub 2"] = Color3.fromRGB(35, 50, 55),
-			["Color Stroke"] = Color3.fromRGB(40, 70, 75),
-			["Color Theme"] = Color3.fromRGB(0, 255, 255),
-			["Color Text"] = Color3.fromRGB(100, 255, 255),
-			["Color Dark Text"] = Color3.fromRGB(180, 255, 255)
-        },
-		NeonBlue = {
-			["Color Hub 1"] = ColorSequence.new({
-				ColorSequenceKeypoint.new(0.00, Color3.fromRGB(10, 10, 20)),
-				ColorSequenceKeypoint.new(0.50, Color3.fromRGB(20, 20, 40)),
-				ColorSequenceKeypoint.new(1.00, Color3.fromRGB(10, 10, 20))
-			}),
-			["Color Hub 2"] = Color3.fromRGB(15, 15, 30),
-			["Color Stroke"] = Color3.fromRGB(0, 100, 200),
-			["Color Theme"] = Color3.fromRGB(0, 200, 255),
-			["Color Text"] = Color3.fromRGB(200, 240, 255),
-			["Color Dark Text"] = Color3.fromRGB(150, 200, 220)
-		},
-		Sunset = {
-			["Color Hub 1"] = ColorSequence.new({
-				ColorSequenceKeypoint.new(0.00, Color3.fromRGB(30, 15, 20)),
-				ColorSequenceKeypoint.new(0.50, Color3.fromRGB(50, 25, 30)),
-				ColorSequenceKeypoint.new(1.00, Color3.fromRGB(30, 15, 20))
-			}),
-			["Color Hub 2"] = Color3.fromRGB(40, 20, 25),
-			["Color Stroke"] = Color3.fromRGB(60, 30, 35),
-			["Color Theme"] = Color3.fromRGB(255, 94, 77),
-			["Color Text"] = Color3.fromRGB(255, 200, 180),
-			["Color Dark Text"] = Color3.fromRGB(200, 150, 140)
-		},
-		Ocean = {
-			["Color Hub 1"] = ColorSequence.new({
-				ColorSequenceKeypoint.new(0.00, Color3.fromRGB(10, 25, 30)),
-				ColorSequenceKeypoint.new(0.50, Color3.fromRGB(20, 50, 60)),
-				ColorSequenceKeypoint.new(1.00, Color3.fromRGB(10, 25, 30))
-			}),
-			["Color Hub 2"] = Color3.fromRGB(15, 40, 50),
-			["Color Stroke"] = Color3.fromRGB(0, 100, 110),
-			["Color Theme"] = Color3.fromRGB(0, 180, 200),
-			["Color Text"] = Color3.fromRGB(200, 255, 255),
-			["Color Dark Text"] = Color3.fromRGB(150, 200, 200)
-		},
-		RoseGold = {
-			["Color Hub 1"] = ColorSequence.new({
-				ColorSequenceKeypoint.new(0.00, Color3.fromRGB(25, 20, 20)),
-				ColorSequenceKeypoint.new(0.50, Color3.fromRGB(35, 28, 28)),
-				ColorSequenceKeypoint.new(1.00, Color3.fromRGB(25, 20, 20))
-			}),
-			["Color Hub 2"] = Color3.fromRGB(30, 25, 25),
-			["Color Stroke"] = Color3.fromRGB(150, 90, 80),
-			["Color Theme"] = Color3.fromRGB(183, 110, 121),
-			["Color Text"] = Color3.fromRGB(255, 230, 230),
-			["Color Dark Text"] = Color3.fromRGB(200, 190, 190)
-		},
-		Matrix = {
-			["Color Hub 1"] = ColorSequence.new({
-				ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 0, 0)),
-				ColorSequenceKeypoint.new(0.50, Color3.fromRGB(10, 10, 10)),
-				ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 0, 0))
-			}),
-			["Color Hub 2"] = Color3.fromRGB(5, 5, 5),
-			["Color Stroke"] = Color3.fromRGB(0, 50, 0),
-			["Color Theme"] = Color3.fromRGB(0, 255, 0),
-			["Color Text"] = Color3.fromRGB(0, 255, 100),
-			["Color Dark Text"] = Color3.fromRGB(0, 150, 0)
 		}
 	},
 	Info = {
-		Version = "1.1.5"
+		Version = "2.0.0"
 	},
 	Save = {
-		UISize = {550, 380},
-		TabSize = 160,
-		Theme = "Red"
+		UISize = {400, 300},
+		TabSize = 140,
+		Theme = "Dark"
 	},
 	Settings = {},
 	Connection = {},
@@ -194,17 +38,14 @@ local splib = {
 	Options = {},
 	Flags = {},
 	Tabs = {},
-Icons = loadstring(game:HttpGet("https://raw.githubusercontent.com/atoyayaya/REDz-ui/refs/heads/main/REDzIcon"))()
+	Icons = loadstring(game:HttpGet("https://raw.githubusercontent.com/atoyayaya/REDz-ui/refs/heads/main/REDzIcon"))()
 }
-
-
--- ok this is redz lib v5 but now its for sp cuz its has edited in full! and  big improvent and added more functions by sp to contact the the dev discord @nadermohamed22
 
 local isMobile = UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled
 local isPC = not UserInputService.TouchEnabled and UserInputService.KeyboardEnabled
 
 local ViewportSize = workspace.CurrentCamera.ViewportSize
-local UIScale = isPC and ViewportSize.Y / 550 or ViewportSize.Y / 425
+local UIScale = isPC and ViewportSize.Y / 450 or ViewportSize.Y / 350
 
 local Settings = splib.Settings
 local Flags = splib.Flags
@@ -304,7 +145,7 @@ local SetProps, SetChildren, InsertTheme, Create do
 		return new
 	end
 	
-local function Save(file)
+	local function Save(file)
 		if readfile and isfile and isfile(file) then
 			local decode = HttpService:JSONDecode(readfile(file))
 			
@@ -318,7 +159,6 @@ local function Save(file)
 	
 	pcall(Save, "sp library.json")
 end
-
 
 local Funcs = {} do
 	function Funcs:InsertCallback(tab, func)
@@ -443,8 +283,6 @@ local GetFlag, SetFlag, CheckFlag do
 			db=true;task.wait(0.1);db=false
 			
 			local Success, Encoded = pcall(function()
-				-- local _Flags = {}
-				-- for _,Flag in pairs(Flags) do _Flags[_] = Flag.Value end
 				return HttpService:JSONEncode(Flags)
 			end)
 			
@@ -469,9 +307,8 @@ splib.Save = {
   Theme   = saved.Theme   or splib.Save.Theme,
 }
 
-
 local ScreenGui = Create("ScreenGui", CoreGui, {
-	Name = "sp Library",
+	Name = "SP Library V2",
 }, {
 	Create("UIScale", {
 		Scale = UIScale,
@@ -610,7 +447,7 @@ end
 
 AddEle("Corner", function(parent, CornerRadius)
 	local New = SetProps(Create("UICorner", parent, {
-		CornerRadius = CornerRadius or UDim.new(0, 7)
+		CornerRadius = CornerRadius or UDim.new(0, 12)
 	}), props)
 	return New
 end)
@@ -660,10 +497,10 @@ local function ButtonFrame(parent, Title, Description, HolderSize, isBind)
     end
 
     local Frame = Make("Button", parent, {
-        Size = UDim2.new(1, 0, 0, 29),
+        Size = UDim2.new(1, 0, 0, 32),
         Name = "Option"
     })
-    Make("Corner", Frame, UDim.new(0, 10))
+    Make("Corner", Frame, UDim.new(0, 8))
 
     local TitleL = InsertTheme(Create("TextLabel", Frame, {
         Font = Enum.Font.GothamMedium,
@@ -673,7 +510,7 @@ local function ButtonFrame(parent, Title, Description, HolderSize, isBind)
         Position = UDim2.new(0, 0, 0.5),
         AnchorPoint = Vector2.new(0, 0.5),
         BackgroundTransparency = 1,
-        TextSize = 10,
+        TextSize = 11,
         TextXAlignment = "Left",
         TextTruncate = "AtEnd",
         Text = Title or "",
@@ -688,7 +525,7 @@ local function ButtonFrame(parent, Title, Description, HolderSize, isBind)
         Position = UDim2.new(0, 12, 0, 15),
         BackgroundTransparency = 1,
         TextWrapped = true,
-        TextSize = 8,
+        TextSize = 9,
         TextXAlignment = "Left",
         Text = Description or "",
         RichText = true
@@ -696,14 +533,14 @@ local function ButtonFrame(parent, Title, Description, HolderSize, isBind)
 
 task.defer(function()
     local descHeight = DescL.TextBounds.Y
-    local newHeight = math.max(25, descHeight + 10)
+    local newHeight = math.max(28, descHeight + 12)
     Frame.Size = UDim2.new(1, 0, 0, newHeight + 2)
 end)
 
     local LabelHolder = Create("Frame", Frame, {
         AutomaticSize = "Y",
         BackgroundTransparency = 1,
-        Size = HolderSize or UDim2.new(1, -80, 0, 25),
+        Size = HolderSize or UDim2.new(1, -80, 0, 28),
         Position = UDim2.new(0, 10, 0),
         AnchorPoint = Vector2.new(0, 0)
     }, {
@@ -713,8 +550,8 @@ end)
             Padding = UDim.new(0, 2)
         }),
         Create("UIPadding", {
-            PaddingTop    = UDim.new(0, 5),
-            PaddingBottom = UDim.new(0, 5)
+            PaddingTop    = UDim.new(0, 6),
+            PaddingBottom = UDim.new(0, 6)
         }),
         TitleL,
         DescL,
@@ -736,7 +573,7 @@ end)
         }), "Stroke")
 Make("Corner", bindBox, UDim.new(0.25, 0))
 
-        Frame.Size = UDim2.new(1, 0, 0, 30)
+        Frame.Size = UDim2.new(1, 0, 0, 32)
         bindBox:GetPropertyChangedSignal("Text"):Connect(function()
             local newWidth = bindBox.TextBounds.X + 8
             local tween = TweenService:Create(
@@ -766,8 +603,9 @@ Make("Corner", bindBox, UDim.new(0.25, 0))
     Label:SetTitle(Title)
     Label:SetDesc(Description)
 
-    return Frame, Label, bindBox, ColorBox
+    return Frame, Label, bindBox
 end
+
 local function GetColor(Instance)
 	if not Instance then return nil end
 
@@ -786,7 +624,6 @@ local function GetColor(Instance)
 	return nil
 end
 
--- /////////// --
 function splib:GetIcon(index)
 	if type(index) ~= "string" or index:find("rbxassetid://") or #index == 0 then
 		return index
@@ -845,25 +682,12 @@ end
 local SaveChangesEnabled = true
 
 function splib:MakeWindow(Configs)
-
-    local ToggleIcon = tostring(Configs.ToggleIcon or "rbxassetid://83114982417764")
-    local WTitle     = Configs[1] or Configs.Name or Configs.Title or ""
-    local WMiniText  = Configs[2] or Configs.SubTitle or Configs.SubName or "By: Q3E4"
-
-
-function splib:MakeWindow(Configs)
-
-    local WTitle     = Configs[1] or Configs.Name or Configs.Title or "SP Lib v2"
+    local WTitle     = Configs[1] or Configs.Name or Configs.Title or "SP Lib V2"
     local WMiniText  = Configs[2] or Configs.SubTitle or Configs.SubName or "by : SP Hub"
 
     Settings.ScriptFile = Configs[3] or Configs.ConfigFolder or Configs.SaveFolder or false
-
-    Settings.RainbowMainFrameDefault = Configs.RainbowMainFrameDefault or Configs.RainbowMainFrame or false
-    Settings.RainbowTitleDefault = Configs.RainbowTitleDefault or Configs.RainbowTitle or false
-    Settings.RainbowSubTitleDefault = Configs.RainbowSubTitleDefault or Configs.RainbowSubTitle or false
     
-   local EnableSetting = (Configs.Setting or Configs.ShowSetting) == true
-   local ToggleIcon = tostring(Configs.ToggleIcon or "rbxassetid://83114982417764")
+    local EnableSetting = (Configs.Setting or Configs.ShowSetting) == true
     local HidePremium  = Configs.HidePremium == true
     local SaveConfig   = Configs.SaveConfig == true
     local Callback = Configs.Callback or function() end
@@ -872,13 +696,15 @@ function splib:MakeWindow(Configs)
     if Configs.IntroEnabled == nil then
         Configs.IntroEnabled = true
     end
-    Configs.IntroText = Configs.IntroText or "SP Lib v2"
+    Configs.IntroText = Configs.IntroText or "SP Lib V2"
     Configs.IntroIcon = Configs.IntroIcon or "rbxassetid://8834748103"
 
     local function LoadSequence()
         MainWindow.Visible = false
         local LoadSequenceLogo = SetProps(
-            MakeElement("Image", Configs.IntroIcon),
+            Create("ImageLabel", {
+                Image = Configs.IntroIcon
+            }),
             {
                 Parent = ScreenGui,
                 AnchorPoint = Vector2.new(0.5, 0.5),
@@ -889,7 +715,10 @@ function splib:MakeWindow(Configs)
             }
         )
         local LoadSequenceText = SetProps(
-            MakeElement("Label", Configs.IntroText, 14),
+            Create("TextLabel", {
+                Text = Configs.IntroText,
+                TextSize = 14
+            }),
             {
                 Parent = ScreenGui,
                 Size = UDim2.new(1, 0, 1, 0),
@@ -928,35 +757,6 @@ function splib:MakeWindow(Configs)
             end
         end
     end; LoadFile()
-
-   
-    if HidePremium then
-        for _, el in ipairs(Window:GetPremiumElements()) do
-            el.Visible = false
-        end
-    end
-
-    local function saveSettings()
-        if not SaveConfig then return end
-        if not isfolder(Settings.ConfigFolder) then
-            makefolder(Settings.ConfigFolder)
-        end
-        local filePath = Settings.ConfigFolder.."/config.json"
-        writefile(filePath, HttpService:JSONEncode(Flags))
-    end
-    Window.SomeToggle.Changed:Connect(function(val)
-        Flags.SomeToggle = val
-        saveSettings()
-    end)
-
-    if SaveConfig then
-        Window.CloseButton.MouseButton1Click:Connect(function()
-            saveSettings()
-        end)
-    end
-
-    return Window
-end
 	
 	local UISizeX, UISizeY = unpack(splib.Save.UISize)
 	local MainFrame = InsertTheme(Create("ImageButton", ScreenGui, {
@@ -964,13 +764,42 @@ end
 		Position = UDim2.new(0.5, -UISizeX/2, 0.5, -UISizeY/2),
 		BackgroundTransparency = 0.03,
 		Name = "Hub"
-	}), "Main")MakeDrag(MainFrame)
+	}), "Main")
+    MakeDrag(MainFrame)
 	Make("Gradient", MainFrame, {
 		Rotation = 45
 	})
 	
-    local MainCorner = Make("Corner", MainFrame, UDim.new(0, 10))
+    local MainCorner = Make("Corner", MainFrame, UDim.new(0, 16))
 	
+    -- 彩虹流动边框
+    local rainbowStroke = Create("UIStroke", MainFrame, {
+        Name = "RainbowStroke",
+        Thickness = 2,
+        ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+        LineJoinMode = Enum.LineJoinMode.Round
+    })
+    
+    local rainbowGradient = Create("UIGradient", rainbowStroke, {
+        Color = ColorSequence.new({
+            ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
+            ColorSequenceKeypoint.new(0.16, Color3.fromRGB(255, 165, 0)),
+            ColorSequenceKeypoint.new(0.33, Color3.fromRGB(255, 255, 0)),
+            ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 255, 0)),
+            ColorSequenceKeypoint.new(0.66, Color3.fromRGB(0, 0, 255)),
+            ColorSequenceKeypoint.new(0.83, Color3.fromRGB(75, 0, 130)),
+            ColorSequenceKeypoint.new(1, Color3.fromRGB(238, 130, 238))
+        })
+    })
+
+    -- 彩虹边框动画
+    local rainbowAnimation
+    rainbowAnimation = RunService.Heartbeat:Connect(function()
+        if rainbowGradient and rainbowGradient.Parent then
+            local time = tick()
+            rainbowGradient.Rotation = (time * 60) % 360
+        end
+    end)
 
 	local Components = Create("Folder", MainFrame, {
 		Name = "Components"
@@ -985,7 +814,7 @@ end
     })
 	
 	local TopBar = Create("Frame", Components, {
-		Size = UDim2.new(1, 0, 0, 28),
+		Size = UDim2.new(1, 0, 0, 35),
 		BackgroundTransparency = 1,
 		Name = "Top Bar"
 	})
@@ -996,10 +825,10 @@ end
 		AutomaticSize = "XY",
 		Text = WTitle,
 		TextXAlignment = "Left",
-		TextSize = 12,
+		TextSize = 14,
 		TextColor3 = Theme["Color Text"],
 		BackgroundTransparency = 1,
-		Font = Enum.Font.GothamMedium,
+		Font = Enum.Font.GothamBold,
 		Name = "Title"
 	}, {
 		InsertTheme(Create("TextLabel", {
@@ -1012,19 +841,18 @@ end
 			BackgroundTransparency = 1,
 			TextXAlignment = "Left",
 			TextYAlignment = "Bottom",
-			TextSize = 8,
+			TextSize = 10,
 			Font = Enum.Font.Gotham,
 			Name = "SubTitle"
 		}), "DarkText")
 	}), "Text")
 
-	
 	local MainScroll = InsertTheme(Create("ScrollingFrame", Components, {
 		Size = UDim2.new(0, splib.Save.TabSize, 1, -TopBar.Size.Y.Offset),
 		ScrollBarImageColor3 = Theme["Color Theme"],
 		Position = UDim2.new(0, 0, 1, 0),
 		AnchorPoint = Vector2.new(0, 1),
-		ScrollBarThickness = 1.5,
+		ScrollBarThickness = 2,
 		BackgroundTransparency = 1,
 		ScrollBarImageTransparency = 0.2,
 		CanvasSize = UDim2.new(),
@@ -1039,28 +867,9 @@ end
 			PaddingTop = UDim.new(0, 10),
 			PaddingBottom = UDim.new(0, 10)
 		}), Create("UIListLayout", {
-			Padding = UDim.new(0, 5)
+			Padding = UDim.new(0, 6)
 		})
 	}), "ScrollBar")
-
---[[
- local SearchBox = Create("TextBox", MainScroll, {
-    Size = UDim2.new(1, 0, 0, 24),
-    Position = UDim2.new(0, 0, 0, 0),
-    BackgroundColor3 = Color3.fromRGB(13, 13, 13),
-    PlaceholderText = "Search",
-    Text = "",
-    TextXAlignment = Enum.TextXAlignment.Left,
-    TextTruncate = Enum.TextTruncate.AtEnd,
-    TextColor3 = Color3.fromRGB(255, 255, 255),
-    ClearTextOnFocus = false,
-    Font = Enum.Font.Gotham,
-    TextSize = 10,
-    TextWrapped = false,
-})
-Make("Corner", SearchBox)
-]]
-
 
 	local Containers = Create("Frame", Components, {
 		Size = UDim2.new(1, -MainScroll.Size.X.Offset, 1, -TopBar.Size.Y.Offset),
@@ -1072,21 +881,20 @@ Make("Corner", SearchBox)
 	})
 	
 	local ControlSize1, ControlSize2 = MakeDrag(Create("ImageButton", MainFrame, {
-		Size = UDim2.new(0, 35, 0, 35),
+		Size = UDim2.new(0, 30, 0, 30),
 		Position = MainFrame.Size,
 		Active = true,
 		AnchorPoint = Vector2.new(0.8, 0.8),
 		BackgroundTransparency = 1,
 		Name = "Control Hub Size"
 	})), MakeDrag(Create("ImageButton", MainFrame, {
-		Size = UDim2.new(0, 20, 1, -30),
+		Size = UDim2.new(0, 20, 1, -35),
 		Position = UDim2.new(0, MainScroll.Size.X.Offset, 1, 0),
 		AnchorPoint = Vector2.new(0.5, 1),
 		Active = true,
 		BackgroundTransparency = 1,
 		Name = "Control Tab Size"
 	}))
-
 
 local function ControlSize()
     local Pos1, Pos2 = ControlSize1.Position, ControlSize2.Position
@@ -1095,11 +903,11 @@ local function ControlSize()
     local minY, maxY
 
     if isPC then
-        minX, maxX = 300, 550
-        minY, maxY = 250, 400
+        minX, maxX = 350, 500
+        minY, maxY = 250, 350
     else
-        minX, maxX = 250, 400
-        minY, maxY = 150, 250
+        minX, maxX = 300, 400
+        minY, maxY = 200, 300
     end
 
     ControlSize1.Position = UDim2.fromOffset(
@@ -1108,8 +916,8 @@ local function ControlSize()
     )
 
     local Pos2 = ControlSize2.Position
-    local minClamp = isPC and 50 or 100
-    ControlSize2.Position = UDim2.new(0, math.clamp(Pos2.X.Offset, minClamp, 100), 1, 0)
+    local minClamp = isPC and 120 or 100
+    ControlSize2.Position = UDim2.new(0, math.clamp(Pos2.X.Offset, minClamp, 160), 1, 0)
 
     MainScroll.Size = UDim2.new(0, ControlSize2.Position.X.Offset, 1, -TopBar.Size.Y.Offset)
     Containers.Size = UDim2.new(1, -MainScroll.Size.X.Offset, 1, -TopBar.Size.Y.Offset)
@@ -1119,63 +927,10 @@ end
 ControlSize1:GetPropertyChangedSignal("Position"):Connect(ControlSize)
 ControlSize2:GetPropertyChangedSignal("Position"):Connect(ControlSize)
 
-local hoverConnections = {}
-local originalSizeX    = 30
-local expandedSizeX    = 160
-local userSizeX        = originalSizeX
-local minClamp         = isPC and 50 or 100
-
-local function tweenControlSizeX(toX)
-    local tweenInfo = TweenInfo.new(0.25, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
-    local goal = { Position = UDim2.new(0, toX, 1, 0) }
-    local tween = TweenService:Create(ControlSize2, tweenInfo, goal)
-    tween:Play()
-    tween.Completed:Connect(function()
-        userSizeX = toX
-        ControlSize()
-    end)
-end
-
-local function enableSidebarHover()
-    for _, conn in ipairs(hoverConnections) do
-        if conn.Connected then conn:Disconnect() end
-    end
-    hoverConnections = {}
-
-    table.insert(hoverConnections,
-        MainScroll.MouseEnter:Connect(function()
-            tweenControlSizeX(expandedSizeX)
-        end)
-    )
-    table.insert(hoverConnections,
-        MainScroll.MouseLeave:Connect(function()
-            tweenControlSizeX(minClamp)
-        end)
-    )
-end
-
-local function disableSidebarHover()
-    for _, conn in ipairs(hoverConnections) do
-        if conn.Connected then conn:Disconnect() end
-    end
-    hoverConnections = {}
-
-    tweenControlSizeX(expandedSizeX)
-end
-
-if isPC then
-    ControlSize2.Position = UDim2.new(0, originalSizeX, 1, 0)
-    ControlSize()
-
-    if splib.Flags["sidebarHover"] and splib.Flags["sidebarHover"].Value then
-        enableSidebarHover()
-    end
-end
-
 ConnectSave(ControlSize1, function()
     if not Minimized then
         splib.Save.UISize = {MainFrame.Size.X.Offset, MainFrame.Size.Y.Offset}
-        SaveJson("sp library .json", splib.Save)
+        SaveJson("sp library.json", splib.Save)
     end
 end)
 
@@ -1184,41 +939,26 @@ ConnectSave(ControlSize2, function()
     SaveJson("sp library.json", splib.Save)
 end)
 
-
 	local ButtonsFolder = Create("Folder", TopBar, {
 		Name = "Buttons"
 	})
 	
-	local CloseButton = Create("ImageButton", {
-		Size = UDim2.new(0, 14, 0, 14),
-		Position = UDim2.new(1, -10, 0.5),
-		AnchorPoint = Vector2.new(1, 0.5),
-		BackgroundTransparency = 1,
-		Image = "rbxassetid://10747384394",
-		AutoButtonColor = false,
-		Name = "Close"
-	})
+    local SettingButton = Create("ImageButton", ButtonsFolder, {
+        Size = UDim2.new(0, 20, 0, 20),
+        Position = UDim2.new(1, -10, 0.5),
+        AnchorPoint = Vector2.new(1, 0.5),
+        BackgroundTransparency = 1,
+        Image = "rbxassetid://10734950309",
+        Name = "Settings",
+        Visible = EnableSetting
+    })
 
-local EnableSetting = (Configs.Setting or Configs.ShowSetting) == true
-
-local SettingButton = SetProps(CloseButton:Clone(), {
-    Position = UDim2.new(1, -60, 0.5),
-    Size = UDim2.new(0, 14, 0, 14),
-    Image = "rbxassetid://10734950309",
-    Name = "Settings",
-    Visible = EnableSetting
-})
-
-	local MinimizeButton = SetProps(CloseButton:Clone(), {
-		Position = UDim2.new(1, -35, 0.5),
+	local MinimizeButton = Create("ImageButton", ButtonsFolder, {
+		Size = UDim2.new(0, 20, 0, 20),
+        Position = UDim2.new(1, -35, 0.5),
+        AnchorPoint = Vector2.new(1, 0.5),
 		Image = "rbxassetid://10734896206",
 		Name = "Minimize"
-	})
-	
-	SetChildren(ButtonsFolder, {
-		CloseButton,
-		MinimizeButton,
-        SettingButton
 	})
 	
 	local Minimized, SaveSize, WaitClick
@@ -1226,23 +966,6 @@ local SettingButton = SetProps(CloseButton:Clone(), {
 
 local bindConnections = {}
 local shouldClearToggles = Configs.CloseCallback == true
-
-CloseButton.Activated:Connect(function()
-    for _, conn in ipairs(bindConnections) do
-        if typeof(conn) == "RBXScriptConnection" and conn.Connected then
-            conn:Disconnect()
-        end
-    end
-    table.clear(bindConnections)
-
-    splib:ClearAllBinds()
-
-if shouldClearToggles then
-    splib:ClearAllToggles()
-end
-
-    ScreenGui:Destroy()
-end)
 
 SettingButton.MouseButton1Click:Connect(function()
 	for _, container in ipairs(ContainerList) do
@@ -1266,7 +989,7 @@ end)
 			SaveSize = MainFrame.Size
 			ControlSize1.Visible = false
 			ControlSize2.Visible = false
-			CreateTween({MainFrame, "Size", UDim2.fromOffset(MainFrame.Size.X.Offset, 28), 0.25, true})
+			CreateTween({MainFrame, "Size", UDim2.fromOffset(MainFrame.Size.X.Offset, 35), 0.25, true})
 			Minimized = true
 		end
 		
@@ -1335,7 +1058,6 @@ local function ToggleUI()
     end
 end
 
-
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
     if gameProcessed then return end
     if input.KeyCode == Enum.KeyCode.RightShift then
@@ -1347,14 +1069,14 @@ local boundaryConnections = {}
 local originalMainPos = MainFrame.Position
 
 local T = Instance.new("ImageButton", ScreenGui) 
-local sizeValue = isPC and 50 or 38
+local sizeValue = isPC and 45 or 35
 T.Size = UDim2.new(0, sizeValue, 0, sizeValue)
 local xPos = isPC and 0.10 or (isMobile and 0.10 or 0.10)
 T.Position = UDim2.new(xPos, 0, 0.1, 0)
-T.Image = tostring(ToggleIcon)
+T.Image = "rbxassetid://10747384394"
 T.Active = true 
 local Corner = Instance.new("UICorner", T)
-Corner.CornerRadius = UDim.new(0, 14)
+Corner.CornerRadius = UDim.new(0, 12)
 
 local isHolding    = false
 local didLongPress = false
@@ -1370,11 +1092,10 @@ local holdBar = Instance.new("Frame", T)
 holdBar.AnchorPoint = Vector2.new(0, 1)
 holdBar.Position  = UDim2.new(0, 0.92, 0.92, 0)
 holdBar.Size = UDim2.new(0, 0, 0, 4)
-holdBar.BackgroundColor3 = Color3.fromRGB(0, 162, 255)
+holdBar.BackgroundColor3 = Color3.fromRGB(65, 150, 255)
 holdBar.BorderSizePixel = 0
 local HoCorner = Instance.new("UICorner", holdBar)
-HoCorner.CornerRadius = UDim.new(0, 14)
-
+HoCorner.CornerRadius = UDim.new(0, 12)
 
 local originalPosition = T.Position
 
@@ -1483,7 +1204,7 @@ T.MouseButton1Click:Connect(function()
 end)
 
 local normalSize = UDim2.new(0, sizeValue, 0, sizeValue)
-local hoverSize = UDim2.new(0, sizeValue + 6, 0, sizeValue + 10)
+local hoverSize = UDim2.new(0, sizeValue + 6, 0, sizeValue + 6)
 local tweenInfo2 = TweenInfo.new(0.4, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
 
 local function getCenteredPosition(originalSize, newSize, originalPosition)
@@ -1609,7 +1330,7 @@ end)
 			
 			for _,Button in pairs(ButtonsHolder:GetChildren()) do
 				if Button:IsA("TextButton") then
-					Button.Size = UDim2.new(1 / ButtonCount, -(((ButtonCount - 1) * 20) / ButtonCount), 0, 32) -- Fluent Library :)
+					Button.Size = UDim2.new(1 / ButtonCount, -(((ButtonCount - 1) * 20) / ButtonCount), 0, 32)
 				end
 			end
 			Button.Activated:Connect(Dialog.Close)
@@ -1657,8 +1378,8 @@ function Window:MakeTab(paste, Configs)
 		end
 		
 		local TabSelect = Make("Button", MainScroll, {
-			Size = UDim2.new(1, 0, 0, 24)
-		})Make("Corner", TabSelect)
+			Size = UDim2.new(1, 0, 0, 28)
+		})Make("Corner", TabSelect, UDim.new(0, 8))
 		
 		local LabelTitle = InsertTheme(Create("TextLabel", TabSelect, {
 			Size = UDim2.new(1, TIcon and -25 or -15, 1),
@@ -1667,7 +1388,7 @@ function Window:MakeTab(paste, Configs)
 			Font = Enum.Font.GothamMedium,
 			Text = TName,
 			TextColor3 = Theme["Color Text"],
-			TextSize = 9,
+			TextSize = 10,
 			TextXAlignment = Enum.TextXAlignment.Left,
 			TextTransparency = (FirstTab and 0.3) or 0,
 			TextTruncate = "AtEnd"
@@ -1675,7 +1396,7 @@ function Window:MakeTab(paste, Configs)
 		
 		local LabelIcon = InsertTheme(Create("ImageLabel", TabSelect, {
 			Position = UDim2.new(0, 8, 0.5),
-			Size = UDim2.new(0, 13, 0, 13),
+			Size = UDim2.new(0, 14, 0, 14),
 			AnchorPoint = Vector2.new(0, 0.5),
 			Image = TIcon or "",
 			BackgroundTransparency = 1,
@@ -1683,7 +1404,7 @@ function Window:MakeTab(paste, Configs)
 		}), "Text")
 		
 		local Selected = InsertTheme(Create("Frame", TabSelect, {
-			Size = FirstTab and UDim2.new(0, 4, 0, 4) or UDim2.new(0, 4, 0, 13),
+			Size = FirstTab and UDim2.new(0, 4, 0, 4) or UDim2.new(0, 4, 0, 16),
 			Position = UDim2.new(0, 1, 0.5),
 			AnchorPoint = Vector2.new(0, 0.5),
 			BackgroundColor3 = Theme["Color Theme"],
@@ -1694,7 +1415,7 @@ function Window:MakeTab(paste, Configs)
     Size = UDim2.new(1, 0, 1, 0),
     Position = UDim2.new(0, 0, 1),
     AnchorPoint = Vector2.new(0, 1),
-    ScrollBarThickness = 1.5,
+    ScrollBarThickness = 2,
     BackgroundTransparency = 1,
     ScrollBarImageTransparency = 0.2,
     ScrollBarImageColor3 = Theme["Color Theme"],
@@ -1711,7 +1432,7 @@ function Window:MakeTab(paste, Configs)
         PaddingBottom = UDim.new(0, 10)
     }),
     Create("UIListLayout", {
-        Padding = UDim.new(0, 5)
+        Padding = UDim.new(0, 6)
     })
 }), "ScrollBar")
 
@@ -1719,7 +1440,7 @@ function Window:MakeTab(paste, Configs)
 			Size = UDim2.new(1, 0, 1, 0),
 			Position = UDim2.new(0, 0, 1),
 			AnchorPoint = Vector2.new(0, 1),
-			ScrollBarThickness = 1.5,
+			ScrollBarThickness = 2,
 			BackgroundTransparency = 1,
 			ScrollBarImageTransparency = 0.2,
 			ScrollBarImageColor3 = Theme["Color Theme"],
@@ -1735,7 +1456,7 @@ function Window:MakeTab(paste, Configs)
 				PaddingTop = UDim.new(0, 10),
 				PaddingBottom = UDim.new(0, 10)
 			}), Create("UIListLayout", {
-				Padding = UDim.new(0, 5)
+				Padding = UDim.new(0, 6)
 			})
 		}), "ScrollBar")
 
@@ -1764,7 +1485,7 @@ function Window:MakeTab(paste, Configs)
 			CreateTween({Container, "Size", UDim2.new(1, 0, 1, 0), 0.5})
 			CreateTween({LabelTitle, "TextTransparency", 0, 0.35})
 			CreateTween({LabelIcon, "ImageTransparency", 0, 0.35})
-			CreateTween({Selected, "Size", UDim2.new(0, 4, 0, 13), 0.50})
+			CreateTween({Selected, "Size", UDim2.new(0, 4, 0, 16), 0.50})
 			CreateTween({Selected, "BackgroundTransparency", 0, 0.50})
 		end
 		TabSelect.Activated:Connect(Tabs)
@@ -1837,7 +1558,7 @@ end)
             local container = Configs.__force_container or Container
 
 			local SectionFrame = Create("Frame", container, {
-				Size = UDim2.new(1, 0, 0, 20),
+				Size = UDim2.new(1, 0, 0, 24),
 				BackgroundTransparency = 1,
 				Name = "Option"
 			})
@@ -2259,7 +1980,6 @@ end)
 
 table.insert(bindConnections, inputConnection)
 
-
     UserInputService.InputEnded:Connect(function(input)
         if state.Hold and input.KeyCode == state.Value then
             Holding = false
@@ -2307,18 +2027,18 @@ function Tab:AddImageLabel(Configs)
             end
 
     local Holder = Create("Frame", Container, {
-        Size = UDim2.new(1, 0, 0, 65),
+        Size = UDim2.new(1, 0, 0, 70),
         Name = "Option",
         BackgroundTransparency = 1
     })
 
     local FrameHolder = InsertTheme(Create("Frame", Holder, {
-        Size = UDim2.new(1, 0, 0, 65),
+        Size = UDim2.new(1, 0, 0, 70),
         AnchorPoint = Vector2.new(0, 1),
         Position = UDim2.new(0, 0, 1),
         BackgroundColor3 = Theme["Color Hub 2"]
     }), "Frame")
-    Make("Corner", FrameHolder)
+    Make("Corner", FrameHolder, UDim.new(0, 8))
 
     local ImageLabel = Create("ImageLabel", FrameHolder, {
         Size = UDim2.new(0, 50, 0, 50),
@@ -2326,7 +2046,7 @@ function Tab:AddImageLabel(Configs)
         Image = Logo,
         BackgroundTransparency = 1
     })
-    Make("Corner", ImageLabel, UDim.new(0, 4))
+    Make("Corner", ImageLabel, UDim.new(0, 6))
     local ImageStroke = Make("Stroke", ImageLabel, { Thickness = 1 })
 
     local LTitle = InsertTheme(Create("TextLabel", FrameHolder, {
@@ -2336,7 +2056,7 @@ function Tab:AddImageLabel(Configs)
         TextColor3 = Theme["Color Text"],
         TextXAlignment = "Left",
         BackgroundTransparency = 1,
-        TextSize = 10,
+        TextSize = 11,
         Text = Title
     }), "Text")
 
@@ -2349,7 +2069,7 @@ function Tab:AddImageLabel(Configs)
         TextColor3 = Theme["Color Dark Text"],
         TextXAlignment = "Left",
         BackgroundTransparency = 1,
-        TextSize = 8,
+        TextSize = 9,
         Text = Desc
     }), "DarkText")
 
@@ -2398,7 +2118,6 @@ function Tab:AddImageLabel(Configs)
     return ImageLabelObj
 end
 
-
 function Tab:AddParagraph(...)
     local args = {...}
 
@@ -2407,8 +2126,8 @@ function Tab:AddParagraph(...)
         Configs = args[1]
     else
         Configs = {
-            args[1], -- PName = Configs[1]
-            args[2]  -- PDesc = Configs[2]
+            args[1],
+            args[2]
         }
     end
 
@@ -2441,6 +2160,7 @@ function Tab:AddParagraph(...)
 
     return Paragraph
 end
+
 function Tab:AddButton(Configs)
 			local BName = Configs[1] or Configs.Name or Configs.Title or "Button!"
 			local BDescription = Configs.Desc or Configs.Description or ""
@@ -2458,7 +2178,7 @@ function Tab:AddButton(Configs)
 			local FButton, LabelFunc = ButtonFrame(Container, BName, BDescription, UDim2.new(1, -20))
 			
 			local ButtonIcon = Create("ImageLabel", FButton, {
-				Size = UDim2.new(0, 14, 0, 14),
+				Size = UDim2.new(0, 16, 0, 16),
 				Position = UDim2.new(1, -10, 0.5),
 				AnchorPoint = Vector2.new(1, 0.5),
 				BackgroundTransparency = 1,
@@ -2611,7 +2331,8 @@ function splib:ClearAllToggles()
         end
     end
 end
-		function Tab:AddDropdown(Configs)
+
+function Tab:AddDropdown(Configs)
 			local DName = Configs[1] or Configs.Name or Configs.Title or "Dropdown"
 			local DDesc = Configs.Desc or Configs.Description or ""
 			local DOptions = Configs[2] or Configs.Options or {}
@@ -2650,7 +2371,7 @@ end
 				Position = UDim2.new(1, -10, 0.5),
 				AnchorPoint = Vector2.new(1, 0.5),
 				BackgroundColor3 = Theme["Color Stroke"]
-			}), "Stroke")Make("Corner", SelectedFrame, UDim.new(0, 4))
+			}), "Stroke")Make("Corner", SelectedFrame, UDim.new(0, 6))
 
 local function updateSelectedFrameSize()
     local scale = isPC and 0.23 or 0.15
@@ -2697,12 +2418,12 @@ updateSelectedFrameSize()
 				Name = "DropdownFrame",
 				ClipsDescendants = true,
 				Active = true
-			})Make("Corner", DropFrame)Make("Stroke", DropFrame)Make("Gradient", DropFrame, {Rotation = 60})
+			})Make("Corner", DropFrame, UDim.new(0, 8))Make("Stroke", DropFrame)Make("Gradient", DropFrame, {Rotation = 60})
  
 			local ScrollFrame = InsertTheme(Create("ScrollingFrame", DropFrame, {
 				ScrollBarImageColor3 = Theme["Color Theme"],
 				Size = UDim2.new(1, 0, 1, 0),
-				ScrollBarThickness = 1.5,
+				ScrollBarThickness = 2,
 				BackgroundTransparency = 1,
 				BorderSizePixel = 0,
 				CanvasSize = UDim2.new(),
@@ -2800,7 +2521,6 @@ end
 				local MultiSelect = DMultiSelect
 				local Options = {}
 
-
                 local InitialSelection = saved or Default[1]
 				Selected = MultiSelect and {} or InitialSelection
 if MultiSelect then
@@ -2817,7 +2537,6 @@ end
 					SaveDropdownFlag(Flag, MultiSelect and Selected or tostring(Selected))
 					Funcs:FireCallback(Callback, Selected)
 				end
-
 
 	local function UpdateLabel()
 		if MultiSelect then
@@ -2911,7 +2630,7 @@ AddOption = function(index, Value)
 						Size = UDim2.new(1, 0, 0, 21),
 						Position = UDim2.new(0, 0, 0.5),
 						AnchorPoint = Vector2.new(0, 0.5)
-					})Make("Corner", Button, UDim.new(0, 4))
+					})Make("Corner", Button, UDim.new(0, 6))
  
 					local IsSelected = InsertTheme(Create("Frame", Button, {
 						Position = UDim2.new(0, 1, 0.5),
@@ -3136,6 +2855,7 @@ end
  
 			return Dropdown
 		end
+
 local SlidersFile = "sliders.json"
 local function SaveSliderFlag(flag, value)
     local data = {}
@@ -3169,6 +2889,7 @@ local function LoadSliderFlag(flag)
     end
     return nil
 end
+
 function Tab:AddSlider(Configs)
     local SName = Configs[1] or Configs.Name or Configs.Title or "Slider"
     local SDesc = Configs.Desc or Configs.ValueName or Configs.Description or ""
@@ -3190,7 +2911,6 @@ function Tab:AddSlider(Configs)
         Default = (Min + Max) / 2
     end
 
-
     if Configs.IsMobile and not isMobile then return nil end
     if Configs.IsPC and not isPC then return nil end
 
@@ -3209,13 +2929,13 @@ function Tab:AddSlider(Configs)
         Size = UDim2.new(1, -20, 0, 6),
         Position = UDim2.new(0.5, 0, 0.5),
         AnchorPoint = Vector2.new(0.5, 0.5)
-    }), "Stroke") Make("Corner", SliderBar)
+    }), "Stroke") Make("Corner", SliderBar, UDim.new(0, 3))
 
     local Indicator = InsertTheme(Create("Frame", SliderBar, {
         BackgroundColor3 = Theme["Color Theme"],
         Size = UDim2.fromScale(0.3, 1),
         BorderSizePixel = 0
-    }), "Theme") Make("Corner", Indicator)
+    }), "Theme") Make("Corner", Indicator, UDim.new(0, 3))
 
     local SliderIcon = Create("Frame", SliderBar, {
         Size = UDim2.new(0, 6, 0, 12),
@@ -3223,7 +2943,7 @@ function Tab:AddSlider(Configs)
         Position = UDim2.fromScale(0.3, 0.5),
         AnchorPoint = Vector2.new(0.5, 0.5),
         BackgroundTransparency = 0.2
-    }) Make("Corner", SliderIcon)
+    }) Make("Corner", SliderIcon, UDim.new(0, 3))
 
     local LabelVal = InsertTheme(Create("TextBox", SliderHolder, {
         Size = UDim2.new(0, 14, 0, 14),
@@ -3326,6 +3046,7 @@ end)
     function Slider:Destroy() Button:Destroy() end
     return Slider
 end
+
 local TextBoxesFile = "textboxes.json"
 local function SaveTextBoxFlag(flag, value)
     local data = {}
@@ -3359,6 +3080,7 @@ local function LoadTextBoxFlag(flag)
     end
     return nil
 end
+
 function Tab:AddTextbox(Configs)
     local TName = Configs[1] or Configs.Name or Configs.Title or "Text Box"
     local TDesc = Configs.Desc or Configs.Description or ""
@@ -3395,7 +3117,7 @@ function Tab:AddTextbox(Configs)
         AnchorPoint = Vector2.new(1, 0.5),
         BackgroundColor3 = Theme["Color Stroke"]
     }), "Stroke")
-    Make("Corner", SelectedFrame, UDim.new(0, 4))
+    Make("Corner", SelectedFrame, UDim.new(0, 6))
 
 local function updateSelectedFrame2Size()
     local scale = isPC and 0.23 or 0.15
@@ -3474,6 +3196,7 @@ updateSelectedFrame2Size()
 
     return TextBox
 end
+
 local ColorPickersFile = "colorpickers.json"
 local function SaveColorPickerFlag(flag, color: Color3)
 	local data = {}
@@ -3514,6 +3237,7 @@ local function LoadColorPickerFlag(flag): Color3?
 	end
 	return nil
 end
+
 function Tab:AddColorpicker(Configs)
     local TName    = Configs[1] or Configs.Name or Configs.Title or "Color Picker"
     local TDesc    = Configs.Desc or Configs.Description or ""
@@ -3567,7 +3291,7 @@ local CustomColorFrame = Create("Frame", NoClickFrame, {
 	Visible = false,
 	ZIndex = 5
 })
-Make("Corner", CustomColorFrame)
+Make("Corner", CustomColorFrame, UDim.new(0, 8))
 Make("Stroke", CustomColorFrame)
 Make("Gradient", CustomColorFrame, {Rotation = 60})
 
@@ -3581,9 +3305,8 @@ local CloseButton = Create("TextButton", CustomColorFrame, {
     TextSize = 14,
     ZIndex = 7
 })
-Make("Corner", CloseButton, UDim.new(0, 4))
+Make("Corner", CloseButton, UDim.new(0, 6))
 Make("Stroke", CloseButton)
-
 
 local ColorCodeBox = Create("TextBox", CustomColorFrame, {
     Name = "ColorCodeBox",
@@ -3598,7 +3321,7 @@ local ColorCodeBox = Create("TextBox", CustomColorFrame, {
     ZIndex = 6,
     Text  = "",
 })
-Make("Corner", ColorCodeBox, UDim.new(0, 4))
+Make("Corner", ColorCodeBox, UDim.new(0, 6))
 
 local ColorCodeBoxUD = Create("TextBox", CustomColorFrame, {
     Name = "ColorCodeBoxUD",
@@ -3613,7 +3336,7 @@ local ColorCodeBoxUD = Create("TextBox", CustomColorFrame, {
     ZIndex = 6,
     Text  = "",
 })
-Make("Corner", ColorCodeBoxUD, UDim.new(0, 4))
+Make("Corner", ColorCodeBoxUD, UDim.new(0, 6))
 
 local ColorCanvas = Create("Frame", CustomColorFrame, {
     Name = "ColorCanvas",
@@ -3623,7 +3346,7 @@ local ColorCanvas = Create("Frame", CustomColorFrame, {
     BackgroundTransparency = 0,
     ZIndex = 6
 })
-Make("Corner", ColorCanvas)
+Make("Corner", ColorCanvas, UDim.new(0, 6))
 
 local ColorSelection = Create("ImageLabel", ColorCanvas, {
     Name = "ColorSelection",
@@ -3634,7 +3357,7 @@ local ColorSelection = Create("ImageLabel", ColorCanvas, {
     Image = "rbxassetid://4805639000",
     ZIndex = 7
 })
-Make("Corner", ColorSelection)
+Make("Corner", ColorSelection, UDim.new(0, 6))
 
 local HueBar = Create("Frame", CustomColorFrame, {
     Name = "HueBar",
@@ -3643,7 +3366,7 @@ local HueBar = Create("Frame", CustomColorFrame, {
     BackgroundTransparency = 0,
     ZIndex = 8
 })
-Make("Corner", HueBar)
+Make("Corner", HueBar, UDim.new(0, 6))
 
 local satGrad = Create("UIGradient", ColorCanvas, {
     Rotation = 90,
@@ -3679,7 +3402,7 @@ local HueSelection = Create("ImageLabel", HueBar, {
     Image = "rbxassetid://4805639000",
     ZIndex = 9
 })
-Make("Corner", HueSelection)
+Make("Corner", HueSelection, UDim.new(0, 6))
 
     local Arrow = Create("ImageLabel", ColorBox, {
         Size = UDim2.new(0, 12, 0, 12),
@@ -3701,7 +3424,7 @@ local PresetsList = Create("ScrollingFrame", Frame, {
     ScrollBarImageColor3 = Theme["Color Theme"],
     ScrollingDirection = "X" 
 })
-Make("Corner", PresetsList, UDim.new(0, 4))
+Make("Corner", PresetsList, UDim.new(0, 6))
 InsertTheme(PresetsList, "Stroke")
 
 CloseButton.Activated:Connect(function()
@@ -3735,17 +3458,17 @@ ListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
 end)
 
 local presetColors = {
-    Color3.fromRGB(255, 255, 255), -- White
-    Color3.fromRGB(  0,   0,   0), -- Black
-    Color3.fromRGB(255,   0,   0), -- Red
-    Color3.fromRGB(255, 242,   0), -- Yellow
-    Color3.fromRGB(  0, 162, 232), -- Blue
-    Color3.fromRGB(128,   0, 128), -- Purple
-    Color3.fromRGB(  0, 255, 127), -- Spring Green
-    Color3.fromRGB(255, 105, 180), -- Hot Pink
-    Color3.fromRGB(255, 140,   0), -- Orange
-    Color3.fromRGB( 75,   0, 130), -- Indigo
-    Color3.fromRGB( 64, 224, 208), -- Turquoise
+    Color3.fromRGB(255, 255, 255),
+    Color3.fromRGB(  0,   0,   0),
+    Color3.fromRGB(255,   0,   0),
+    Color3.fromRGB(255, 242,   0),
+    Color3.fromRGB(  0, 162, 232),
+    Color3.fromRGB(128,   0, 128),
+    Color3.fromRGB(  0, 255, 127),
+    Color3.fromRGB(255, 105, 180),
+    Color3.fromRGB(255, 140,   0),
+    Color3.fromRGB( 75,   0, 130),
+    Color3.fromRGB( 64, 224, 208),
     "Rainbow",
 }
 
@@ -4084,7 +3807,8 @@ function Colorpicker:Callback(fn)
 end
     return Colorpicker
 end
-		function Tab:AddDiscordInvite(Configs)
+
+function Tab:AddDiscordInvite(Configs)
 			local Title = Configs[1] or Configs.Name or Configs.Title or "Discord"
 			local Desc = Configs.Desc or Configs.Description or ""
 			local Logo = Configs[2] or Configs.Logo or ""
@@ -4112,14 +3836,14 @@ end
 				AnchorPoint = Vector2.new(0, 1),
 				Position = UDim2.new(0, 0, 1),
 				BackgroundColor3 = Theme["Color Hub 2"]
-			}), "Frame")Make("Corner", FrameHolder)
+			}), "Frame")Make("Corner", FrameHolder, UDim.new(0, 8))
 			
 			local ImageLabel = Create("ImageLabel", FrameHolder, {
 				Size = UDim2.new(0, 30, 0, 30),
 				Position = UDim2.new(0, 7, 0, 7),
 				Image = Logo,
 				BackgroundTransparency = 1
-			})Make("Corner", ImageLabel, UDim.new(0, 4))Make("Stroke", ImageLabel)
+			})Make("Corner", ImageLabel, UDim.new(0, 6))Make("Stroke", ImageLabel)
 			
 			local LTitle = InsertTheme(Create("TextLabel", FrameHolder, {
 				Size = UDim2.new(1, -52, 0, 15),
@@ -4154,7 +3878,7 @@ end
 				TextSize = 12,
 				TextColor3 = Color3.fromRGB(220, 220, 220),
 				BackgroundColor3 = Color3.fromRGB(50, 150, 50)
-			})Make("Corner", JoinButton, UDim.new(0, 5))
+			})Make("Corner", JoinButton, UDim.new(0, 6))
 			
 			local ClickDelay
 			JoinButton.Activated:Connect(function()
@@ -4197,8 +3921,6 @@ end
     ScreenFind:Destroy()
 end
 
--- local SettingTab
-
 Tab:AddSection({
     Name = "UI 设置",
     __force_container = SettingTab
@@ -4207,8 +3929,7 @@ Tab:AddSection({
 Tab:AddDropdown({
     Name     = "UI 大小设置",
     Options  = {"小", "中", "大"},
-    Default  = savedSize,
-    Flag = "UISize",
+    Default  = "中",
     Callback = function(v)
         local offset = isMobile and -200 or 0
         if v == "小" then
@@ -4223,30 +3944,18 @@ Tab:AddDropdown({
 })
 
 Tab:AddDropdown({
-    Name = "UI 主题",
-    Options = {"Red", "Darker", "Dark", "Purple","NeonBlue", "Sunset", "Ocean", "RoseGold", "Matrix", "Green", "Orange", "Pink", "Gold", "Cyan"},
-    Default = splib.Save.Theme or "Pink",
-    Callback = function(selectedTheme)
-        splib:SetTheme(selectedTheme)
-        splib.Save.Theme = selectedTheme
-        SaveJson("sp library.json", splib.Save)
-    end,
-    __force_container = SettingTab
-})
-
-Tab:AddDropdown({
     Name = "滚动条样式",
     Options = {"细", "中等", "粗", "圆点"},
     Default = "中等",
     Callback = function(style)
-        local thickness = 1.5
+        local thickness = 2
         local transparency = 0.2
         
         if style == "细" then
             thickness = 1
             transparency = 0.4
         elseif style == "中等" then
-            thickness = 1.5
+            thickness = 2
             transparency = 0.2
         elseif style == "粗" then
             thickness = 3
@@ -4283,42 +3992,11 @@ Tab:AddDropdown({
             easingStyle = Enum.EasingStyle.Sine
         end
         
-      
         Settings.EasingStyle = easingStyle
     end,
     __force_container = SettingTab
 })
 
-Tab:AddDropdown({
-    Name = "背景图片",
-    Options = BackgroundOptions,
-    Default = "无背景",
-    Callback = function(selectedBackground)
-        if selectedBackground == "无背景" then
-        
-            for _, child in pairs(MainFrame:GetChildren()) do
-                if child:IsA("ImageLabel") then
-                    child:Destroy()
-                end
-            end
-        else
-          
-            local background = MainFrame:FindFirstChild("BackgroundImage")
-            if not background then
-                background = Create("ImageLabel", MainFrame, {
-                    Name = "BackgroundImage",
-                    Size = UDim2.new(1, 0, 1, 0),
-                    Position = UDim2.new(0, 0, 0, 0),
-                    BackgroundTransparency = 1,
-                    ZIndex = 0
-                })
-            end
-            background.Image = selectedBackground
-            background.ImageTransparency = 0.8 
-        end
-    end,
-    __force_container = SettingTab
-})
 Tab:AddDropdown({
     Name = "边框厚度",
     Options = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"},
@@ -4333,10 +4011,11 @@ Tab:AddDropdown({
     end,
     __force_container = SettingTab
 })
+
 Tab:AddDropdown({
     Name = "圆角大小",
     Options = {"0", "2", "4", "6", "7", "8", "10", "12", "14", "16", "18", "20"},
-    Default = "7",
+    Default = "12",
     Callback = function(value)
         local radius = tonumber(value)
         for _, obj in pairs(MainFrame:GetDescendants()) do
@@ -4347,10 +4026,11 @@ Tab:AddDropdown({
     end,
     __force_container = SettingTab
 })
+
 Tab:AddDropdown({
     Name = "元素间距",
     Options = {"0", "2", "3", "4", "5", "6", "7", "8", "9", "10", "12", "15"},
-    Default = "5",
+    Default = "6",
     Callback = function(value)
         local padding = tonumber(value)
         for _, obj in pairs(Container:GetDescendants()) do
@@ -4366,10 +4046,11 @@ Tab:AddDropdown({
     end,
     __force_container = SettingTab
 })
+
 Tab:AddDropdown({
     Name = "文本大小",
     Options = {"8", "9", "10", "11", "12", "13", "14", "15", "16"},
-    Default = "10",
+    Default = "11",
     Callback = function(value)
         local size = tonumber(value)
         for _, instance in pairs(splib.Instances) do
@@ -4382,6 +4063,7 @@ Tab:AddDropdown({
     end,
     __force_container = SettingTab
 })
+
 Tab:AddDropdown({
     Name = "按钮透明度",
     Options = {"0", "0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.7", "0.8", "0.9", "1"},
@@ -4396,13 +4078,13 @@ Tab:AddDropdown({
     end,
     __force_container = SettingTab
 })
+
 Tab:AddDropdown({
     Name = "图标大小",
     Options = {"10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"},
-    Default = "13",
+    Default = "14",
     Callback = function(value)
         local size = tonumber(value)
-        -- 更新所有标签页图标大小
         for _, tab in pairs(splib.Tabs) do
             local tabButton = MainScroll:FindFirstChild(tab.TabInfo.Name)
             if tabButton then
@@ -4422,7 +4104,7 @@ Tab:AddToggle({
     Callback = function(enabled)
         Settings.AutoSave = enabled
         if enabled then
-            spLib:MakeNotification({
+            splib:MakeNotification({
                 Name = "自动保存",
                 Content = "设置更改将自动保存",
                 Time = 3
@@ -4446,30 +4128,13 @@ Tab:AddToggle({
   end,
     __force_container = SettingTab
 })
-Tab:AddToggle({
-    Name = "侧边栏悬停拓展",
-    Flag = "SidebarHover",
-    Default = true,
-    IsPC = true,
-    Callback = function(enabled)
-        if enabled then
-            enableSidebarHover()
-            tweenControlSizeX(minClamp)
-        else
-            disableSidebarHover()
-        end
-    end,
-    __force_container = SettingTab
-})
 
 Tab:AddSection({
     Name = "UI",
     __force_container = SettingTab
 })
 
-local rainbowStroke
-
-rainbowStroke = Make("Stroke", MainFrame, {
+local rainbowStroke = Make("Stroke", MainFrame, {
     Thickness = 2
 })
 
@@ -4500,7 +4165,7 @@ end)
 Tab:AddToggle({
     Name = "彩虹边框",
     Flag = "RainbowMainFrame",
-    Default = Settings.RainbowMainFrameDefault,
+    Default = false,
     Callback = function(enabled)
         rainbowStroke.Transparency = enabled and 0 or 1
     end,
@@ -4532,11 +4197,10 @@ task.spawn(function()
     end
 end)
 
-
 Tab:AddToggle({
     Name = "彩虹字体",
     Flag = "RainbowTitle",
-    Default = Settings.RainbowTitleDefault,
+    Default = false,
     Callback = function(enabled)
         titleRainbowEnabled = enabled
         if not enabled and Title then
@@ -4549,7 +4213,7 @@ Tab:AddToggle({
 Tab:AddToggle({
     Name = "彩虹小标题",
     Flag = "RainbowSubTitle",
-    Default = Settings.RainbowSubTitleDefault,
+    Default = false,
     Callback = function(enabled)
         subtitleRainbowEnabled = enabled
         if not enabled and SubTitle then
@@ -4564,6 +4228,7 @@ Tab:AddToggle({
 	MinimizeButton.Activated:Connect(Window.MinimizeBtn)
 	return Window
 end
+
 function splib:Destroy()
     for _, conn in ipairs(self.bindConnections or {}) do
         if typeof(conn) == "RBXScriptConnection" and conn.Connected then
