@@ -13,6 +13,48 @@ ui.Name = "sxuiv1"
 ui.Parent = game:GetService("CoreGui") or game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
 ui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
+local ToggleUI = Instance.new("TextButton")
+ToggleUI.Name = "ToggleUI"
+ToggleUI.Parent = ui
+ToggleUI.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+ToggleUI.BackgroundTransparency = 0.2
+ToggleUI.BorderSizePixel = 0
+ToggleUI.Position = UDim2.new(0, 10, 0, 10)
+ToggleUI.Size = UDim2.new(0, 100, 0, 40)
+ToggleUI.AutoButtonColor = false
+ToggleUI.Font = Enum.Font.GothamBold
+ToggleUI.Text = "SX HUB"
+ToggleUI.TextColor3 = Color3.fromRGB(255, 255, 255)
+ToggleUI.TextSize = 14.000
+ToggleUI.TextWrapped = true
+
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 8)
+UICorner.Parent = ToggleUI
+
+local SXText = Instance.new("TextLabel")
+SXText.Name = "SXText"
+SXText.Parent = ToggleUI
+SXText.BackgroundTransparency = 1
+SXText.Size = UDim2.new(1, 0, 1, 0)
+SXText.Font = Enum.Font.GothamBold
+SXText.Text = "SX HUB"
+SXText.TextColor3 = Color3.fromRGB(255, 255, 255)
+SXText.TextSize = 14.000
+SXText.TextWrapped = true
+
+local Gradient = Instance.new("UIGradient")
+Gradient.Rotation = 45
+Gradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
+    ColorSequenceKeypoint.new(0.2, Color3.fromRGB(255, 165, 0)),
+    ColorSequenceKeypoint.new(0.4, Color3.fromRGB(255, 255, 0)),
+    ColorSequenceKeypoint.new(0.6, Color3.fromRGB(0, 255, 0)),
+    ColorSequenceKeypoint.new(0.8, Color3.fromRGB(0, 0, 255)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(128, 0, 128))
+})
+Gradient.Parent = SXText
+
 coroutine.wrap(
     function()
         while wait() do
@@ -86,6 +128,28 @@ local function MakeDraggable(topbarobject, object)
     )
 end
 
+MakeDraggable(ToggleUI, ToggleUI)
+
+ToggleUI.MouseButton1Click:Connect(
+    function()
+        if ui.Enabled then
+            ui.Enabled = false
+            TweenService:Create(
+                ToggleUI,
+                TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                {BackgroundTransparency = 0.7}
+            ):Play()
+        else
+            ui.Enabled = true
+            TweenService:Create(
+                ToggleUI,
+                TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                {BackgroundTransparency = 0.2}
+            ):Play()
+        end
+    end
+)
+
 function lib:Window(text, preset, closebind)
     CloseBind = closebind or Enum.KeyCode.RightControl
     PresetColor = preset or Color3.fromRGB(44, 120, 224)
@@ -99,6 +163,9 @@ function lib:Window(text, preset, closebind)
     local DragFrame = Instance.new("Frame")
     local SideBar = Instance.new("Frame")
     local SideBarCorner = Instance.new("UICorner")
+    local SearchBox = Instance.new("TextBox")
+    local SearchBoxCorner = Instance.new("UICorner")
+    local SearchBoxPadding = Instance.new("UIPadding")
 
     Main.Name = "Main"
     Main.Parent = ui
@@ -119,17 +186,37 @@ function lib:Window(text, preset, closebind)
     SideBar.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
     SideBar.BorderSizePixel = 0
     SideBar.Position = UDim2.new(0, 0, 0, 0)
-    SideBar.Size = UDim2.new(0, 130, 0, 319)
+    SideBar.Size = UDim2.new(0, 130, 0, 350)
 
     SideBarCorner.CornerRadius = UDim.new(0, 8)
     SideBarCorner.Name = "SideBarCorner"
     SideBarCorner.Parent = SideBar
 
+    SearchBox.Name = "SearchBox"
+    SearchBox.Parent = SideBar
+    SearchBox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    SearchBox.BorderSizePixel = 0
+    SearchBox.Position = UDim2.new(0.1, 0, 0.12, 0)
+    SearchBox.Size = UDim2.new(0, 107, 0, 25)
+    SearchBox.Font = Enum.Font.Gotham
+    SearchBox.PlaceholderText = "搜索功能..."
+    SearchBox.PlaceholderColor3 = Color3.fromRGB(150, 150, 150)
+    SearchBox.Text = ""
+    SearchBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+    SearchBox.TextSize = 12.000
+    SearchBox.TextXAlignment = Enum.TextXAlignment.Left
+
+    SearchBoxCorner.CornerRadius = UDim.new(0, 4)
+    SearchBoxCorner.Parent = SearchBox
+
+    SearchBoxPadding.Parent = SearchBox
+    SearchBoxPadding.PaddingLeft = UDim.new(0, 8)
+
     TabHold.Name = "TabHold"
     TabHold.Parent = SideBar
     TabHold.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     TabHold.BackgroundTransparency = 1.000
-    TabHold.Position = UDim2.new(0.1, 0, 0.15, 0)
+    TabHold.Position = UDim2.new(0.1, 0, 0.2, 0)
     TabHold.Size = UDim2.new(0, 107, 0, 254)
 
     TabHoldLayout.Name = "TabHoldLayout"
@@ -155,7 +242,7 @@ function lib:Window(text, preset, closebind)
     DragFrame.BackgroundTransparency = 1.000
     DragFrame.Size = UDim2.new(0, 560, 0, 41)
 
-    Main:TweenSize(UDim2.new(0, 560, 0, 319), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, .6, true)
+    Main:TweenSize(UDim2.new(0, 560, 0, 350), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, .6, true)
 
     MakeDraggable(DragFrame, Main)
 
@@ -182,7 +269,7 @@ function lib:Window(text, preset, closebind)
                     ui.Enabled = true
                 
                     Main:TweenSize(
-                        UDim2.new(0, 560, 0, 319),
+                        UDim2.new(0, 560, 0, 350),
                         Enum.EasingDirection.Out,
                         Enum.EasingStyle.Quart,
                         .6,
@@ -215,7 +302,7 @@ function lib:Window(text, preset, closebind)
         NotificationHold.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
         NotificationHold.BackgroundTransparency = 1.000
         NotificationHold.BorderSizePixel = 0
-        NotificationHold.Size = UDim2.new(0, 560, 0, 319)
+        NotificationHold.Size = UDim2.new(0, 560, 0, 350)
         NotificationHold.AutoButtonColor = false
         NotificationHold.Font = Enum.Font.SourceSans
         NotificationHold.Text = ""
@@ -235,7 +322,7 @@ function lib:Window(text, preset, closebind)
         NotificationFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
         NotificationFrame.BorderSizePixel = 0
         NotificationFrame.ClipsDescendants = true
-        NotificationFrame.Position = UDim2.new(0.5, 0, 0.498432577, 0)
+        NotificationFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
 
         NotificationFrameCorner.CornerRadius = UDim.new(0, 8)
         NotificationFrameCorner.Name = "NotificationFrameCorner"
@@ -491,7 +578,6 @@ function lib:Window(text, preset, closebind)
             local Button = Instance.new("TextButton")
             local ButtonCorner = Instance.new("UICorner")
             local ButtonTitle = Instance.new("TextLabel")
-            local ButtonGradient = Instance.new("UIGradient")
 
             Button.Name = "Button"
             Button.Parent = Tab
@@ -555,6 +641,15 @@ function lib:Window(text, preset, closebind)
             )
 
             Tab.CanvasSize = UDim2.new(0, 0, 0, TabLayout.AbsoluteContentSize.Y)
+            
+            SearchBox:GetPropertyChangedSignal("Text"):Connect(function()
+                local searchText = string.lower(SearchBox.Text)
+                if searchText == "" then
+                    Button.Visible = true
+                else
+                    Button.Visible = string.find(string.lower(text), searchText) ~= nil
+                end
+            end)
         end
         
         function tabcontent:Toggle(text, default, callback)
@@ -688,6 +783,15 @@ function lib:Window(text, preset, closebind)
             end
 
             Tab.CanvasSize = UDim2.new(0, 0, 0, TabLayout.AbsoluteContentSize.Y)
+            
+            SearchBox:GetPropertyChangedSignal("Text"):Connect(function()
+                local searchText = string.lower(SearchBox.Text)
+                if searchText == "" then
+                    Toggle.Visible = true
+                else
+                    Toggle.Visible = string.find(string.lower(text), searchText) ~= nil
+                end
+            end)
         end
         
         function tabcontent:Slider(text, min, max, start, callback)
@@ -826,6 +930,15 @@ function lib:Window(text, preset, closebind)
             )
 
             Tab.CanvasSize = UDim2.new(0, 0, 0, TabLayout.AbsoluteContentSize.Y)
+            
+            SearchBox:GetPropertyChangedSignal("Text"):Connect(function()
+                local searchText = string.lower(SearchBox.Text)
+                if searchText == "" then
+                    Slider.Visible = true
+                else
+                    Slider.Visible = string.find(string.lower(text), searchText) ~= nil
+                end
+            end)
         end
         
         function tabcontent:Dropdown(text, list, callback)
@@ -1034,6 +1147,15 @@ function lib:Window(text, preset, closebind)
 
             DropItemHolder.CanvasSize = UDim2.new(0, 0, 0, DropLayout.AbsoluteContentSize.Y)
             Tab.CanvasSize = UDim2.new(0, 0, 0, TabLayout.AbsoluteContentSize.Y)
+            
+            SearchBox:GetPropertyChangedSignal("Text"):Connect(function()
+                local searchText = string.lower(SearchBox.Text)
+                if searchText == "" then
+                    Dropdown.Visible = true
+                else
+                    Dropdown.Visible = string.find(string.lower(text), searchText) ~= nil
+                end
+            end)
         end
         
         function tabcontent:Colorpicker(text, preset, callback)
@@ -1501,6 +1623,15 @@ function lib:Window(text, preset, closebind)
             )
             
             Tab.CanvasSize = UDim2.new(0, 0, 0, TabLayout.AbsoluteContentSize.Y)
+            
+            SearchBox:GetPropertyChangedSignal("Text"):Connect(function()
+                local searchText = string.lower(SearchBox.Text)
+                if searchText == "" then
+                    Colorpicker.Visible = true
+                else
+                    Colorpicker.Visible = string.find(string.lower(text), searchText) ~= nil
+                end
+            end)
         end
         
         function tabcontent:Label(text)
@@ -1528,6 +1659,15 @@ function lib:Window(text, preset, closebind)
             LabelTitle.TextSize = 14.000
 
             Tab.CanvasSize = UDim2.new(0, 0, 0, TabLayout.AbsoluteContentSize.Y)
+            
+            SearchBox:GetPropertyChangedSignal("Text"):Connect(function()
+                local searchText = string.lower(SearchBox.Text)
+                if searchText == "" then
+                    Label.Visible = true
+                else
+                    Label.Visible = string.find(string.lower(text), searchText) ~= nil
+                end
+            end)
         end
         
         function tabcontent:Textbox(text, disapper, callback)
@@ -1593,6 +1733,15 @@ function lib:Window(text, preset, closebind)
                 end
             )
             Tab.CanvasSize = UDim2.new(0, 0, 0, TabLayout.AbsoluteContentSize.Y)
+            
+            SearchBox:GetPropertyChangedSignal("Text"):Connect(function()
+                local searchText = string.lower(SearchBox.Text)
+                if searchText == "" then
+                    Textbox.Visible = true
+                else
+                    Textbox.Visible = string.find(string.lower(text), searchText) ~= nil
+                end
+            end)
         end
         
         function tabcontent:Bind(text, keypreset, callback)
@@ -1666,6 +1815,15 @@ function lib:Window(text, preset, closebind)
                     end
                 end
             )
+            
+            SearchBox:GetPropertyChangedSignal("Text"):Connect(function()
+                local searchText = string.lower(SearchBox.Text)
+                if searchText == "" then
+                    Bind.Visible = true
+                else
+                    Bind.Visible = string.find(string.lower(text), searchText) ~= nil
+                end
+            end)
         end
         
         return tabcontent
