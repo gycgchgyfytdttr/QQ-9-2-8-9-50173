@@ -150,7 +150,7 @@ ToggleUI.MouseButton1Click:Connect(
     end
 )
 
-function lib:Window(text, preset, closebind, customTitle)
+function lib:Window(text, preset, closebind)
     CloseBind = closebind or Enum.KeyCode.RightControl
     PresetColor = preset or Color3.fromRGB(44, 120, 224)
     local fs = false
@@ -231,7 +231,7 @@ function lib:Window(text, preset, closebind, customTitle)
     Title.Position = UDim2.new(0.1, 0, 0.05, 0)
     Title.Size = UDim2.new(0, 110, 0, 25)
     Title.Font = Enum.Font.GothamBold
-    Title.Text = customTitle or text
+    Title.Text = text
     Title.TextColor3 = PresetColor
     Title.TextSize = 16.000
     Title.TextXAlignment = Enum.TextXAlignment.Left
