@@ -15,6 +15,33 @@ ui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 -- UI开关状态
 local uiEnabled = true
 
+-- 创建小UI按钮
+local miniUI = Instance.new("TextButton")
+miniUI.Name = "MiniUI"
+miniUI.Parent = ui
+miniUI.BackgroundColor3 = PresetColor
+miniUI.BackgroundTransparency = 0.2
+miniUI.Size = UDim2.new(0, 50, 0, 50)
+miniUI.Position = UDim2.new(0, 10, 0.5, -25)
+miniUI.AutoButtonColor = false
+miniUI.Text = ""
+miniUI.ZIndex = 10
+
+local miniUICorner = Instance.new("UICorner")
+miniUICorner.CornerRadius = UDim.new(0, 12)
+miniUICorner.Parent = miniUI
+
+local miniUIIcon = Instance.new("ImageLabel")
+miniUIIcon.Name = "MiniUIIcon"
+miniUIIcon.Parent = miniUI
+miniUIIcon.BackgroundTransparency = 1
+miniUIIcon.Size = UDim2.new(0, 30, 0, 30)
+miniUIIcon.Position = UDim2.new(0.5, -15, 0.5, -15)
+miniUIIcon.Image = "rbxassetid://3926305904"
+miniUIIcon.ImageColor3 = Color3.fromRGB(255, 255, 255)
+miniUIIcon.ImageRectOffset = Vector2.new(964, 324)
+miniUIIcon.ImageRectSize = Vector2.new(36, 36)
+
 coroutine.wrap(
     function()
         while wait() do
@@ -103,9 +130,6 @@ function lib:Window(text, preset, closebind)
     local SearchBoxCorner = Instance.new("UICorner")
     local SearchIcon = Instance.new("ImageLabel")
     local SearchTextBox = Instance.new("TextBox")
-    local UIToggle = Instance.new("TextButton")
-    local UIToggleCorner = Instance.new("UICorner")
-    local UIToggleTitle = Instance.new("TextLabel")
 
     Main.Name = "Main"
     Main.Parent = ui
@@ -115,7 +139,7 @@ function lib:Window(text, preset, closebind)
     Main.Position = UDim2.new(0.5, 0, 0.5, 0)
     Main.Size = UDim2.new(0, 0, 0, 0)
     Main.ClipsDescendants = true
-    Main.Visible = true
+    Main.Visible = false
 
     MainCorner.CornerRadius = UDim.new(0, 12)
     MainCorner.Name = "MainCorner"
@@ -125,7 +149,7 @@ function lib:Window(text, preset, closebind)
     TabHold.Parent = Main
     TabHold.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     TabHold.BackgroundTransparency = 1.000
-    TabHold.Position = UDim2.new(0.0339285731, 0, 0.2, 0)
+    TabHold.Position = UDim2.new(0.0339285731, 0, 0.15, 0)
     TabHold.Size = UDim2.new(0, 107, 0, 240)
 
     TabHoldLayout.Name = "TabHoldLayout"
@@ -145,11 +169,11 @@ function lib:Window(text, preset, closebind)
     Title.TextSize = 16.000
     Title.TextXAlignment = Enum.TextXAlignment.Left
 
-    -- 搜索框
+    -- 搜索框移动到标题下方
     SearchBox.Name = "SearchBox"
     SearchBox.Parent = Main
     SearchBox.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-    SearchBox.Position = UDim2.new(0.033, 0, 0.85, 0)
+    SearchBox.Position = UDim2.new(0.033, 0, 0.12, 0)
     SearchBox.Size = UDim2.new(0, 107, 0, 30)
 
     SearchBoxCorner.CornerRadius = UDim.new(0, 8)
@@ -181,39 +205,33 @@ function lib:Window(text, preset, closebind)
     SearchTextBox.TextSize = 12.000
     SearchTextBox.TextXAlignment = Enum.TextXAlignment.Left
 
-    -- UI开关
-    UIToggle.Name = "UIToggle"
-    UIToggle.Parent = Main
-    UIToggle.BackgroundColor3 = Color3.fromRGB(34, 34, 34)
-    UIToggle.Position = UDim2.new(0.75, 0, 0.05, 0)
-    UIToggle.Size = UDim2.new(0, 80, 0, 25)
-    UIToggle.AutoButtonColor = false
-    UIToggle.Font = Enum.Font.SourceSans
-    UIToggle.Text = ""
-    UIToggle.TextColor3 = Color3.fromRGB(0, 0, 0)
-    UIToggle.TextSize = 14.000
-
-    UIToggleCorner.CornerRadius = UDim.new(0, 6)
-    UIToggleCorner.Name = "UIToggleCorner"
-    UIToggleCorner.Parent = UIToggle
-
-    UIToggleTitle.Name = "UIToggleTitle"
-    UIToggleTitle.Parent = UIToggle
-    UIToggleTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    UIToggleTitle.BackgroundTransparency = 1.000
-    UIToggleTitle.Size = UDim2.new(0, 80, 0, 25)
-    UIToggleTitle.Font = Enum.Font.Gotham
-    UIToggleTitle.Text = "隐藏UI"
-    UIToggleTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
-    UIToggleTitle.TextSize = 12.000
-
     DragFrame.Name = "DragFrame"
     DragFrame.Parent = Main
     DragFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     DragFrame.BackgroundTransparency = 1.000
     DragFrame.Size = UDim2.new(0, 560, 0, 41)
 
-    Main:TweenSize(UDim2.new(0, 560, 0, 350), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, .6, true)
+    -- 小UI按钮点击事件
+    miniUI.MouseButton1Click:Connect(function()
+        if Main.Visible then
+            Main.Visible = false
+            TweenService:Create(
+                miniUI,
+                TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                {BackgroundTransparency = 0.2}
+            ):Play()
+        else
+            Main.Visible = true
+            if Main.Size == UDim2.new(0, 0, 0, 0) then
+                Main:TweenSize(UDim2.new(0, 560, 0, 350), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, .6, true)
+            end
+            TweenService:Create(
+                miniUI,
+                TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                {BackgroundTransparency = 0}
+            ):Play()
+        end
+    end)
 
     MakeDraggable(DragFrame, Main)
 
@@ -223,61 +241,31 @@ function lib:Window(text, preset, closebind)
             if io.KeyCode == CloseBind then
                 if uitoggled == false then
                     uitoggled = true
-                
-                    Main:TweenSize(
-                        UDim2.new(0, 0, 0, 0), 
-                        Enum.EasingDirection.Out, 
-                        Enum.EasingStyle.Quart, 
-                        .6, 
-                        true, 
-                        function()
-                            ui.Enabled = false
-                        end
-                    )
-                    
+                    Main.Visible = false
+                    TweenService:Create(
+                        miniUI,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {BackgroundTransparency = 0.2}
+                    ):Play()
                 else
                     uitoggled = false
-                    ui.Enabled = true
-                
-                    Main:TweenSize(
-                        UDim2.new(0, 560, 0, 350),
-                        Enum.EasingDirection.Out,
-                        Enum.EasingStyle.Quart,
-                        .6,
-                        true
-                    )
+                    Main.Visible = true
+                    TweenService:Create(
+                        miniUI,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {BackgroundTransparency = 0}
+                    ):Play()
                 end
             end
         end
     )
-
-    -- UI开关功能
-    UIToggle.MouseButton1Click:Connect(function()
-        uiEnabled = not uiEnabled
-        if uiEnabled then
-            Main.Visible = true
-            UIToggleTitle.Text = "隐藏UI"
-            TweenService:Create(
-                UIToggle,
-                TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-                {BackgroundColor3 = Color3.fromRGB(34, 34, 34)}
-            ):Play()
-        else
-            Main.Visible = false
-            UIToggleTitle.Text = "显示UI"
-            TweenService:Create(
-                UIToggle,
-                TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-                {BackgroundColor3 = PresetColor}
-            ):Play()
-        end
-    end)
 
     TabFolder.Name = "TabFolder"
     TabFolder.Parent = Main
 
     function lib:ChangePresetColor(toch)
         PresetColor = toch
+        miniUI.BackgroundColor3 = toch
     end
 
     function lib:Notification(texttitle, textdesc, textbtn)
@@ -582,7 +570,8 @@ function lib:Window(text, preset, closebind)
                         local title = v:FindFirstChild("ButtonTitle") or v:FindFirstChild("ToggleTitle") or 
                                     v:FindFirstChild("SliderTitle") or v:FindFirstChild("DropdownTitle") or
                                     v:FindFirstChild("ColorpickerTitle") or v:FindFirstChild("TextboxTitle") or
-                                    v:FindFirstChild("BindTitle")
+                                    v:FindFirstChild("BindTitle") or v:FindFirstChild("CardTitle") or
+                                    v:FindFirstChild("ProgressTitle") or v:FindFirstChild("LabelTitle")
                         if title and string.find(string.lower(title.Text), string.lower(searchText)) then
                             v.Visible = true
                         else
@@ -599,6 +588,183 @@ function lib:Window(text, preset, closebind)
         end)
 
         local tabcontent = {}
+        
+        -- 新增：菜单列表功能
+        function tabcontent:MenuList(text, menuitems, callback)
+            local MenuList = Instance.new("TextButton")
+            local MenuListCorner = Instance.new("UICorner")
+            local MenuListTitle = Instance.new("TextLabel")
+            local MenuListArrow = Instance.new("ImageLabel")
+            local MenuListFrame = Instance.new("Frame")
+            local MenuListFrameCorner = Instance.new("UICorner")
+            local MenuListLayout = Instance.new("UIListLayout")
+            local MenuListPadding = Instance.new("UIPadding")
+
+            MenuList.Name = "MenuList"
+            MenuList.Parent = Tab
+            MenuList.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+            MenuList.Size = UDim2.new(0, 357, 0, 40)
+            MenuList.AutoButtonColor = false
+            MenuList.Font = Enum.Font.SourceSans
+            MenuList.Text = ""
+            MenuList.TextColor3 = Color3.fromRGB(0, 0, 0)
+            MenuList.TextSize = 14.000
+
+            MenuListCorner.CornerRadius = UDim.new(0, 8)
+            MenuListCorner.Name = "MenuListCorner"
+            MenuListCorner.Parent = MenuList
+
+            MenuListTitle.Name = "MenuListTitle"
+            MenuListTitle.Parent = MenuList
+            MenuListTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+            MenuListTitle.BackgroundTransparency = 1.000
+            MenuListTitle.Position = UDim2.new(0.035, 0, 0, 0)
+            MenuListTitle.Size = UDim2.new(0, 300, 0, 40)
+            MenuListTitle.Font = Enum.Font.Gotham
+            MenuListTitle.Text = text
+            MenuListTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+            MenuListTitle.TextSize = 14.000
+            MenuListTitle.TextXAlignment = Enum.TextXAlignment.Left
+
+            MenuListArrow.Name = "MenuListArrow"
+            MenuListArrow.Parent = MenuList
+            MenuListArrow.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+            MenuListArrow.BackgroundTransparency = 1.000
+            MenuListArrow.Position = UDim2.new(0.9, 0, 0.25, 0)
+            MenuListArrow.Size = UDim2.new(0, 20, 0, 20)
+            MenuListArrow.Image = "rbxassetid://6031091004"
+            MenuListArrow.ImageColor3 = Color3.fromRGB(200, 200, 200)
+
+            MenuListFrame.Name = "MenuListFrame"
+            MenuListFrame.Parent = MenuList
+            MenuListFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+            MenuListFrame.BorderSizePixel = 0
+            MenuListFrame.Position = UDim2.new(0, 0, 1, 5)
+            MenuListFrame.Size = UDim2.new(0, 357, 0, 0)
+            MenuListFrame.ClipsDescendants = true
+            MenuListFrame.Visible = false
+
+            MenuListFrameCorner.CornerRadius = UDim.new(0, 8)
+            MenuListFrameCorner.Name = "MenuListFrameCorner"
+            MenuListFrameCorner.Parent = MenuListFrame
+
+            MenuListLayout.Name = "MenuListLayout"
+            MenuListLayout.Parent = MenuListFrame
+            MenuListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+            MenuListLayout.Padding = UDim.new(0, 5)
+
+            MenuListPadding.Name = "MenuListPadding"
+            MenuListPadding.Parent = MenuListFrame
+            MenuListPadding.PaddingLeft = UDim.new(0, 5)
+            MenuListPadding.PaddingTop = UDim.new(0, 5)
+
+            local menutoggled = false
+            local framesize = 0
+
+            for i, item in pairs(menuitems) do
+                framesize = framesize + 35
+                local MenuItem = Instance.new("TextButton")
+                local MenuItemCorner = Instance.new("UICorner")
+                local MenuItemTitle = Instance.new("TextLabel")
+
+                MenuItem.Name = "MenuItem"
+                MenuItem.Parent = MenuListFrame
+                MenuItem.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+                MenuItem.Size = UDim2.new(0, 347, 0, 30)
+                MenuItem.AutoButtonColor = false
+                MenuItem.Font = Enum.Font.SourceSans
+                MenuItem.Text = ""
+                MenuItem.TextColor3 = Color3.fromRGB(0, 0, 0)
+                MenuItem.TextSize = 14.000
+
+                MenuItemCorner.CornerRadius = UDim.new(0, 6)
+                MenuItemCorner.Name = "MenuItemCorner"
+                MenuItemCorner.Parent = MenuItem
+
+                MenuItemTitle.Name = "MenuItemTitle"
+                MenuItemTitle.Parent = MenuItem
+                MenuItemTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                MenuItemTitle.BackgroundTransparency = 1.000
+                MenuItemTitle.Size = UDim2.new(0, 347, 0, 30)
+                MenuItemTitle.Font = Enum.Font.Gotham
+                MenuItemTitle.Text = item
+                MenuItemTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+                MenuItemTitle.TextSize = 13.000
+
+                MenuItem.MouseEnter:Connect(function()
+                    TweenService:Create(
+                        MenuItem,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {BackgroundColor3 = Color3.fromRGB(55, 55, 55)}
+                    ):Play()
+                end)
+
+                MenuItem.MouseLeave:Connect(function()
+                    TweenService:Create(
+                        MenuItem,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {BackgroundColor3 = Color3.fromRGB(50, 50, 50)}
+                    ):Play()
+                end)
+
+                MenuItem.MouseButton1Click:Connect(function()
+                    pcall(callback, item)
+                    menutoggled = false
+                    MenuListFrame:TweenSize(
+                        UDim2.new(0, 357, 0, 0),
+                        Enum.EasingDirection.Out,
+                        Enum.EasingStyle.Quart,
+                        .2,
+                        true
+                    )
+                    TweenService:Create(
+                        MenuListArrow,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {Rotation = 0}
+                    ):Play()
+                    wait(.2)
+                    MenuListFrame.Visible = false
+                end)
+            end
+
+            MenuList.MouseButton1Click:Connect(function()
+                if menutoggled == false then
+                    menutoggled = true
+                    MenuListFrame.Visible = true
+                    MenuListFrame:TweenSize(
+                        UDim2.new(0, 357, 0, framesize),
+                        Enum.EasingDirection.Out,
+                        Enum.EasingStyle.Quart,
+                        .2,
+                        true
+                    )
+                    TweenService:Create(
+                        MenuListArrow,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {Rotation = 180}
+                    ):Play()
+                else
+                    menutoggled = false
+                    MenuListFrame:TweenSize(
+                        UDim2.new(0, 357, 0, 0),
+                        Enum.EasingDirection.Out,
+                        Enum.EasingStyle.Quart,
+                        .2,
+                        true
+                    )
+                    TweenService:Create(
+                        MenuListArrow,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {Rotation = 0}
+                    ):Play()
+                    wait(.2)
+                    MenuListFrame.Visible = false
+                end
+            end)
+
+            Tab.CanvasSize = UDim2.new(0, 0, 0, TabLayout.AbsoluteContentSize.Y)
+        end
+
         function tabcontent:Button(text, callback)
             local Button = Instance.new("TextButton")
             local ButtonCorner = Instance.new("UICorner")
@@ -907,7 +1073,6 @@ function lib:Window(text, preset, closebind)
                 pcall(callback, value)
             end
             
-            -- 手机版触摸支持
             SlideCircle.InputBegan:Connect(
                 function(input)
                     if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
@@ -1231,7 +1396,6 @@ function lib:Window(text, preset, closebind)
             ColorpickerBtn.TextColor3 = Color3.fromRGB(0, 0, 0)
             ColorpickerBtn.TextSize = 14.000
 
-            -- 颜色选择区域
             ColorFrame.Name = "ColorFrame"
             ColorFrame.Parent = Colorpicker
             ColorFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
@@ -1688,7 +1852,6 @@ function lib:Window(text, preset, closebind)
             )
         end
 
-        -- 新增：卡片式布局
         function tabcontent:Card(title, description, callback)
             local Card = Instance.new("TextButton")
             local CardCorner = Instance.new("UICorner")
@@ -1786,7 +1949,6 @@ function lib:Window(text, preset, closebind)
             Tab.CanvasSize = UDim2.new(0, 0, 0, TabLayout.AbsoluteContentSize.Y)
         end
 
-        -- 新增：进度条
         function tabcontent:Progress(text, current, max, callback)
             local Progress = Instance.new("Frame")
             local ProgressCorner = Instance.new("UICorner")
@@ -1859,6 +2021,119 @@ function lib:Window(text, preset, closebind)
                 end
             )()
 
+            Tab.CanvasSize = UDim2.new(0, 0, 0, TabLayout.AbsoluteContentSize.Y)
+        end
+
+        -- 新增：分隔线
+        function tabcontent:Separator(text)
+            local Separator = Instance.new("Frame")
+            local SeparatorCorner = Instance.new("UICorner")
+            local SeparatorTitle = Instance.new("TextLabel")
+            local SeparatorLine1 = Instance.new("Frame")
+            local SeparatorLine2 = Instance.new("Frame")
+
+            Separator.Name = "Separator"
+            Separator.Parent = Tab
+            Separator.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+            Separator.Size = UDim2.new(0, 357, 0, 30)
+
+            SeparatorCorner.CornerRadius = UDim.new(0, 8)
+            SeparatorCorner.Name = "SeparatorCorner"
+            SeparatorCorner.Parent = Separator
+
+            SeparatorTitle.Name = "SeparatorTitle"
+            SeparatorTitle.Parent = Separator
+            SeparatorTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+            SeparatorTitle.BackgroundTransparency = 1.000
+            SeparatorTitle.Size = UDim2.new(0, 357, 0, 30)
+            SeparatorTitle.Font = Enum.Font.Gotham
+            SeparatorTitle.Text = text
+            SeparatorTitle.TextColor3 = Color3.fromRGB(150, 150, 150)
+            SeparatorTitle.TextSize = 12.000
+
+            SeparatorLine1.Name = "SeparatorLine1"
+            SeparatorLine1.Parent = Separator
+            SeparatorLine1.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+            SeparatorLine1.BorderSizePixel = 0
+            SeparatorLine1.Position = UDim2.new(0.05, 0, 0.5, 0)
+            SeparatorLine1.Size = UDim2.new(0, 100, 0, 1)
+
+            SeparatorLine2.Name = "SeparatorLine2"
+            SeparatorLine2.Parent = Separator
+            SeparatorLine2.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+            SeparatorLine2.BorderSizePixel = 0
+            SeparatorLine2.Position = UDim2.new(0.72, 0, 0.5, 0)
+            SeparatorLine2.Size = UDim2.new(0, 100, 0, 1)
+
+            Tab.CanvasSize = UDim2.new(0, 0, 0, TabLayout.AbsoluteContentSize.Y)
+        end
+
+        -- 新增：多行文本框
+        function tabcontent:MultilineTextbox(text, placeholder, callback)
+            local MultilineTextbox = Instance.new("Frame")
+            local MultilineTextboxCorner = Instance.new("UICorner")
+            local MultilineTextboxTitle = Instance.new("TextLabel")
+            local TextboxFrame = Instance.new("Frame")
+            local TextboxFrameCorner = Instance.new("UICorner")
+            local TextBox = Instance.new("TextBox")
+
+            MultilineTextbox.Name = "MultilineTextbox"
+            MultilineTextbox.Parent = Tab
+            MultilineTextbox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+            MultilineTextbox.ClipsDescendants = true
+            MultilineTextbox.Size = UDim2.new(0, 357, 0, 100)
+
+            MultilineTextboxCorner.CornerRadius = UDim.new(0, 8)
+            MultilineTextboxCorner.Name = "MultilineTextboxCorner"
+            MultilineTextboxCorner.Parent = MultilineTextbox
+
+            MultilineTextboxTitle.Name = "MultilineTextboxTitle"
+            MultilineTextboxTitle.Parent = MultilineTextbox
+            MultilineTextboxTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+            MultilineTextboxTitle.BackgroundTransparency = 1.000
+            MultilineTextboxTitle.Position = UDim2.new(0.035, 0, 0, 0)
+            MultilineTextboxTitle.Size = UDim2.new(0, 150, 0, 25)
+            MultilineTextboxTitle.Font = Enum.Font.Gotham
+            MultilineTextboxTitle.Text = text
+            MultilineTextboxTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+            MultilineTextboxTitle.TextSize = 14.000
+            MultilineTextboxTitle.TextXAlignment = Enum.TextXAlignment.Left
+
+            TextboxFrame.Name = "TextboxFrame"
+            TextboxFrame.Parent = MultilineTextbox
+            TextboxFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+            TextboxFrame.Position = UDim2.new(0.035, 0, 0.3, 0)
+            TextboxFrame.Size = UDim2.new(0, 330, 0, 65)
+
+            TextboxFrameCorner.CornerRadius = UDim.new(0, 6)
+            TextboxFrameCorner.Name = "TextboxFrameCorner"
+            TextboxFrameCorner.Parent = TextboxFrame
+
+            TextBox.Parent = TextboxFrame
+            TextBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+            TextBox.BackgroundTransparency = 1.000
+            TextBox.Size = UDim2.new(0, 330, 0, 65)
+            TextBox.Font = Enum.Font.Gotham
+            TextBox.PlaceholderColor3 = Color3.fromRGB(150, 150, 150)
+            TextBox.PlaceholderText = placeholder or "输入多行文本..."
+            TextBox.Text = ""
+            TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+            TextBox.TextSize = 12.000
+            TextBox.TextXAlignment = Enum.TextXAlignment.Left
+            TextBox.TextYAlignment = Enum.TextYAlignment.Top
+            TextBox.TextWrapped = true
+            TextBox.ClearTextOnFocus = false
+            TextBox.MultiLine = true
+
+            TextBox.FocusLost:Connect(
+                function(ep)
+                    if ep then
+                        if #TextBox.Text > 0 then
+                            pcall(callback, TextBox.Text)
+                        end
+                    end
+                end
+            )
             Tab.CanvasSize = UDim2.new(0, 0, 0, TabLayout.AbsoluteContentSize.Y)
         end
 
