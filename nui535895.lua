@@ -115,15 +115,84 @@ end
 
 MakeDraggable(miniUI, miniUI)
 
-function lib:Window(text, preset, closebind)
+-- 添加右下角调整大小功能
+local function MakeResizable(frame, minSize, maxSize)
+    local resizing = false
+    local startPos = nil
+    local startSize = nil
+    
+    local resizeHandle = Instance.new("Frame")
+    resizeHandle.Name = "ResizeHandle"
+    resizeHandle.Parent = frame
+    resizeHandle.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    resizeHandle.BackgroundTransparency = 0.8
+    resizeHandle.Size = UDim2.new(0, 15, 0, 15)
+    resizeHandle.Position = UDim2.new(1, -15, 1, -15)
+    resizeHandle.ZIndex = 10
+    
+    local resizeCorner = Instance.new("UICorner")
+    resizeCorner.CornerRadius = UDim.new(0, 4)
+    resizeCorner.Parent = resizeHandle
+    
+    resizeHandle.InputBegan:Connect(
+        function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                resizing = true
+                startPos = input.Position
+                startSize = frame.Size
+                
+                input.Changed:Connect(
+                    function()
+                        if input.UserInputState == Enum.UserInputState.End then
+                            resizing = false
+                        end
+                    end
+                )
+            end
+        end
+    )
+    
+    UserInputService.InputChanged:Connect(
+        function(input)
+            if resizing and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+                local delta = input.Position - startPos
+                local newSize = UDim2.new(
+                    startSize.X.Scale,
+                    math.clamp(startSize.X.Offset + delta.X, minSize.X.Offset, maxSize.X.Offset),
+                    startSize.Y.Scale,
+                    math.clamp(startSize.Y.Offset + delta.Y, minSize.Y.Offset, maxSize.Y.Offset)
+                )
+                frame.Size = newSize
+            end
+        end
+    )
+end
+
+function lib:Window(text, subtitle, preset, closebind, settings)
+    settings = settings or {}
     CloseBind = closebind or Enum.KeyCode.RightControl
     PresetColor = preset or Color3.fromRGB(44, 120, 224)
     fs = false
+    
+    -- 自定义图标设置
+    local iconSettings = settings.icons or {}
+    local buttonIcon = iconSettings.button or "rbxassetid://3926305904"
+    local toggleIcon = iconSettings.toggle or "rbxassetid://3926305904"
+    local sliderIcon = iconSettings.slider or "rbxassetid://3926305904"
+    local dropdownIcon = iconSettings.dropdown or "rbxassetid://3926305904"
+    local colorpickerIcon = iconSettings.colorpicker or "rbxassetid://3926305904"
+    local textboxIcon = iconSettings.textbox or "rbxassetid://3926305904"
+    local bindIcon = iconSettings.bind or "rbxassetid://3926305904"
+    local labelIcon = iconSettings.label or "rbxassetid://3926305904"
+    local cardIcon = iconSettings.card or "rbxassetid://3926305904"
+    local progressIcon = iconSettings.progress or "rbxassetid://3926305904"
+    
     local Main = Instance.new("Frame")
     local MainCorner = Instance.new("UICorner")
     local TabHold = Instance.new("Frame")
     local TabHoldLayout = Instance.new("UIListLayout")
     local Title = Instance.new("TextLabel")
+    local Subtitle = Instance.new("TextLabel") -- 新增小标题
     local TabFolder = Instance.new("Folder")
     local DragFrame = Instance.new("Frame")
     local SearchBox = Instance.new("Frame")
@@ -153,7 +222,7 @@ function lib:Window(text, preset, closebind)
     TabHold.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     TabHold.BackgroundTransparency = 1.000
     TabHold.Position = UDim2.new(0.0339285731, 0, 0.25, 0)
-    TabHold.Size = UDim2.new(0, 130, 0, 300)
+    TabHold.Size = UDim2.new(0, 130, 0, 350) -- 增加高度以显示更多功能
 
     TabHoldLayout.Name = "TabHoldLayout"
     TabHoldLayout.Parent = TabHold
@@ -164,13 +233,26 @@ function lib:Window(text, preset, closebind)
     Title.Parent = Main
     Title.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     Title.BackgroundTransparency = 1.000
-    Title.Position = UDim2.new(0.0339285731, 0, 0.0564263314, 0)
+    Title.Position = UDim2.new(0.0339285731, 0, 0.03, 0) -- 调整位置
     Title.Size = UDim2.new(0, 250, 0, 28)
     Title.Font = Enum.Font.GothamSemibold
     Title.Text = text
     Title.TextColor3 = PresetColor
     Title.TextSize = 18.000
     Title.TextXAlignment = Enum.TextXAlignment.Left
+
+    -- 新增小标题
+    Subtitle.Name = "Subtitle"
+    Subtitle.Parent = Main
+    Subtitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    Subtitle.BackgroundTransparency = 1.000
+    Subtitle.Position = UDim2.new(0.0339285731, 0, 0.08, 0)
+    Subtitle.Size = UDim2.new(0, 250, 0, 20)
+    Subtitle.Font = Enum.Font.Gotham
+    Subtitle.Text = subtitle or ""
+    Subtitle.TextColor3 = Color3.fromRGB(150, 150, 150)
+    Subtitle.TextSize = 14.000
+    Subtitle.TextXAlignment = Enum.TextXAlignment.Left
 
     SearchBox.Name = "SearchBox"
     SearchBox.Parent = Main
@@ -211,7 +293,7 @@ function lib:Window(text, preset, closebind)
     FunctionArea.Parent = Main
     FunctionArea.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
     FunctionArea.Position = UDim2.new(0.033, 0, 0.22, 0)
-    FunctionArea.Size = UDim2.new(0, 130, 0, 30)
+    FunctionArea.Size = UDim2.new(0, 130, 0, 40) -- 增加高度
     FunctionArea.Visible = false
 
     FunctionAreaCorner.CornerRadius = UDim.new(0, 8)
@@ -222,7 +304,7 @@ function lib:Window(text, preset, closebind)
     FunctionAreaTitle.Parent = FunctionArea
     FunctionAreaTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     FunctionAreaTitle.BackgroundTransparency = 1.000
-    FunctionAreaTitle.Size = UDim2.new(0, 130, 0, 30)
+    FunctionAreaTitle.Size = UDim2.new(0, 130, 0, 40)
     FunctionAreaTitle.Font = Enum.Font.Gotham
     FunctionAreaTitle.Text = "功能区域"
     FunctionAreaTitle.TextColor3 = Color3.fromRGB(200, 200, 200)
@@ -245,7 +327,7 @@ function lib:Window(text, preset, closebind)
         else
             Main.Visible = true
             if Main.Size == UDim2.new(0, 0, 0, 0) then
-                Main:TweenSize(UDim2.new(0, 680, 0, 420), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, .6, true)
+                Main:TweenSize(UDim2.new(0, 680, 0, 450), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, .6, true) -- 增加高度
             end
             TweenService:Create(
                 miniUI,
@@ -256,6 +338,9 @@ function lib:Window(text, preset, closebind)
     end)
 
     MakeDraggable(DragFrame, Main)
+    
+    -- 添加调整大小功能
+    MakeResizable(Main, UDim2.new(0, 500, 0, 350), UDim2.new(0, 1000, 0, 800))
 
     local uitoggled = false
     UserInputService.InputBegan:Connect(
@@ -496,7 +581,7 @@ function lib:Window(text, preset, closebind)
         Tab.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
         Tab.BorderSizePixel = 0
         Tab.Position = UDim2.new(0.25, 0, 0.147, 0)
-        Tab.Size = UDim2.new(0, 480, 0, 300)
+        Tab.Size = UDim2.new(0, 480, 0, 320) -- 增加高度
         Tab.CanvasSize = UDim2.new(0, 0, 0, 0)
         Tab.ScrollBarThickness = 4
         Tab.Visible = false
@@ -809,7 +894,7 @@ function lib:Window(text, preset, closebind)
             ButtonIcon.BackgroundTransparency = 1.000
             ButtonIcon.Position = UDim2.new(0.03, 0, 0.2, 0)
             ButtonIcon.Size = UDim2.new(0, 25, 0, 25)
-            ButtonIcon.Image = "rbxassetid://3926305904"
+            ButtonIcon.Image = buttonIcon -- 使用自定义图标
             ButtonIcon.ImageColor3 = PresetColor
             ButtonIcon.ImageRectOffset = Vector2.new(964, 324)
             ButtonIcon.ImageRectSize = Vector2.new(36, 36)
@@ -898,7 +983,7 @@ function lib:Window(text, preset, closebind)
             ToggleIcon.BackgroundTransparency = 1.000
             ToggleIcon.Position = UDim2.new(0.03, 0, 0.2, 0)
             ToggleIcon.Size = UDim2.new(0, 25, 0, 25)
-            ToggleIcon.Image = "rbxassetid://3926305904"
+            ToggleIcon.Image = toggleIcon -- 使用自定义图标
             ToggleIcon.ImageColor3 = Color3.fromRGB(200, 200, 200)
             ToggleIcon.ImageRectOffset = Vector2.new(964, 204)
             ToggleIcon.ImageRectSize = Vector2.new(36, 36)
@@ -1039,7 +1124,7 @@ function lib:Window(text, preset, closebind)
             SliderIcon.BackgroundTransparency = 1.000
             SliderIcon.Position = UDim2.new(0.03, 0, 0.15, 0)
             SliderIcon.Size = UDim2.new(0, 25, 0, 25)
-            SliderIcon.Image = "rbxassetid://3926305904"
+            SliderIcon.Image = sliderIcon -- 使用自定义图标
             SliderIcon.ImageColor3 = Color3.fromRGB(200, 200, 200)
             SliderIcon.ImageRectOffset = Vector2.new(644, 204)
             SliderIcon.ImageRectSize = Vector2.new(36, 36)
@@ -1198,7 +1283,7 @@ function lib:Window(text, preset, closebind)
             DropdownIcon.BackgroundTransparency = 1.000
             DropdownIcon.Position = UDim2.new(0.03, 0, 0.2, 0)
             DropdownIcon.Size = UDim2.new(0, 25, 0, 25)
-            DropdownIcon.Image = "rbxassetid://3926305904"
+            DropdownIcon.Image = dropdownIcon -- 使用自定义图标
             DropdownIcon.ImageColor3 = Color3.fromRGB(200, 200, 200)
             DropdownIcon.ImageRectOffset = Vector2.new(164, 364)
             DropdownIcon.ImageRectSize = Vector2.new(36, 36)
@@ -1440,7 +1525,7 @@ function lib:Window(text, preset, closebind)
             ColorpickerIcon.BackgroundTransparency = 1.000
             ColorpickerIcon.Position = UDim2.new(0.03, 0, 0.2, 0)
             ColorpickerIcon.Size = UDim2.new(0, 25, 0, 25)
-            ColorpickerIcon.Image = "rbxassetid://3926305904"
+            ColorpickerIcon.Image = colorpickerIcon -- 使用自定义图标
             ColorpickerIcon.ImageColor3 = preset or Color3.fromRGB(255, 0, 4)
             ColorpickerIcon.ImageRectOffset = Vector2.new(844, 164)
             ColorpickerIcon.ImageRectSize = Vector2.new(36, 36)
@@ -1786,7 +1871,7 @@ function lib:Window(text, preset, closebind)
             LabelIcon.BackgroundTransparency = 1.000
             LabelIcon.Position = UDim2.new(0.03, 0, 0.15, 0)
             LabelIcon.Size = UDim2.new(0, 25, 0, 25)
-            LabelIcon.Image = "rbxassetid://3926305904"
+            LabelIcon.Image = labelIcon -- 使用自定义图标
             LabelIcon.ImageColor3 = Color3.fromRGB(200, 200, 200)
             LabelIcon.ImageRectOffset = Vector2.new(964, 444)
             LabelIcon.ImageRectSize = Vector2.new(36, 36)
@@ -1831,7 +1916,7 @@ function lib:Window(text, preset, closebind)
             TextboxIcon.BackgroundTransparency = 1.000
             TextboxIcon.Position = UDim2.new(0.03, 0, 0.2, 0)
             TextboxIcon.Size = UDim2.new(0, 25, 0, 25)
-            TextboxIcon.Image = "rbxassetid://3926305904"
+            TextboxIcon.Image = textboxIcon -- 使用自定义图标
             TextboxIcon.ImageColor3 = Color3.fromRGB(200, 200, 200)
             TextboxIcon.ImageRectOffset = Vector2.new(124, 204)
             TextboxIcon.ImageRectSize = Vector2.new(36, 36)
@@ -1913,7 +1998,7 @@ function lib:Window(text, preset, closebind)
             BindIcon.BackgroundTransparency = 1.000
             BindIcon.Position = UDim2.new(0.03, 0, 0.2, 0)
             BindIcon.Size = UDim2.new(0, 25, 0, 25)
-            BindIcon.Image = "rbxassetid://3926305904"
+            BindIcon.Image = bindIcon -- 使用自定义图标
             BindIcon.ImageColor3 = Color3.fromRGB(200, 200, 200)
             BindIcon.ImageRectOffset = Vector2.new(804, 444)
             BindIcon.ImageRectSize = Vector2.new(36, 36)
@@ -2000,7 +2085,7 @@ function lib:Window(text, preset, closebind)
             CardIcon.BackgroundTransparency = 1.000
             CardIcon.Position = UDim2.new(0.05, 0, 0.2, 0)
             CardIcon.Size = UDim2.new(0, 45, 0, 45)
-            CardIcon.Image = "rbxassetid://3926305904"
+            CardIcon.Image = cardIcon -- 使用自定义图标
             CardIcon.ImageColor3 = PresetColor
             CardIcon.ImageRectOffset = Vector2.new(964, 324)
             CardIcon.ImageRectSize = Vector2.new(36, 36)
@@ -2096,7 +2181,7 @@ function lib:Window(text, preset, closebind)
             ProgressIcon.BackgroundTransparency = 1.000
             ProgressIcon.Position = UDim2.new(0.03, 0, 0.15, 0)
             ProgressIcon.Size = UDim2.new(0, 25, 0, 25)
-            ProgressIcon.Image = "rbxassetid://3926305904"
+            ProgressIcon.Image = progressIcon -- 使用自定义图标
             ProgressIcon.ImageColor3 = Color3.fromRGB(200, 200, 200)
             ProgressIcon.ImageRectOffset = Vector2.new(644, 364)
             ProgressIcon.ImageRectSize = Vector2.new(36, 36)
@@ -2225,7 +2310,7 @@ function lib:Window(text, preset, closebind)
             MultilineIcon.BackgroundTransparency = 1.000
             MultilineIcon.Position = UDim2.new(0.03, 0, 0.1, 0)
             MultilineIcon.Size = UDim2.new(0, 25, 0, 25)
-            MultilineIcon.Image = "rbxassetid://3926305904"
+            MultilineIcon.Image = textboxIcon -- 使用自定义图标
             MultilineIcon.ImageColor3 = Color3.fromRGB(200, 200, 200)
             MultilineIcon.ImageRectOffset = Vector2.new(124, 204)
             MultilineIcon.ImageRectSize = Vector2.new(36, 36)
@@ -2309,7 +2394,7 @@ function lib:Window(text, preset, closebind)
             KeybindIcon.BackgroundTransparency = 1.000
             KeybindIcon.Position = UDim2.new(0.03, 0, 0.2, 0)
             KeybindIcon.Size = UDim2.new(0, 25, 0, 25)
-            KeybindIcon.Image = "rbxassetid://3926305904"
+            KeybindIcon.Image = bindIcon -- 使用自定义图标
             KeybindIcon.ImageColor3 = Color3.fromRGB(200, 200, 200)
             KeybindIcon.ImageRectOffset = Vector2.new(804, 444)
             KeybindIcon.ImageRectSize = Vector2.new(36, 36)
@@ -2394,7 +2479,7 @@ function lib:Window(text, preset, closebind)
             InputIcon.BackgroundTransparency = 1.000
             InputIcon.Position = UDim2.new(0.03, 0, 0.2, 0)
             InputIcon.Size = UDim2.new(0, 25, 0, 25)
-            InputIcon.Image = "rbxassetid://3926305904"
+            InputIcon.Image = textboxIcon -- 使用自定义图标
             InputIcon.ImageColor3 = Color3.fromRGB(200, 200, 200)
             InputIcon.ImageRectOffset = Vector2.new(124, 204)
             InputIcon.ImageRectSize = Vector2.new(36, 36)
@@ -2469,7 +2554,7 @@ function lib:Window(text, preset, closebind)
             ListIcon.BackgroundTransparency = 1.000
             ListIcon.Position = UDim2.new(0.03, 0, 0.05, 0)
             ListIcon.Size = UDim2.new(0, 25, 0, 25)
-            ListIcon.Image = "rbxassetid://3926305904"
+            ListIcon.Image = dropdownIcon -- 使用自定义图标
             ListIcon.ImageColor3 = Color3.fromRGB(200, 200, 200)
             ListIcon.ImageRectOffset = Vector2.new(164, 364)
             ListIcon.ImageRectSize = Vector2.new(36, 36)
@@ -2585,7 +2670,7 @@ function lib:Window(text, preset, closebind)
             InfoIcon.BackgroundTransparency = 1.000
             InfoIcon.Position = UDim2.new(0.03, 0, 0.2, 0)
             InfoIcon.Size = UDim2.new(0, 25, 0, 25)
-            InfoIcon.Image = "rbxassetid://3926305904"
+            InfoIcon.Image = labelIcon -- 使用自定义图标
             InfoIcon.ImageColor3 = Color3.fromRGB(100, 150, 255)
             InfoIcon.ImageRectOffset = Vector2.new(324, 524)
             InfoIcon.ImageRectSize = Vector2.new(36, 36)
