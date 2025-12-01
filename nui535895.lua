@@ -8,11 +8,36 @@ local PresetColor = Color3.fromRGB(44, 120, 224)
 local CloseBind = Enum.KeyCode.RightControl
 
 local ui = Instance.new("ScreenGui")
-ui.Name = "ui"
+ui.Name = "ModernUI"
 ui.Parent = game.CoreGui
 ui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 local uiEnabled = true
+
+-- 创建右下角缩放控制
+local ResizeHandle = Instance.new("Frame")
+ResizeHandle.Name = "ResizeHandle"
+ResizeHandle.Parent = ui
+ResizeHandle.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+ResizeHandle.BackgroundTransparency = 0.7
+ResizeHandle.Size = UDim2.new(0, 20, 0, 20)
+ResizeHandle.Position = UDim2.new(1, -25, 1, -25)
+ResizeHandle.BorderSizePixel = 0
+
+local ResizeCorner = Instance.new("UICorner")
+ResizeCorner.CornerRadius = UDim.new(0, 6)
+ResizeCorner.Parent = ResizeHandle
+
+local ResizeIcon = Instance.new("ImageLabel")
+ResizeIcon.Name = "ResizeIcon"
+ResizeIcon.Parent = ResizeHandle
+ResizeIcon.BackgroundTransparency = 1
+ResizeIcon.Size = UDim2.new(0, 12, 0, 12)
+ResizeIcon.Position = UDim2.new(0.5, -6, 0.5, -6)
+ResizeIcon.Image = "rbxassetid://3926305904"
+ResizeIcon.ImageColor3 = Color3.fromRGB(200, 200, 200)
+ResizeIcon.ImageRectOffset = Vector2.new(84, 204)
+ResizeIcon.ImageRectSize = Vector2.new(36, 36)
 
 local miniUI = Instance.new("TextButton")
 miniUI.Name = "MiniUI"
@@ -115,84 +140,58 @@ end
 
 MakeDraggable(miniUI, miniUI)
 
--- 添加右下角调整大小功能
-local function MakeResizable(frame, minSize, maxSize)
-    local resizing = false
-    local startPos = nil
-    local startSize = nil
-    
-    local resizeHandle = Instance.new("Frame")
-    resizeHandle.Name = "ResizeHandle"
-    resizeHandle.Parent = frame
-    resizeHandle.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    resizeHandle.BackgroundTransparency = 0.8
-    resizeHandle.Size = UDim2.new(0, 15, 0, 15)
-    resizeHandle.Position = UDim2.new(1, -15, 1, -15)
-    resizeHandle.ZIndex = 10
-    
-    local resizeCorner = Instance.new("UICorner")
-    resizeCorner.CornerRadius = UDim.new(0, 4)
-    resizeCorner.Parent = resizeHandle
-    
-    resizeHandle.InputBegan:Connect(
+-- 添加缩放功能
+local isResizing = false
+local function MakeResizable(object, handle)
+    handle.InputBegan:Connect(
         function(input)
             if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-                resizing = true
-                startPos = input.Position
-                startSize = frame.Size
+                isResizing = true
+                local startSize = object.Size
+                local startInput = input.Position
                 
-                input.Changed:Connect(
+                local connection
+                connection = input.Changed:Connect(
                     function()
                         if input.UserInputState == Enum.UserInputState.End then
-                            resizing = false
+                            isResizing = false
+                            connection:Disconnect()
+                        end
+                    end
+                )
+                
+                local updateConnection
+                updateConnection = UserInputService.InputChanged:Connect(
+                    function(input)
+                        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+                            if isResizing then
+                                local delta = input.Position - startInput
+                                local newSize = UDim2.new(
+                                    startSize.X.Scale,
+                                    math.max(600, startSize.X.Offset + delta.X),
+                                    startSize.Y.Scale,
+                                    math.max(400, startSize.Y.Offset + delta.Y)
+                                )
+                                object.Size = newSize
+                            end
                         end
                     end
                 )
             end
         end
     )
-    
-    UserInputService.InputChanged:Connect(
-        function(input)
-            if resizing and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-                local delta = input.Position - startPos
-                local newSize = UDim2.new(
-                    startSize.X.Scale,
-                    math.clamp(startSize.X.Offset + delta.X, minSize.X.Offset, maxSize.X.Offset),
-                    startSize.Y.Scale,
-                    math.clamp(startSize.Y.Offset + delta.Y, minSize.Y.Offset, maxSize.Y.Offset)
-                )
-                frame.Size = newSize
-            end
-        end
-    )
 end
 
-function lib:Window(text, subtitle, preset, closebind, settings)
-    settings = settings or {}
+function lib:Window(text, preset, closebind, subtitle)
     CloseBind = closebind or Enum.KeyCode.RightControl
     PresetColor = preset or Color3.fromRGB(44, 120, 224)
     fs = false
-    
-    -- 自定义图标设置
-    local iconSettings = settings.icons or {}
-    local buttonIcon = iconSettings.button or "rbxassetid://3926305904"
-    local toggleIcon = iconSettings.toggle or "rbxassetid://3926305904"
-    local sliderIcon = iconSettings.slider or "rbxassetid://3926305904"
-    local dropdownIcon = iconSettings.dropdown or "rbxassetid://3926305904"
-    local colorpickerIcon = iconSettings.colorpicker or "rbxassetid://3926305904"
-    local textboxIcon = iconSettings.textbox or "rbxassetid://3926305904"
-    local bindIcon = iconSettings.bind or "rbxassetid://3926305904"
-    local labelIcon = iconSettings.label or "rbxassetid://3926305904"
-    local cardIcon = iconSettings.card or "rbxassetid://3926305904"
-    local progressIcon = iconSettings.progress or "rbxassetid://3926305904"
-    
     local Main = Instance.new("Frame")
     local MainCorner = Instance.new("UICorner")
     local TabHold = Instance.new("Frame")
     local TabHoldLayout = Instance.new("UIListLayout")
     local Title = Instance.new("TextLabel")
-    local Subtitle = Instance.new("TextLabel") -- 新增小标题
+    local Subtitle = Instance.new("TextLabel")
     local TabFolder = Instance.new("Folder")
     local DragFrame = Instance.new("Frame")
     local SearchBox = Instance.new("Frame")
@@ -222,7 +221,7 @@ function lib:Window(text, subtitle, preset, closebind, settings)
     TabHold.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     TabHold.BackgroundTransparency = 1.000
     TabHold.Position = UDim2.new(0.0339285731, 0, 0.25, 0)
-    TabHold.Size = UDim2.new(0, 130, 0, 350) -- 增加高度以显示更多功能
+    TabHold.Size = UDim2.new(0, 130, 0, 350) -- 扩大功能区域
 
     TabHoldLayout.Name = "TabHoldLayout"
     TabHoldLayout.Parent = TabHold
@@ -233,26 +232,28 @@ function lib:Window(text, subtitle, preset, closebind, settings)
     Title.Parent = Main
     Title.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     Title.BackgroundTransparency = 1.000
-    Title.Position = UDim2.new(0.0339285731, 0, 0.03, 0) -- 调整位置
+    Title.Position = UDim2.new(0.0339285731, 0, 0.03, 0)
     Title.Size = UDim2.new(0, 250, 0, 28)
     Title.Font = Enum.Font.GothamSemibold
     Title.Text = text
     Title.TextColor3 = PresetColor
-    Title.TextSize = 18.000
+    Title.TextSize = 22.000
     Title.TextXAlignment = Enum.TextXAlignment.Left
 
-    -- 新增小标题
-    Subtitle.Name = "Subtitle"
-    Subtitle.Parent = Main
-    Subtitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    Subtitle.BackgroundTransparency = 1.000
-    Subtitle.Position = UDim2.new(0.0339285731, 0, 0.08, 0)
-    Subtitle.Size = UDim2.new(0, 250, 0, 20)
-    Subtitle.Font = Enum.Font.Gotham
-    Subtitle.Text = subtitle or ""
-    Subtitle.TextColor3 = Color3.fromRGB(150, 150, 150)
-    Subtitle.TextSize = 14.000
-    Subtitle.TextXAlignment = Enum.TextXAlignment.Left
+    -- 添加小标题
+    if subtitle then
+        Subtitle.Name = "Subtitle"
+        Subtitle.Parent = Main
+        Subtitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+        Subtitle.BackgroundTransparency = 1.000
+        Subtitle.Position = UDim2.new(0.0339285731, 0, 0.08, 0)
+        Subtitle.Size = UDim2.new(0, 250, 0, 20)
+        Subtitle.Font = Enum.Font.Gotham
+        Subtitle.Text = subtitle
+        Subtitle.TextColor3 = Color3.fromRGB(180, 180, 180)
+        Subtitle.TextSize = 14.000
+        Subtitle.TextXAlignment = Enum.TextXAlignment.Left
+    end
 
     SearchBox.Name = "SearchBox"
     SearchBox.Parent = Main
@@ -293,7 +294,7 @@ function lib:Window(text, subtitle, preset, closebind, settings)
     FunctionArea.Parent = Main
     FunctionArea.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
     FunctionArea.Position = UDim2.new(0.033, 0, 0.22, 0)
-    FunctionArea.Size = UDim2.new(0, 130, 0, 40) -- 增加高度
+    FunctionArea.Size = UDim2.new(0, 130, 0, 40) -- 扩大功能区域
     FunctionArea.Visible = false
 
     FunctionAreaCorner.CornerRadius = UDim.new(0, 8)
@@ -316,6 +317,33 @@ function lib:Window(text, subtitle, preset, closebind, settings)
     DragFrame.BackgroundTransparency = 1.000
     DragFrame.Size = UDim2.new(0, 680, 0, 50)
 
+    -- 创建主窗口的缩放控制
+    local MainResizeHandle = Instance.new("Frame")
+    MainResizeHandle.Name = "MainResizeHandle"
+    MainResizeHandle.Parent = Main
+    MainResizeHandle.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    MainResizeHandle.BackgroundTransparency = 0.7
+    MainResizeHandle.Size = UDim2.new(0, 20, 0, 20)
+    MainResizeHandle.Position = UDim2.new(1, -10, 1, -10)
+    MainResizeHandle.BorderSizePixel = 0
+    MainResizeHandle.ZIndex = 10
+
+    local MainResizeCorner = Instance.new("UICorner")
+    MainResizeCorner.CornerRadius = UDim.new(0, 6)
+    MainResizeCorner.Parent = MainResizeHandle
+
+    local MainResizeIcon = Instance.new("ImageLabel")
+    MainResizeIcon.Name = "MainResizeIcon"
+    MainResizeIcon.Parent = MainResizeHandle
+    MainResizeIcon.BackgroundTransparency = 1
+    MainResizeIcon.Size = UDim2.new(0, 12, 0, 12)
+    MainResizeIcon.Position = UDim2.new(0.5, -6, 0.5, -6)
+    MainResizeIcon.Image = "rbxassetid://3926305904"
+    MainResizeIcon.ImageColor3 = Color3.fromRGB(200, 200, 200)
+    MainResizeIcon.ImageRectOffset = Vector2.new(84, 204)
+    MainResizeIcon.ImageRectSize = Vector2.new(36, 36)
+    MainResizeIcon.ZIndex = 11
+
     miniUI.MouseButton1Click:Connect(function()
         if Main.Visible then
             Main.Visible = false
@@ -327,7 +355,7 @@ function lib:Window(text, subtitle, preset, closebind, settings)
         else
             Main.Visible = true
             if Main.Size == UDim2.new(0, 0, 0, 0) then
-                Main:TweenSize(UDim2.new(0, 680, 0, 450), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, .6, true) -- 增加高度
+                Main:TweenSize(UDim2.new(0, 700, 0, 480), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, .6, true)
             end
             TweenService:Create(
                 miniUI,
@@ -338,9 +366,7 @@ function lib:Window(text, subtitle, preset, closebind, settings)
     end)
 
     MakeDraggable(DragFrame, Main)
-    
-    -- 添加调整大小功能
-    MakeResizable(Main, UDim2.new(0, 500, 0, 350), UDim2.new(0, 1000, 0, 800))
+    MakeResizable(Main, MainResizeHandle)
 
     local uitoggled = false
     UserInputService.InputBegan:Connect(
@@ -373,6 +399,7 @@ function lib:Window(text, subtitle, preset, closebind, settings)
     function lib:ChangePresetColor(toch)
         PresetColor = toch
         miniUI.BackgroundColor3 = toch
+        Title.TextColor3 = toch
     end
 
     function lib:Notification(texttitle, textdesc, textbtn)
@@ -581,7 +608,7 @@ function lib:Window(text, subtitle, preset, closebind, settings)
         Tab.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
         Tab.BorderSizePixel = 0
         Tab.Position = UDim2.new(0.25, 0, 0.147, 0)
-        Tab.Size = UDim2.new(0, 480, 0, 320) -- 增加高度
+        Tab.Size = UDim2.new(0, 500, 0, 350) -- 扩大标签页区域
         Tab.CanvasSize = UDim2.new(0, 0, 0, 0)
         Tab.ScrollBarThickness = 4
         Tab.Visible = false
@@ -706,7 +733,7 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             MenuList.Name = "MenuList"
             MenuList.Parent = Tab
             MenuList.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-            MenuList.Size = UDim2.new(0, 460, 0, 45)
+            MenuList.Size = UDim2.new(0, 480, 0, 45)
             MenuList.AutoButtonColor = false
             MenuList.Font = Enum.Font.SourceSans
             MenuList.Text = ""
@@ -743,7 +770,7 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             MenuListFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
             MenuListFrame.BorderSizePixel = 0
             MenuListFrame.Position = UDim2.new(0, 0, 1, 5)
-            MenuListFrame.Size = UDim2.new(0, 460, 0, 0)
+            MenuListFrame.Size = UDim2.new(0, 480, 0, 0)
             MenuListFrame.ClipsDescendants = true
             MenuListFrame.Visible = false
 
@@ -773,7 +800,7 @@ function lib:Window(text, subtitle, preset, closebind, settings)
                 MenuItem.Name = "MenuItem"
                 MenuItem.Parent = MenuListFrame
                 MenuItem.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-                MenuItem.Size = UDim2.new(0, 448, 0, 35)
+                MenuItem.Size = UDim2.new(0, 468, 0, 35)
                 MenuItem.AutoButtonColor = false
                 MenuItem.Font = Enum.Font.SourceSans
                 MenuItem.Text = ""
@@ -788,7 +815,7 @@ function lib:Window(text, subtitle, preset, closebind, settings)
                 MenuItemTitle.Parent = MenuItem
                 MenuItemTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
                 MenuItemTitle.BackgroundTransparency = 1.000
-                MenuItemTitle.Size = UDim2.new(0, 448, 0, 35)
+                MenuItemTitle.Size = UDim2.new(0, 468, 0, 35)
                 MenuItemTitle.Font = Enum.Font.Gotham
                 MenuItemTitle.Text = item
                 MenuItemTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -814,7 +841,7 @@ function lib:Window(text, subtitle, preset, closebind, settings)
                     pcall(callback, item)
                     menutoggled = false
                     MenuListFrame:TweenSize(
-                        UDim2.new(0, 460, 0, 0),
+                        UDim2.new(0, 480, 0, 0),
                         Enum.EasingDirection.Out,
                         Enum.EasingStyle.Quart,
                         .2,
@@ -835,7 +862,7 @@ function lib:Window(text, subtitle, preset, closebind, settings)
                     menutoggled = true
                     MenuListFrame.Visible = true
                     MenuListFrame:TweenSize(
-                        UDim2.new(0, 460, 0, framesize),
+                        UDim2.new(0, 480, 0, framesize),
                         Enum.EasingDirection.Out,
                         Enum.EasingStyle.Quart,
                         .2,
@@ -849,7 +876,7 @@ function lib:Window(text, subtitle, preset, closebind, settings)
                 else
                     menutoggled = false
                     MenuListFrame:TweenSize(
-                        UDim2.new(0, 460, 0, 0),
+                        UDim2.new(0, 480, 0, 0),
                         Enum.EasingDirection.Out,
                         Enum.EasingStyle.Quart,
                         .2,
@@ -872,12 +899,11 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             local Button = Instance.new("TextButton")
             local ButtonCorner = Instance.new("UICorner")
             local ButtonTitle = Instance.new("TextLabel")
-            local ButtonIcon = Instance.new("ImageLabel")
 
             Button.Name = "Button"
             Button.Parent = Tab
             Button.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-            Button.Size = UDim2.new(0, 460, 0, 45)
+            Button.Size = UDim2.new(0, 480, 0, 45)
             Button.AutoButtonColor = false
             Button.Font = Enum.Font.SourceSans
             Button.Text = ""
@@ -888,23 +914,12 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             ButtonCorner.Name = "ButtonCorner"
             ButtonCorner.Parent = Button
 
-            ButtonIcon.Name = "ButtonIcon"
-            ButtonIcon.Parent = Button
-            ButtonIcon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-            ButtonIcon.BackgroundTransparency = 1.000
-            ButtonIcon.Position = UDim2.new(0.03, 0, 0.2, 0)
-            ButtonIcon.Size = UDim2.new(0, 25, 0, 25)
-            ButtonIcon.Image = buttonIcon -- 使用自定义图标
-            ButtonIcon.ImageColor3 = PresetColor
-            ButtonIcon.ImageRectOffset = Vector2.new(964, 324)
-            ButtonIcon.ImageRectSize = Vector2.new(36, 36)
-
             ButtonTitle.Name = "ButtonTitle"
             ButtonTitle.Parent = Button
             ButtonTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
             ButtonTitle.BackgroundTransparency = 1.000
-            ButtonTitle.Position = UDim2.new(0.1, 0, 0, 0)
-            ButtonTitle.Size = UDim2.new(0, 400, 0, 45)
+            ButtonTitle.Position = UDim2.new(0.03, 0, 0, 0)
+            ButtonTitle.Size = UDim2.new(0, 450, 0, 45)
             ButtonTitle.Font = Enum.Font.Gotham
             ButtonTitle.Text = text
             ButtonTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -961,12 +976,11 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             local ToggleFrameCorner = Instance.new("UICorner")
             local ToggleCircle = Instance.new("Frame")
             local ToggleCircleCorner = Instance.new("UICorner")
-            local ToggleIcon = Instance.new("ImageLabel")
 
             Toggle.Name = "Toggle"
             Toggle.Parent = Tab
             Toggle.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-            Toggle.Size = UDim2.new(0, 460, 0, 45)
+            Toggle.Size = UDim2.new(0, 480, 0, 45)
             Toggle.AutoButtonColor = false
             Toggle.Font = Enum.Font.SourceSans
             Toggle.Text = ""
@@ -977,23 +991,12 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             ToggleCorner.Name = "ToggleCorner"
             ToggleCorner.Parent = Toggle
 
-            ToggleIcon.Name = "ToggleIcon"
-            ToggleIcon.Parent = Toggle
-            ToggleIcon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-            ToggleIcon.BackgroundTransparency = 1.000
-            ToggleIcon.Position = UDim2.new(0.03, 0, 0.2, 0)
-            ToggleIcon.Size = UDim2.new(0, 25, 0, 25)
-            ToggleIcon.Image = toggleIcon -- 使用自定义图标
-            ToggleIcon.ImageColor3 = Color3.fromRGB(200, 200, 200)
-            ToggleIcon.ImageRectOffset = Vector2.new(964, 204)
-            ToggleIcon.ImageRectSize = Vector2.new(36, 36)
-
             ToggleTitle.Name = "ToggleTitle"
             ToggleTitle.Parent = Toggle
             ToggleTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
             ToggleTitle.BackgroundTransparency = 1.000
-            ToggleTitle.Position = UDim2.new(0.1, 0, 0, 0)
-            ToggleTitle.Size = UDim2.new(0, 250, 0, 45)
+            ToggleTitle.Position = UDim2.new(0.03, 0, 0, 0)
+            ToggleTitle.Size = UDim2.new(0, 350, 0, 45)
             ToggleTitle.Font = Enum.Font.Gotham
             ToggleTitle.Text = text
             ToggleTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -1055,7 +1058,6 @@ function lib:Window(text, subtitle, preset, closebind, settings)
                             .2,
                             true
                         )
-                        ToggleIcon.ImageColor3 = PresetColor
                     else
                         TweenService:Create(
                             ToggleFrame,
@@ -1069,7 +1071,6 @@ function lib:Window(text, subtitle, preset, closebind, settings)
                             .2,
                             true
                         )
-                        ToggleIcon.ImageColor3 = Color3.fromRGB(200, 200, 200)
                     end
                     toggled = not toggled
                     pcall(callback, toggled)
@@ -1083,7 +1084,6 @@ function lib:Window(text, subtitle, preset, closebind, settings)
                     {BackgroundColor3 = PresetColor}
                 ):Play()
                 ToggleCircle.Position = UDim2.new(0.55, 0, 0.1, 0)
-                ToggleIcon.ImageColor3 = PresetColor
                 toggled = true
             end
 
@@ -1102,12 +1102,11 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             local CurrentValueFrameCorner = Instance.new("UICorner")
             local SlideCircle = Instance.new("Frame")
             local SlideCircleCorner = Instance.new("UICorner")
-            local SliderIcon = Instance.new("ImageLabel")
 
             Slider.Name = "Slider"
             Slider.Parent = Tab
             Slider.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-            Slider.Size = UDim2.new(0, 460, 0, 70)
+            Slider.Size = UDim2.new(0, 480, 0, 70)
             Slider.AutoButtonColor = false
             Slider.Font = Enum.Font.SourceSans
             Slider.Text = ""
@@ -1118,22 +1117,11 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             SliderCorner.Name = "SliderCorner"
             SliderCorner.Parent = Slider
 
-            SliderIcon.Name = "SliderIcon"
-            SliderIcon.Parent = Slider
-            SliderIcon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-            SliderIcon.BackgroundTransparency = 1.000
-            SliderIcon.Position = UDim2.new(0.03, 0, 0.15, 0)
-            SliderIcon.Size = UDim2.new(0, 25, 0, 25)
-            SliderIcon.Image = sliderIcon -- 使用自定义图标
-            SliderIcon.ImageColor3 = Color3.fromRGB(200, 200, 200)
-            SliderIcon.ImageRectOffset = Vector2.new(644, 204)
-            SliderIcon.ImageRectSize = Vector2.new(36, 36)
-
             SliderTitle.Name = "SliderTitle"
             SliderTitle.Parent = Slider
             SliderTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
             SliderTitle.BackgroundTransparency = 1.000
-            SliderTitle.Position = UDim2.new(0.1, 0, 0, 0)
+            SliderTitle.Position = UDim2.new(0.03, 0, 0, 0)
             SliderTitle.Size = UDim2.new(0, 250, 0, 35)
             SliderTitle.Font = Enum.Font.Gotham
             SliderTitle.Text = text
@@ -1145,8 +1133,8 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             SliderValue.Parent = Slider
             SliderValue.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
             SliderValue.BackgroundTransparency = 1.000
-            SliderValue.Position = UDim2.new(0.1, 0, 0, 0)
-            SliderValue.Size = UDim2.new(0, 400, 0, 35)
+            SliderValue.Position = UDim2.new(0.03, 0, 0, 0)
+            SliderValue.Size = UDim2.new(0, 450, 0, 35)
             SliderValue.Font = Enum.Font.Gotham
             SliderValue.Text = tostring(start and math.floor((start / max) * (max - min) + min) or 0)
             SliderValue.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -1158,7 +1146,7 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             SlideFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
             SlideFrame.BorderSizePixel = 0
             SlideFrame.Position = UDim2.new(0.05, 0, 0.65, 0)
-            SlideFrame.Size = UDim2.new(0, 420, 0, 8)
+            SlideFrame.Size = UDim2.new(0, 440, 0, 8)
 
             SlideFrameCorner.CornerRadius = UDim.new(1, 0)
             SlideFrameCorner.Name = "SlideFrameCorner"
@@ -1265,34 +1253,22 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             local DropItemHolderCorner = Instance.new("UICorner")
             local DropLayout = Instance.new("UIListLayout")
             local DropPadding = Instance.new("UIPadding")
-            local DropdownIcon = Instance.new("ImageLabel")
 
             Dropdown.Name = "Dropdown"
             Dropdown.Parent = Tab
             Dropdown.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
             Dropdown.ClipsDescendants = true
-            Dropdown.Size = UDim2.new(0, 460, 0, 45)
+            Dropdown.Size = UDim2.new(0, 480, 0, 45)
 
             DropdownCorner.CornerRadius = UDim.new(0, 10)
             DropdownCorner.Name = "DropdownCorner"
             DropdownCorner.Parent = Dropdown
 
-            DropdownIcon.Name = "DropdownIcon"
-            DropdownIcon.Parent = Dropdown
-            DropdownIcon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-            DropdownIcon.BackgroundTransparency = 1.000
-            DropdownIcon.Position = UDim2.new(0.03, 0, 0.2, 0)
-            DropdownIcon.Size = UDim2.new(0, 25, 0, 25)
-            DropdownIcon.Image = dropdownIcon -- 使用自定义图标
-            DropdownIcon.ImageColor3 = Color3.fromRGB(200, 200, 200)
-            DropdownIcon.ImageRectOffset = Vector2.new(164, 364)
-            DropdownIcon.ImageRectSize = Vector2.new(36, 36)
-
             DropdownBtn.Name = "DropdownBtn"
             DropdownBtn.Parent = Dropdown
             DropdownBtn.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
             DropdownBtn.BackgroundTransparency = 1.000
-            DropdownBtn.Size = UDim2.new(0, 460, 0, 45)
+            DropdownBtn.Size = UDim2.new(0, 480, 0, 45)
             DropdownBtn.Font = Enum.Font.SourceSans
             DropdownBtn.Text = ""
             DropdownBtn.TextColor3 = Color3.fromRGB(0, 0, 0)
@@ -1302,7 +1278,7 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             DropdownTitle.Parent = Dropdown
             DropdownTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
             DropdownTitle.BackgroundTransparency = 1.000
-            DropdownTitle.Position = UDim2.new(0.1, 0, 0, 0)
+            DropdownTitle.Position = UDim2.new(0.03, 0, 0, 0)
             DropdownTitle.Size = UDim2.new(0, 300, 0, 45)
             DropdownTitle.Font = Enum.Font.Gotham
             DropdownTitle.Text = text
@@ -1325,7 +1301,7 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             DropItemHolder.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
             DropItemHolder.BorderSizePixel = 0
             DropItemHolder.Position = UDim2.new(0, 0, 1, 5)
-            DropItemHolder.Size = UDim2.new(0, 460, 0, 0)
+            DropItemHolder.Size = UDim2.new(0, 480, 0, 0)
             DropItemHolder.CanvasSize = UDim2.new(0, 0, 0, 0)
             DropItemHolder.ScrollBarThickness = 4
             DropItemHolder.Visible = false
@@ -1350,14 +1326,14 @@ function lib:Window(text, subtitle, preset, closebind, settings)
                         droptog = true
                         DropItemHolder.Visible = true
                         Dropdown:TweenSize(
-                            UDim2.new(0, 460, 0, 45 + framesize),
+                            UDim2.new(0, 480, 0, 45 + framesize),
                             Enum.EasingDirection.Out,
                             Enum.EasingStyle.Quart,
                             .2,
                             true
                         )
                         DropItemHolder:TweenSize(
-                            UDim2.new(0, 460, 0, framesize),
+                            UDim2.new(0, 480, 0, framesize),
                             Enum.EasingDirection.Out,
                             Enum.EasingStyle.Quart,
                             .2,
@@ -1373,14 +1349,14 @@ function lib:Window(text, subtitle, preset, closebind, settings)
                     else
                         droptog = false
                         Dropdown:TweenSize(
-                            UDim2.new(0, 460, 0, 45),
+                            UDim2.new(0, 480, 0, 45),
                             Enum.EasingDirection.Out,
                             Enum.EasingStyle.Quart,
                             .2,
                             true
                         )
                         DropItemHolder:TweenSize(
-                            UDim2.new(0, 460, 0, 0),
+                            UDim2.new(0, 480, 0, 0),
                             Enum.EasingDirection.Out,
                             Enum.EasingStyle.Quart,
                             .2,
@@ -1409,7 +1385,7 @@ function lib:Window(text, subtitle, preset, closebind, settings)
                 Item.Name = "Item"
                 Item.Parent = DropItemHolder
                 Item.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-                Item.Size = UDim2.new(0, 448, 0, 30)
+                Item.Size = UDim2.new(0, 468, 0, 30)
                 Item.AutoButtonColor = false
                 Item.Font = Enum.Font.Gotham
                 Item.Text = v
@@ -1446,14 +1422,14 @@ function lib:Window(text, subtitle, preset, closebind, settings)
                         DropdownTitle.Text = text .. " - " .. v
                         pcall(callback, v)
                         Dropdown:TweenSize(
-                            UDim2.new(0, 460, 0, 45),
+                            UDim2.new(0, 480, 0, 45),
                             Enum.EasingDirection.Out,
                             Enum.EasingStyle.Quart,
                             .2,
                             true
                         )
                         DropItemHolder:TweenSize(
-                            UDim2.new(0, 460, 0, 0),
+                            UDim2.new(0, 480, 0, 0),
                             Enum.EasingDirection.Out,
                             Enum.EasingStyle.Quart,
                             .2,
@@ -1507,34 +1483,22 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             local ConfirmBtn = Instance.new("TextButton")
             local ConfirmBtnCorner = Instance.new("UICorner")
             local ConfirmBtnTitle = Instance.new("TextLabel")
-            local ColorpickerIcon = Instance.new("ImageLabel")
 
             Colorpicker.Name = "Colorpicker"
             Colorpicker.Parent = Tab
             Colorpicker.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
             Colorpicker.ClipsDescendants = true
-            Colorpicker.Size = UDim2.new(0, 460, 0, 45)
+            Colorpicker.Size = UDim2.new(0, 480, 0, 45)
 
             ColorpickerCorner.CornerRadius = UDim.new(0, 10)
             ColorpickerCorner.Name = "ColorpickerCorner"
             ColorpickerCorner.Parent = Colorpicker
 
-            ColorpickerIcon.Name = "ColorpickerIcon"
-            ColorpickerIcon.Parent = Colorpicker
-            ColorpickerIcon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-            ColorpickerIcon.BackgroundTransparency = 1.000
-            ColorpickerIcon.Position = UDim2.new(0.03, 0, 0.2, 0)
-            ColorpickerIcon.Size = UDim2.new(0, 25, 0, 25)
-            ColorpickerIcon.Image = colorpickerIcon -- 使用自定义图标
-            ColorpickerIcon.ImageColor3 = preset or Color3.fromRGB(255, 0, 4)
-            ColorpickerIcon.ImageRectOffset = Vector2.new(844, 164)
-            ColorpickerIcon.ImageRectSize = Vector2.new(36, 36)
-
             ColorpickerTitle.Name = "ColorpickerTitle"
             ColorpickerTitle.Parent = Colorpicker
             ColorpickerTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
             ColorpickerTitle.BackgroundTransparency = 1.000
-            ColorpickerTitle.Position = UDim2.new(0.1, 0, 0, 0)
+            ColorpickerTitle.Position = UDim2.new(0.03, 0, 0, 0)
             ColorpickerTitle.Size = UDim2.new(0, 200, 0, 45)
             ColorpickerTitle.Font = Enum.Font.Gotham
             ColorpickerTitle.Text = text
@@ -1556,7 +1520,7 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             ColorpickerBtn.Parent = Colorpicker
             ColorpickerBtn.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
             ColorpickerBtn.BackgroundTransparency = 1.000
-            ColorpickerBtn.Size = UDim2.new(0, 460, 0, 45)
+            ColorpickerBtn.Size = UDim2.new(0, 480, 0, 45)
             ColorpickerBtn.Font = Enum.Font.SourceSans
             ColorpickerBtn.Text = ""
             ColorpickerBtn.TextColor3 = Color3.fromRGB(0, 0, 0)
@@ -1566,7 +1530,7 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             ColorFrame.Parent = Colorpicker
             ColorFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
             ColorFrame.Position = UDim2.new(0, 0, 1, 5)
-            ColorFrame.Size = UDim2.new(0, 460, 0, 0)
+            ColorFrame.Size = UDim2.new(0, 480, 0, 0)
             ColorFrame.Visible = false
 
             ColorFrameCorner.CornerRadius = UDim.new(0, 10)
@@ -1643,7 +1607,7 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             ConfirmBtn.Parent = ColorFrame
             ConfirmBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
             ConfirmBtn.Position = UDim2.new(0.05, 0, 0.75, 0)
-            ConfirmBtn.Size = UDim2.new(0, 420, 0, 30)
+            ConfirmBtn.Size = UDim2.new(0, 440, 0, 30)
             ConfirmBtn.AutoButtonColor = false
             ConfirmBtn.Font = Enum.Font.SourceSans
             ConfirmBtn.Text = ""
@@ -1658,7 +1622,7 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             ConfirmBtnTitle.Parent = ConfirmBtn
             ConfirmBtnTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
             ConfirmBtnTitle.BackgroundTransparency = 1.000
-            ConfirmBtnTitle.Size = UDim2.new(0, 420, 0, 30)
+            ConfirmBtnTitle.Size = UDim2.new(0, 440, 0, 30)
             ConfirmBtnTitle.Font = Enum.Font.Gotham
             ConfirmBtnTitle.Text = "确认颜色"
             ConfirmBtnTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -1672,14 +1636,14 @@ function lib:Window(text, subtitle, preset, closebind, settings)
                         ColorSelection.Visible = true
                         HueSelection.Visible = true
                         Colorpicker:TweenSize(
-                            UDim2.new(0, 460, 0, 160),
+                            UDim2.new(0, 480, 0, 160),
                             Enum.EasingDirection.Out,
                             Enum.EasingStyle.Quart,
                             .2,
                             true
                         )
                         ColorFrame:TweenSize(
-                            UDim2.new(0, 460, 0, 150),
+                            UDim2.new(0, 480, 0, 150),
                             Enum.EasingDirection.Out,
                             Enum.EasingStyle.Quart,
                             .2,
@@ -1692,14 +1656,14 @@ function lib:Window(text, subtitle, preset, closebind, settings)
                         ColorSelection.Visible = false
                         HueSelection.Visible = false
                         Colorpicker:TweenSize(
-                            UDim2.new(0, 460, 0, 45),
+                            UDim2.new(0, 480, 0, 45),
                             Enum.EasingDirection.Out,
                             Enum.EasingStyle.Quart,
                             .2,
                             true
                         )
                         ColorFrame:TweenSize(
-                            UDim2.new(0, 460, 0, 0),
+                            UDim2.new(0, 480, 0, 0),
                             Enum.EasingDirection.Out,
                             Enum.EasingStyle.Quart,
                             .2,
@@ -1714,8 +1678,6 @@ function lib:Window(text, subtitle, preset, closebind, settings)
 
             local function UpdateColorPicker(nope)
                 BoxColor.BackgroundColor3 = Color3.fromHSV(ColorH, ColorS, ColorV)
-                Color.BackgroundColor3 = Color3.fromHSV(ColorH, 1, 1)
-                ColorpickerIcon.ImageColor3 = Color3.fromHSV(ColorH, ColorS, ColorV)
 
                 pcall(callback, BoxColor.BackgroundColor3)
             end
@@ -1733,8 +1695,6 @@ function lib:Window(text, subtitle, preset, closebind, settings)
                     Color.AbsoluteSize.Y)
 
             BoxColor.BackgroundColor3 = preset
-            Color.BackgroundColor3 = preset
-            ColorpickerIcon.ImageColor3 = preset
             pcall(callback, BoxColor.BackgroundColor3)
 
             Color.InputBegan:Connect(
@@ -1823,14 +1783,14 @@ function lib:Window(text, subtitle, preset, closebind, settings)
                     ColorSelection.Visible = false
                     HueSelection.Visible = false
                     Colorpicker:TweenSize(
-                        UDim2.new(0, 460, 0, 45),
+                        UDim2.new(0, 480, 0, 45),
                         Enum.EasingDirection.Out,
                         Enum.EasingStyle.Quart,
                         .2,
                         true
                     )
                     ColorFrame:TweenSize(
-                        UDim2.new(0, 460, 0, 0),
+                        UDim2.new(0, 480, 0, 0),
                         Enum.EasingDirection.Out,
                         Enum.EasingStyle.Quart,
                         .2,
@@ -1849,12 +1809,11 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             local Label = Instance.new("TextButton")
             local LabelCorner = Instance.new("UICorner")
             local LabelTitle = Instance.new("TextLabel")
-            local LabelIcon = Instance.new("ImageLabel")
 
             Label.Name = "Label"
             Label.Parent = Tab
             Label.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-            Label.Size = UDim2.new(0, 460, 0, 35)
+            Label.Size = UDim2.new(0, 480, 0, 35)
             Label.AutoButtonColor = false
             Label.Font = Enum.Font.SourceSans
             Label.Text = ""
@@ -1865,23 +1824,12 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             LabelCorner.Name = "LabelCorner"
             LabelCorner.Parent = Label
 
-            LabelIcon.Name = "LabelIcon"
-            LabelIcon.Parent = Label
-            LabelIcon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-            LabelIcon.BackgroundTransparency = 1.000
-            LabelIcon.Position = UDim2.new(0.03, 0, 0.15, 0)
-            LabelIcon.Size = UDim2.new(0, 25, 0, 25)
-            LabelIcon.Image = labelIcon -- 使用自定义图标
-            LabelIcon.ImageColor3 = Color3.fromRGB(200, 200, 200)
-            LabelIcon.ImageRectOffset = Vector2.new(964, 444)
-            LabelIcon.ImageRectSize = Vector2.new(36, 36)
-
             LabelTitle.Name = "LabelTitle"
             LabelTitle.Parent = Label
             LabelTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
             LabelTitle.BackgroundTransparency = 1.000
-            LabelTitle.Position = UDim2.new(0.1, 0, 0, 0)
-            LabelTitle.Size = UDim2.new(0, 400, 0, 35)
+            LabelTitle.Position = UDim2.new(0.03, 0, 0, 0)
+            LabelTitle.Size = UDim2.new(0, 450, 0, 35)
             LabelTitle.Font = Enum.Font.Gotham
             LabelTitle.Text = text
             LabelTitle.TextColor3 = Color3.fromRGB(200, 200, 200)
@@ -1898,34 +1846,22 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             local TextboxFrame = Instance.new("Frame")
             local TextboxFrameCorner = Instance.new("UICorner")
             local TextBox = Instance.new("TextBox")
-            local TextboxIcon = Instance.new("ImageLabel")
 
             Textbox.Name = "Textbox"
             Textbox.Parent = Tab
             Textbox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
             Textbox.ClipsDescendants = true
-            Textbox.Size = UDim2.new(0, 460, 0, 45)
+            Textbox.Size = UDim2.new(0, 480, 0, 45)
 
             TextboxCorner.CornerRadius = UDim.new(0, 10)
             TextboxCorner.Name = "TextboxCorner"
             TextboxCorner.Parent = Textbox
 
-            TextboxIcon.Name = "TextboxIcon"
-            TextboxIcon.Parent = Textbox
-            TextboxIcon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-            TextboxIcon.BackgroundTransparency = 1.000
-            TextboxIcon.Position = UDim2.new(0.03, 0, 0.2, 0)
-            TextboxIcon.Size = UDim2.new(0, 25, 0, 25)
-            TextboxIcon.Image = textboxIcon -- 使用自定义图标
-            TextboxIcon.ImageColor3 = Color3.fromRGB(200, 200, 200)
-            TextboxIcon.ImageRectOffset = Vector2.new(124, 204)
-            TextboxIcon.ImageRectSize = Vector2.new(36, 36)
-
             TextboxTitle.Name = "TextboxTitle"
             TextboxTitle.Parent = Textbox
             TextboxTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
             TextboxTitle.BackgroundTransparency = 1.000
-            TextboxTitle.Position = UDim2.new(0.1, 0, 0, 0)
+            TextboxTitle.Position = UDim2.new(0.03, 0, 0, 0)
             TextboxTitle.Size = UDim2.new(0, 150, 0, 45)
             TextboxTitle.Font = Enum.Font.Gotham
             TextboxTitle.Text = text
@@ -1937,7 +1873,7 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             TextboxFrame.Parent = Textbox
             TextboxFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
             TextboxFrame.Position = UDim2.new(0.5, 0, 0.25, 0)
-            TextboxFrame.Size = UDim2.new(0, 200, 0, 25)
+            TextboxFrame.Size = UDim2.new(0, 250, 0, 25)
 
             TextboxFrameCorner.CornerRadius = UDim.new(0, 8)
             TextboxFrameCorner.Name = "TextboxFrameCorner"
@@ -1946,7 +1882,7 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             TextBox.Parent = TextboxFrame
             TextBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
             TextBox.BackgroundTransparency = 1.000
-            TextBox.Size = UDim2.new(0, 200, 0, 25)
+            TextBox.Size = UDim2.new(0, 250, 0, 25)
             TextBox.Font = Enum.Font.Gotham
             TextBox.PlaceholderColor3 = Color3.fromRGB(150, 150, 150)
             TextBox.PlaceholderText = "输入文本..."
@@ -1976,12 +1912,11 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             local BindCorner = Instance.new("UICorner")
             local BindTitle = Instance.new("TextLabel")
             local BindText = Instance.new("TextLabel")
-            local BindIcon = Instance.new("ImageLabel")
 
             Bind.Name = "Bind"
             Bind.Parent = Tab
             Bind.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-            Bind.Size = UDim2.new(0, 460, 0, 45)
+            Bind.Size = UDim2.new(0, 480, 0, 45)
             Bind.AutoButtonColor = false
             Bind.Font = Enum.Font.SourceSans
             Bind.Text = ""
@@ -1992,22 +1927,11 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             BindCorner.Name = "BindCorner"
             BindCorner.Parent = Bind
 
-            BindIcon.Name = "BindIcon"
-            BindIcon.Parent = Bind
-            BindIcon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-            BindIcon.BackgroundTransparency = 1.000
-            BindIcon.Position = UDim2.new(0.03, 0, 0.2, 0)
-            BindIcon.Size = UDim2.new(0, 25, 0, 25)
-            BindIcon.Image = bindIcon -- 使用自定义图标
-            BindIcon.ImageColor3 = Color3.fromRGB(200, 200, 200)
-            BindIcon.ImageRectOffset = Vector2.new(804, 444)
-            BindIcon.ImageRectSize = Vector2.new(36, 36)
-
             BindTitle.Name = "BindTitle"
             BindTitle.Parent = Bind
             BindTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
             BindTitle.BackgroundTransparency = 1.000
-            BindTitle.Position = UDim2.new(0.1, 0, 0, 0)
+            BindTitle.Position = UDim2.new(0.03, 0, 0, 0)
             BindTitle.Size = UDim2.new(0, 150, 0, 45)
             BindTitle.Font = Enum.Font.Gotham
             BindTitle.Text = text
@@ -2019,8 +1943,8 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             BindText.Parent = Bind
             BindText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
             BindText.BackgroundTransparency = 1.000
-            BindText.Position = UDim2.new(0.1, 0, 0, 0)
-            BindText.Size = UDim2.new(0, 400, 0, 45)
+            BindText.Position = UDim2.new(0.03, 0, 0, 0)
+            BindText.Size = UDim2.new(0, 450, 0, 45)
             BindText.Font = Enum.Font.Gotham
             BindText.Text = Key
             BindText.TextColor3 = Color3.fromRGB(200, 200, 200)
@@ -2063,12 +1987,11 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             local CardCorner = Instance.new("UICorner")
             local CardTitle = Instance.new("TextLabel")
             local CardDesc = Instance.new("TextLabel")
-            local CardIcon = Instance.new("ImageLabel")
 
             Card.Name = "Card"
             Card.Parent = Tab
             Card.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-            Card.Size = UDim2.new(0, 460, 0, 90)
+            Card.Size = UDim2.new(0, 480, 0, 90)
             Card.AutoButtonColor = false
             Card.Font = Enum.Font.SourceSans
             Card.Text = ""
@@ -2079,22 +2002,11 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             CardCorner.Name = "CardCorner"
             CardCorner.Parent = Card
 
-            CardIcon.Name = "CardIcon"
-            CardIcon.Parent = Card
-            CardIcon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-            CardIcon.BackgroundTransparency = 1.000
-            CardIcon.Position = UDim2.new(0.05, 0, 0.2, 0)
-            CardIcon.Size = UDim2.new(0, 45, 0, 45)
-            CardIcon.Image = cardIcon -- 使用自定义图标
-            CardIcon.ImageColor3 = PresetColor
-            CardIcon.ImageRectOffset = Vector2.new(964, 324)
-            CardIcon.ImageRectSize = Vector2.new(36, 36)
-
             CardTitle.Name = "CardTitle"
             CardTitle.Parent = Card
             CardTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
             CardTitle.BackgroundTransparency = 1.000
-            CardTitle.Position = UDim2.new(0.2, 0, 0.1, 0)
+            CardTitle.Position = UDim2.new(0.03, 0, 0.1, 0)
             CardTitle.Size = UDim2.new(0, 300, 0, 35)
             CardTitle.Font = Enum.Font.GothamSemibold
             CardTitle.Text = title
@@ -2106,7 +2018,7 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             CardDesc.Parent = Card
             CardDesc.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
             CardDesc.BackgroundTransparency = 1.000
-            CardDesc.Position = UDim2.new(0.2, 0, 0.5, 0)
+            CardDesc.Position = UDim2.new(0.03, 0, 0.5, 0)
             CardDesc.Size = UDim2.new(0, 300, 0, 35)
             CardDesc.Font = Enum.Font.Gotham
             CardDesc.Text = description
@@ -2164,33 +2076,21 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             local ProgressBarBackCorner = Instance.new("UICorner")
             local ProgressBar = Instance.new("Frame")
             local ProgressBarCorner = Instance.new("UICorner")
-            local ProgressIcon = Instance.new("ImageLabel")
 
             Progress.Name = "Progress"
             Progress.Parent = Tab
             Progress.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-            Progress.Size = UDim2.new(0, 460, 0, 70)
+            Progress.Size = UDim2.new(0, 480, 0, 70)
 
             ProgressCorner.CornerRadius = UDim.new(0, 10)
             ProgressCorner.Name = "ProgressCorner"
             ProgressCorner.Parent = Progress
 
-            ProgressIcon.Name = "ProgressIcon"
-            ProgressIcon.Parent = Progress
-            ProgressIcon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-            ProgressIcon.BackgroundTransparency = 1.000
-            ProgressIcon.Position = UDim2.new(0.03, 0, 0.15, 0)
-            ProgressIcon.Size = UDim2.new(0, 25, 0, 25)
-            ProgressIcon.Image = progressIcon -- 使用自定义图标
-            ProgressIcon.ImageColor3 = Color3.fromRGB(200, 200, 200)
-            ProgressIcon.ImageRectOffset = Vector2.new(644, 364)
-            ProgressIcon.ImageRectSize = Vector2.new(36, 36)
-
             ProgressTitle.Name = "ProgressTitle"
             ProgressTitle.Parent = Progress
             ProgressTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
             ProgressTitle.BackgroundTransparency = 1.000
-            ProgressTitle.Position = UDim2.new(0.1, 0, 0, 0)
+            ProgressTitle.Position = UDim2.new(0.03, 0, 0, 0)
             ProgressTitle.Size = UDim2.new(0, 250, 0, 35)
             ProgressTitle.Font = Enum.Font.Gotham
             ProgressTitle.Text = text
@@ -2202,8 +2102,8 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             ProgressValue.Parent = Progress
             ProgressValue.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
             ProgressValue.BackgroundTransparency = 1.000
-            ProgressValue.Position = UDim2.new(0.1, 0, 0, 0)
-            ProgressValue.Size = UDim2.new(0, 400, 0, 35)
+            ProgressValue.Position = UDim2.new(0.03, 0, 0, 0)
+            ProgressValue.Size = UDim2.new(0, 450, 0, 35)
             ProgressValue.Font = Enum.Font.Gotham
             ProgressValue.Text = tostring(current) .. " / " .. tostring(max)
             ProgressValue.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -2215,7 +2115,7 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             ProgressBarBack.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
             ProgressBarBack.BorderSizePixel = 0
             ProgressBarBack.Position = UDim2.new(0.05, 0, 0.65, 0)
-            ProgressBarBack.Size = UDim2.new(0, 420, 0, 10)
+            ProgressBarBack.Size = UDim2.new(0, 440, 0, 10)
 
             ProgressBarBackCorner.CornerRadius = UDim.new(1, 0)
             ProgressBarBackCorner.Name = "ProgressBarBackCorner"
@@ -2252,7 +2152,7 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             Separator.Name = "Separator"
             Separator.Parent = Tab
             Separator.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-            Separator.Size = UDim2.new(0, 460, 0, 35)
+            Separator.Size = UDim2.new(0, 480, 0, 35)
 
             SeparatorCorner.CornerRadius = UDim.new(0, 10)
             SeparatorCorner.Name = "SeparatorCorner"
@@ -2262,7 +2162,7 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             SeparatorTitle.Parent = Separator
             SeparatorTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
             SeparatorTitle.BackgroundTransparency = 1.000
-            SeparatorTitle.Size = UDim2.new(0, 460, 0, 35)
+            SeparatorTitle.Size = UDim2.new(0, 480, 0, 35)
             SeparatorTitle.Font = Enum.Font.Gotham
             SeparatorTitle.Text = text
             SeparatorTitle.TextColor3 = Color3.fromRGB(150, 150, 150)
@@ -2292,34 +2192,22 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             local TextboxFrame = Instance.new("Frame")
             local TextboxFrameCorner = Instance.new("UICorner")
             local TextBox = Instance.new("TextBox")
-            local MultilineIcon = Instance.new("ImageLabel")
 
             MultilineTextbox.Name = "MultilineTextbox"
             MultilineTextbox.Parent = Tab
             MultilineTextbox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
             MultilineTextbox.ClipsDescendants = true
-            MultilineTextbox.Size = UDim2.new(0, 460, 0, 120)
+            MultilineTextbox.Size = UDim2.new(0, 480, 0, 120)
 
             MultilineTextboxCorner.CornerRadius = UDim.new(0, 10)
             MultilineTextboxCorner.Name = "MultilineTextboxCorner"
             MultilineTextboxCorner.Parent = MultilineTextbox
 
-            MultilineIcon.Name = "MultilineIcon"
-            MultilineIcon.Parent = MultilineTextbox
-            MultilineIcon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-            MultilineIcon.BackgroundTransparency = 1.000
-            MultilineIcon.Position = UDim2.new(0.03, 0, 0.1, 0)
-            MultilineIcon.Size = UDim2.new(0, 25, 0, 25)
-            MultilineIcon.Image = textboxIcon -- 使用自定义图标
-            MultilineIcon.ImageColor3 = Color3.fromRGB(200, 200, 200)
-            MultilineIcon.ImageRectOffset = Vector2.new(124, 204)
-            MultilineIcon.ImageRectSize = Vector2.new(36, 36)
-
             MultilineTextboxTitle.Name = "MultilineTextboxTitle"
             MultilineTextboxTitle.Parent = MultilineTextbox
             MultilineTextboxTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
             MultilineTextboxTitle.BackgroundTransparency = 1.000
-            MultilineTextboxTitle.Position = UDim2.new(0.1, 0, 0, 0)
+            MultilineTextboxTitle.Position = UDim2.new(0.03, 0, 0, 0)
             MultilineTextboxTitle.Size = UDim2.new(0, 150, 0, 30)
             MultilineTextboxTitle.Font = Enum.Font.Gotham
             MultilineTextboxTitle.Text = text
@@ -2331,7 +2219,7 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             TextboxFrame.Parent = MultilineTextbox
             TextboxFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
             TextboxFrame.Position = UDim2.new(0.05, 0, 0.3, 0)
-            TextboxFrame.Size = UDim2.new(0, 420, 0, 75)
+            TextboxFrame.Size = UDim2.new(0, 440, 0, 75)
 
             TextboxFrameCorner.CornerRadius = UDim.new(0, 8)
             TextboxFrameCorner.Name = "TextboxFrameCorner"
@@ -2340,7 +2228,7 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             TextBox.Parent = TextboxFrame
             TextBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
             TextBox.BackgroundTransparency = 1.000
-            TextBox.Size = UDim2.new(0, 420, 0, 75)
+            TextBox.Size = UDim2.new(0, 440, 0, 75)
             TextBox.Font = Enum.Font.Gotham
             TextBox.PlaceholderColor3 = Color3.fromRGB(150, 150, 150)
             TextBox.PlaceholderText = placeholder or "输入多行文本..."
@@ -2372,12 +2260,11 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             local KeybindCorner = Instance.new("UICorner")
             local KeybindTitle = Instance.new("TextLabel")
             local KeybindText = Instance.new("TextLabel")
-            local KeybindIcon = Instance.new("ImageLabel")
 
             Keybind.Name = "Keybind"
             Keybind.Parent = Tab
             Keybind.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-            Keybind.Size = UDim2.new(0, 460, 0, 45)
+            Keybind.Size = UDim2.new(0, 480, 0, 45)
             Keybind.AutoButtonColor = false
             Keybind.Font = Enum.Font.SourceSans
             Keybind.Text = ""
@@ -2388,22 +2275,11 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             KeybindCorner.Name = "KeybindCorner"
             KeybindCorner.Parent = Keybind
 
-            KeybindIcon.Name = "KeybindIcon"
-            KeybindIcon.Parent = Keybind
-            KeybindIcon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-            KeybindIcon.BackgroundTransparency = 1.000
-            KeybindIcon.Position = UDim2.new(0.03, 0, 0.2, 0)
-            KeybindIcon.Size = UDim2.new(0, 25, 0, 25)
-            KeybindIcon.Image = bindIcon -- 使用自定义图标
-            KeybindIcon.ImageColor3 = Color3.fromRGB(200, 200, 200)
-            KeybindIcon.ImageRectOffset = Vector2.new(804, 444)
-            KeybindIcon.ImageRectSize = Vector2.new(36, 36)
-
             KeybindTitle.Name = "KeybindTitle"
             KeybindTitle.Parent = Keybind
             KeybindTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
             KeybindTitle.BackgroundTransparency = 1.000
-            KeybindTitle.Position = UDim2.new(0.1, 0, 0, 0)
+            KeybindTitle.Position = UDim2.new(0.03, 0, 0, 0)
             KeybindTitle.Size = UDim2.new(0, 150, 0, 45)
             KeybindTitle.Font = Enum.Font.Gotham
             KeybindTitle.Text = text
@@ -2415,8 +2291,8 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             KeybindText.Parent = Keybind
             KeybindText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
             KeybindText.BackgroundTransparency = 1.000
-            KeybindText.Position = UDim2.new(0.1, 0, 0, 0)
-            KeybindText.Size = UDim2.new(0, 400, 0, 45)
+            KeybindText.Position = UDim2.new(0.03, 0, 0, 0)
+            KeybindText.Size = UDim2.new(0, 450, 0, 45)
             KeybindText.Font = Enum.Font.Gotham
             KeybindText.Text = Key
             KeybindText.TextColor3 = Color3.fromRGB(200, 200, 200)
@@ -2461,34 +2337,22 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             local InputFrame = Instance.new("Frame")
             local InputFrameCorner = Instance.new("UICorner")
             local InputBox = Instance.new("TextBox")
-            local InputIcon = Instance.new("ImageLabel")
 
             Input.Name = "Input"
             Input.Parent = Tab
             Input.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
             Input.ClipsDescendants = true
-            Input.Size = UDim2.new(0, 460, 0, 45)
+            Input.Size = UDim2.new(0, 480, 0, 45)
 
             InputCorner.CornerRadius = UDim.new(0, 10)
             InputCorner.Name = "InputCorner"
             InputCorner.Parent = Input
 
-            InputIcon.Name = "InputIcon"
-            InputIcon.Parent = Input
-            InputIcon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-            InputIcon.BackgroundTransparency = 1.000
-            InputIcon.Position = UDim2.new(0.03, 0, 0.2, 0)
-            InputIcon.Size = UDim2.new(0, 25, 0, 25)
-            InputIcon.Image = textboxIcon -- 使用自定义图标
-            InputIcon.ImageColor3 = Color3.fromRGB(200, 200, 200)
-            InputIcon.ImageRectOffset = Vector2.new(124, 204)
-            InputIcon.ImageRectSize = Vector2.new(36, 36)
-
             InputTitle.Name = "InputTitle"
             InputTitle.Parent = Input
             InputTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
             InputTitle.BackgroundTransparency = 1.000
-            InputTitle.Position = UDim2.new(0.1, 0, 0, 0)
+            InputTitle.Position = UDim2.new(0.03, 0, 0, 0)
             InputTitle.Size = UDim2.new(0, 150, 0, 45)
             InputTitle.Font = Enum.Font.Gotham
             InputTitle.Text = text
@@ -2500,7 +2364,7 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             InputFrame.Parent = Input
             InputFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
             InputFrame.Position = UDim2.new(0.5, 0, 0.25, 0)
-            InputFrame.Size = UDim2.new(0, 200, 0, 25)
+            InputFrame.Size = UDim2.new(0, 250, 0, 25)
 
             InputFrameCorner.CornerRadius = UDim.new(0, 8)
             InputFrameCorner.Name = "InputFrameCorner"
@@ -2509,7 +2373,7 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             InputBox.Parent = InputFrame
             InputBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
             InputBox.BackgroundTransparency = 1.000
-            InputBox.Size = UDim2.new(0, 200, 0, 25)
+            InputBox.Size = UDim2.new(0, 250, 0, 25)
             InputBox.Font = Enum.Font.Gotham
             InputBox.PlaceholderColor3 = Color3.fromRGB(150, 150, 150)
             InputBox.PlaceholderText = placeholder
@@ -2537,33 +2401,21 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             local ListFrameCorner = Instance.new("UICorner")
             local ListLayout = Instance.new("UIListLayout")
             local ListPadding = Instance.new("UIPadding")
-            local ListIcon = Instance.new("ImageLabel")
 
             List.Name = "List"
             List.Parent = Tab
             List.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-            List.Size = UDim2.new(0, 460, 0, 180)
+            List.Size = UDim2.new(0, 480, 0, 180)
 
             ListCorner.CornerRadius = UDim.new(0, 10)
             ListCorner.Name = "ListCorner"
             ListCorner.Parent = List
 
-            ListIcon.Name = "ListIcon"
-            ListIcon.Parent = List
-            ListIcon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-            ListIcon.BackgroundTransparency = 1.000
-            ListIcon.Position = UDim2.new(0.03, 0, 0.05, 0)
-            ListIcon.Size = UDim2.new(0, 25, 0, 25)
-            ListIcon.Image = dropdownIcon -- 使用自定义图标
-            ListIcon.ImageColor3 = Color3.fromRGB(200, 200, 200)
-            ListIcon.ImageRectOffset = Vector2.new(164, 364)
-            ListIcon.ImageRectSize = Vector2.new(36, 36)
-
             ListTitle.Name = "ListTitle"
             ListTitle.Parent = List
             ListTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
             ListTitle.BackgroundTransparency = 1.000
-            ListTitle.Position = UDim2.new(0.1, 0, 0, 0)
+            ListTitle.Position = UDim2.new(0.03, 0, 0, 0)
             ListTitle.Size = UDim2.new(0, 150, 0, 30)
             ListTitle.Font = Enum.Font.Gotham
             ListTitle.Text = text
@@ -2577,7 +2429,7 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             ListFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
             ListFrame.BorderSizePixel = 0
             ListFrame.Position = UDim2.new(0.05, 0, 0.2, 0)
-            ListFrame.Size = UDim2.new(0, 420, 0, 140)
+            ListFrame.Size = UDim2.new(0, 440, 0, 140)
             ListFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
             ListFrame.ScrollBarThickness = 4
 
@@ -2603,7 +2455,7 @@ function lib:Window(text, subtitle, preset, closebind, settings)
                 ListItem.Name = "ListItem"
                 ListItem.Parent = ListFrame
                 ListItem.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
-                ListItem.Size = UDim2.new(0, 408, 0, 30)
+                ListItem.Size = UDim2.new(0, 428, 0, 30)
                 ListItem.AutoButtonColor = false
                 ListItem.Font = Enum.Font.SourceSans
                 ListItem.Text = ""
@@ -2618,7 +2470,7 @@ function lib:Window(text, subtitle, preset, closebind, settings)
                 ListItemTitle.Parent = ListItem
                 ListItemTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
                 ListItemTitle.BackgroundTransparency = 1.000
-                ListItemTitle.Size = UDim2.new(0, 408, 0, 30)
+                ListItemTitle.Size = UDim2.new(0, 428, 0, 30)
                 ListItemTitle.Font = Enum.Font.Gotham
                 ListItemTitle.Text = item
                 ListItemTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -2653,34 +2505,22 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             local Info = Instance.new("Frame")
             local InfoCorner = Instance.new("UICorner")
             local InfoText = Instance.new("TextLabel")
-            local InfoIcon = Instance.new("ImageLabel")
 
             Info.Name = "Info"
             Info.Parent = Tab
             Info.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-            Info.Size = UDim2.new(0, 460, 0, 60)
+            Info.Size = UDim2.new(0, 480, 0, 60)
 
             InfoCorner.CornerRadius = UDim.new(0, 10)
             InfoCorner.Name = "InfoCorner"
             InfoCorner.Parent = Info
 
-            InfoIcon.Name = "InfoIcon"
-            InfoIcon.Parent = Info
-            InfoIcon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-            InfoIcon.BackgroundTransparency = 1.000
-            InfoIcon.Position = UDim2.new(0.03, 0, 0.2, 0)
-            InfoIcon.Size = UDim2.new(0, 25, 0, 25)
-            InfoIcon.Image = labelIcon -- 使用自定义图标
-            InfoIcon.ImageColor3 = Color3.fromRGB(100, 150, 255)
-            InfoIcon.ImageRectOffset = Vector2.new(324, 524)
-            InfoIcon.ImageRectSize = Vector2.new(36, 36)
-
             InfoText.Name = "InfoText"
             InfoText.Parent = Info
             InfoText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
             InfoText.BackgroundTransparency = 1.000
-            InfoText.Position = UDim2.new(0.1, 0, 0, 0)
-            InfoText.Size = UDim2.new(0, 400, 0, 60)
+            InfoText.Position = UDim2.new(0.03, 0, 0, 0)
+            InfoText.Size = UDim2.new(0, 450, 0, 60)
             InfoText.Font = Enum.Font.Gotham
             InfoText.Text = text
             InfoText.TextColor3 = Color3.fromRGB(200, 200, 200)
@@ -2699,7 +2539,7 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             Section.Name = "Section"
             Section.Parent = Tab
             Section.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-            Section.Size = UDim2.new(0, 460, 0, 40)
+            Section.Size = UDim2.new(0, 480, 0, 40)
 
             SectionCorner.CornerRadius = UDim.new(0, 10)
             SectionCorner.Name = "SectionCorner"
@@ -2709,7 +2549,7 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             SectionTitle.Parent = Section
             SectionTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
             SectionTitle.BackgroundTransparency = 1.000
-            SectionTitle.Size = UDim2.new(0, 460, 0, 40)
+            SectionTitle.Size = UDim2.new(0, 480, 0, 40)
             SectionTitle.Font = Enum.Font.GothamSemibold
             SectionTitle.Text = text
             SectionTitle.TextColor3 = PresetColor
@@ -2726,33 +2566,21 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             local PlayerListFrameCorner = Instance.new("UICorner")
             local PlayerListLayout = Instance.new("UIListLayout")
             local PlayerListPadding = Instance.new("UIPadding")
-            local PlayerListIcon = Instance.new("ImageLabel")
 
             PlayerList.Name = "PlayerList"
             PlayerList.Parent = Tab
             PlayerList.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-            PlayerList.Size = UDim2.new(0, 460, 0, 200)
+            PlayerList.Size = UDim2.new(0, 480, 0, 200)
 
             PlayerListCorner.CornerRadius = UDim.new(0, 10)
             PlayerListCorner.Name = "PlayerListCorner"
             PlayerListCorner.Parent = PlayerList
 
-            PlayerListIcon.Name = "PlayerListIcon"
-            PlayerListIcon.Parent = PlayerList
-            PlayerListIcon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-            PlayerListIcon.BackgroundTransparency = 1.000
-            PlayerListIcon.Position = UDim2.new(0.03, 0, 0.05, 0)
-            PlayerListIcon.Size = UDim2.new(0, 25, 0, 25)
-            PlayerListIcon.Image = "rbxassetid://3926305904"
-            PlayerListIcon.ImageColor3 = Color3.fromRGB(200, 200, 200)
-            PlayerListIcon.ImageRectOffset = Vector2.new(4, 964)
-            PlayerListIcon.ImageRectSize = Vector2.new(36, 36)
-
             PlayerListTitle.Name = "PlayerListTitle"
             PlayerListTitle.Parent = PlayerList
             PlayerListTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
             PlayerListTitle.BackgroundTransparency = 1.000
-            PlayerListTitle.Position = UDim2.new(0.1, 0, 0, 0)
+            PlayerListTitle.Position = UDim2.new(0.03, 0, 0, 0)
             PlayerListTitle.Size = UDim2.new(0, 150, 0, 30)
             PlayerListTitle.Font = Enum.Font.Gotham
             PlayerListTitle.Text = text
@@ -2766,7 +2594,7 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             PlayerListFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
             PlayerListFrame.BorderSizePixel = 0
             PlayerListFrame.Position = UDim2.new(0.05, 0, 0.2, 0)
-            PlayerListFrame.Size = UDim2.new(0, 420, 0, 150)
+            PlayerListFrame.Size = UDim2.new(0, 440, 0, 150)
             PlayerListFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
             PlayerListFrame.ScrollBarThickness = 4
 
@@ -2788,12 +2616,11 @@ function lib:Window(text, subtitle, preset, closebind, settings)
                 local PlayerItem = Instance.new("TextButton")
                 local PlayerItemCorner = Instance.new("UICorner")
                 local PlayerItemTitle = Instance.new("TextLabel")
-                local PlayerItemIcon = Instance.new("ImageLabel")
 
                 PlayerItem.Name = "PlayerItem"
                 PlayerItem.Parent = PlayerListFrame
                 PlayerItem.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
-                PlayerItem.Size = UDim2.new(0, 408, 0, 35)
+                PlayerItem.Size = UDim2.new(0, 428, 0, 35)
                 PlayerItem.AutoButtonColor = false
                 PlayerItem.Font = Enum.Font.SourceSans
                 PlayerItem.Text = ""
@@ -2804,22 +2631,11 @@ function lib:Window(text, subtitle, preset, closebind, settings)
                 PlayerItemCorner.Name = "PlayerItemCorner"
                 PlayerItemCorner.Parent = PlayerItem
 
-                PlayerItemIcon.Name = "PlayerItemIcon"
-                PlayerItemIcon.Parent = PlayerItem
-                PlayerItemIcon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-                PlayerItemIcon.BackgroundTransparency = 1.000
-                PlayerItemIcon.Position = UDim2.new(0.03, 0, 0.15, 0)
-                PlayerItemIcon.Size = UDim2.new(0, 25, 0, 25)
-                PlayerItemIcon.Image = "rbxassetid://3926305904"
-                PlayerItemIcon.ImageColor3 = Color3.fromRGB(100, 150, 255)
-                PlayerItemIcon.ImageRectOffset = Vector2.new(4, 964)
-                PlayerItemIcon.ImageRectSize = Vector2.new(36, 36)
-
                 PlayerItemTitle.Name = "PlayerItemTitle"
                 PlayerItemTitle.Parent = PlayerItem
                 PlayerItemTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
                 PlayerItemTitle.BackgroundTransparency = 1.000
-                PlayerItemTitle.Position = UDim2.new(0.1, 0, 0, 0)
+                PlayerItemTitle.Position = UDim2.new(0.03, 0, 0, 0)
                 PlayerItemTitle.Size = UDim2.new(0, 350, 0, 35)
                 PlayerItemTitle.Font = Enum.Font.Gotham
                 PlayerItemTitle.Text = player.Name
@@ -2857,12 +2673,11 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             local CommandCorner = Instance.new("UICorner")
             local CommandTitle = Instance.new("TextLabel")
             local CommandDesc = Instance.new("TextLabel")
-            local CommandIcon = Instance.new("ImageLabel")
 
             Command.Name = "Command"
             Command.Parent = Tab
             Command.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-            Command.Size = UDim2.new(0, 460, 0, 60)
+            Command.Size = UDim2.new(0, 480, 0, 60)
             Command.AutoButtonColor = false
             Command.Font = Enum.Font.SourceSans
             Command.Text = ""
@@ -2873,22 +2688,11 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             CommandCorner.Name = "CommandCorner"
             CommandCorner.Parent = Command
 
-            CommandIcon.Name = "CommandIcon"
-            CommandIcon.Parent = Command
-            CommandIcon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-            CommandIcon.BackgroundTransparency = 1.000
-            CommandIcon.Position = UDim2.new(0.03, 0, 0.2, 0)
-            CommandIcon.Size = UDim2.new(0, 25, 0, 25)
-            CommandIcon.Image = "rbxassetid://3926305904"
-            CommandIcon.ImageColor3 = Color3.fromRGB(200, 200, 200)
-            CommandIcon.ImageRectOffset = Vector2.new(124, 524)
-            CommandIcon.ImageRectSize = Vector2.new(36, 36)
-
             CommandTitle.Name = "CommandTitle"
             CommandTitle.Parent = Command
             CommandTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
             CommandTitle.BackgroundTransparency = 1.000
-            CommandTitle.Position = UDim2.new(0.1, 0, 0.1, 0)
+            CommandTitle.Position = UDim2.new(0.03, 0, 0.1, 0)
             CommandTitle.Size = UDim2.new(0, 300, 0, 25)
             CommandTitle.Font = Enum.Font.GothamSemibold
             CommandTitle.Text = text
@@ -2900,7 +2704,7 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             CommandDesc.Parent = Command
             CommandDesc.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
             CommandDesc.BackgroundTransparency = 1.000
-            CommandDesc.Position = UDim2.new(0.1, 0, 0.6, 0)
+            CommandDesc.Position = UDim2.new(0.03, 0, 0.6, 0)
             CommandDesc.Size = UDim2.new(0, 300, 0, 20)
             CommandDesc.Font = Enum.Font.Gotham
             CommandDesc.Text = description
@@ -2956,33 +2760,21 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             local TeleportFrameCorner = Instance.new("UICorner")
             local TeleportLayout = Instance.new("UIListLayout")
             local TeleportPadding = Instance.new("UIPadding")
-            local TeleportIcon = Instance.new("ImageLabel")
 
             Teleport.Name = "Teleport"
             Teleport.Parent = Tab
             Teleport.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-            Teleport.Size = UDim2.new(0, 460, 0, 150)
+            Teleport.Size = UDim2.new(0, 480, 0, 150)
 
             TeleportCorner.CornerRadius = UDim.new(0, 10)
             TeleportCorner.Name = "TeleportCorner"
             TeleportCorner.Parent = Teleport
 
-            TeleportIcon.Name = "TeleportIcon"
-            TeleportIcon.Parent = Teleport
-            TeleportIcon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-            TeleportIcon.BackgroundTransparency = 1.000
-            TeleportIcon.Position = UDim2.new(0.03, 0, 0.1, 0)
-            TeleportIcon.Size = UDim2.new(0, 25, 0, 25)
-            TeleportIcon.Image = "rbxassetid://3926305904"
-            TeleportIcon.ImageColor3 = Color3.fromRGB(200, 200, 200)
-            TeleportIcon.ImageRectOffset = Vector2.new(724, 204)
-            TeleportIcon.ImageRectSize = Vector2.new(36, 36)
-
             TeleportTitle.Name = "TeleportTitle"
             TeleportTitle.Parent = Teleport
             TeleportTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
             TeleportTitle.BackgroundTransparency = 1.000
-            TeleportTitle.Position = UDim2.new(0.1, 0, 0, 0)
+            TeleportTitle.Position = UDim2.new(0.03, 0, 0, 0)
             TeleportTitle.Size = UDim2.new(0, 150, 0, 30)
             TeleportTitle.Font = Enum.Font.Gotham
             TeleportTitle.Text = text
@@ -2996,7 +2788,7 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             TeleportFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
             TeleportFrame.BorderSizePixel = 0
             TeleportFrame.Position = UDim2.new(0.05, 0, 0.25, 0)
-            TeleportFrame.Size = UDim2.new(0, 420, 0, 100)
+            TeleportFrame.Size = UDim2.new(0, 440, 0, 100)
             TeleportFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
             TeleportFrame.ScrollBarThickness = 4
 
@@ -3022,7 +2814,7 @@ function lib:Window(text, subtitle, preset, closebind, settings)
                 TeleportItem.Name = "TeleportItem"
                 TeleportItem.Parent = TeleportFrame
                 TeleportItem.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
-                TeleportItem.Size = UDim2.new(0, 408, 0, 30)
+                TeleportItem.Size = UDim2.new(0, 428, 0, 30)
                 TeleportItem.AutoButtonColor = false
                 TeleportItem.Font = Enum.Font.SourceSans
                 TeleportItem.Text = ""
@@ -3037,7 +2829,7 @@ function lib:Window(text, subtitle, preset, closebind, settings)
                 TeleportItemTitle.Parent = TeleportItem
                 TeleportItemTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
                 TeleportItemTitle.BackgroundTransparency = 1.000
-                TeleportItemTitle.Size = UDim2.new(0, 408, 0, 30)
+                TeleportItemTitle.Size = UDim2.new(0, 428, 0, 30)
                 TeleportItemTitle.Font = Enum.Font.Gotham
                 TeleportItemTitle.Text = place
                 TeleportItemTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -3076,33 +2868,21 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             local AnimationFrameCorner = Instance.new("UICorner")
             local AnimationLayout = Instance.new("UIListLayout")
             local AnimationPadding = Instance.new("UIPadding")
-            local AnimationIcon = Instance.new("ImageLabel")
 
             Animation.Name = "Animation"
             Animation.Parent = Tab
             Animation.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-            Animation.Size = UDim2.new(0, 460, 0, 150)
+            Animation.Size = UDim2.new(0, 480, 0, 150)
 
             AnimationCorner.CornerRadius = UDim.new(0, 10)
             AnimationCorner.Name = "AnimationCorner"
             AnimationCorner.Parent = Animation
 
-            AnimationIcon.Name = "AnimationIcon"
-            AnimationIcon.Parent = Animation
-            AnimationIcon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-            AnimationIcon.BackgroundTransparency = 1.000
-            AnimationIcon.Position = UDim2.new(0.03, 0, 0.1, 0)
-            AnimationIcon.Size = UDim2.new(0, 25, 0, 25)
-            AnimationIcon.Image = "rbxassetid://3926305904"
-            AnimationIcon.ImageColor3 = Color3.fromRGB(200, 200, 200)
-            AnimationIcon.ImageRectOffset = Vector2.new(724, 364)
-            AnimationIcon.ImageRectSize = Vector2.new(36, 36)
-
             AnimationTitle.Name = "AnimationTitle"
             AnimationTitle.Parent = Animation
             AnimationTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
             AnimationTitle.BackgroundTransparency = 1.000
-            AnimationTitle.Position = UDim2.new(0.1, 0, 0, 0)
+            AnimationTitle.Position = UDim2.new(0.03, 0, 0, 0)
             AnimationTitle.Size = UDim2.new(0, 150, 0, 30)
             AnimationTitle.Font = Enum.Font.Gotham
             AnimationTitle.Text = text
@@ -3116,7 +2896,7 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             AnimationFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
             AnimationFrame.BorderSizePixel = 0
             AnimationFrame.Position = UDim2.new(0.05, 0, 0.25, 0)
-            AnimationFrame.Size = UDim2.new(0, 420, 0, 100)
+            AnimationFrame.Size = UDim2.new(0, 440, 0, 100)
             AnimationFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
             AnimationFrame.ScrollBarThickness = 4
 
@@ -3142,7 +2922,7 @@ function lib:Window(text, subtitle, preset, closebind, settings)
                 AnimationItem.Name = "AnimationItem"
                 AnimationItem.Parent = AnimationFrame
                 AnimationItem.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
-                AnimationItem.Size = UDim2.new(0, 408, 0, 30)
+                AnimationItem.Size = UDim2.new(0, 428, 0, 30)
                 AnimationItem.AutoButtonColor = false
                 AnimationItem.Font = Enum.Font.SourceSans
                 AnimationItem.Text = ""
@@ -3157,7 +2937,7 @@ function lib:Window(text, subtitle, preset, closebind, settings)
                 AnimationItemTitle.Parent = AnimationItem
                 AnimationItemTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
                 AnimationItemTitle.BackgroundTransparency = 1.000
-                AnimationItemTitle.Size = UDim2.new(0, 408, 0, 30)
+                AnimationItemTitle.Size = UDim2.new(0, 428, 0, 30)
                 AnimationItemTitle.Font = Enum.Font.Gotham
                 AnimationItemTitle.Text = anim
                 AnimationItemTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -3196,33 +2976,21 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             local MusicFrameCorner = Instance.new("UICorner")
             local MusicLayout = Instance.new("UIListLayout")
             local MusicPadding = Instance.new("UIPadding")
-            local MusicIcon = Instance.new("ImageLabel")
 
             Music.Name = "Music"
             Music.Parent = Tab
             Music.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-            Music.Size = UDim2.new(0, 460, 0, 150)
+            Music.Size = UDim2.new(0, 480, 0, 150)
 
             MusicCorner.CornerRadius = UDim.new(0, 10)
             MusicCorner.Name = "MusicCorner"
             MusicCorner.Parent = Music
 
-            MusicIcon.Name = "MusicIcon"
-            MusicIcon.Parent = Music
-            MusicIcon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-            MusicIcon.BackgroundTransparency = 1.000
-            MusicIcon.Position = UDim2.new(0.03, 0, 0.1, 0)
-            MusicIcon.Size = UDim2.new(0, 25, 0, 25)
-            MusicIcon.Image = "rbxassetid://3926305904"
-            MusicIcon.ImageColor3 = Color3.fromRGB(200, 200, 200)
-            MusicIcon.ImageRectOffset = Vector2.new(644, 524)
-            MusicIcon.ImageRectSize = Vector2.new(36, 36)
-
             MusicTitle.Name = "MusicTitle"
             MusicTitle.Parent = Music
             MusicTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
             MusicTitle.BackgroundTransparency = 1.000
-            MusicTitle.Position = UDim2.new(0.1, 0, 0, 0)
+            MusicTitle.Position = UDim2.new(0.03, 0, 0, 0)
             MusicTitle.Size = UDim2.new(0, 150, 0, 30)
             MusicTitle.Font = Enum.Font.Gotham
             MusicTitle.Text = text
@@ -3236,7 +3004,7 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             MusicFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
             MusicFrame.BorderSizePixel = 0
             MusicFrame.Position = UDim2.new(0.05, 0, 0.25, 0)
-            MusicFrame.Size = UDim2.new(0, 420, 0, 100)
+            MusicFrame.Size = UDim2.new(0, 440, 0, 100)
             MusicFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
             MusicFrame.ScrollBarThickness = 4
 
@@ -3262,7 +3030,7 @@ function lib:Window(text, subtitle, preset, closebind, settings)
                 MusicItem.Name = "MusicItem"
                 MusicItem.Parent = MusicFrame
                 MusicItem.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
-                MusicItem.Size = UDim2.new(0, 408, 0, 30)
+                MusicItem.Size = UDim2.new(0, 428, 0, 30)
                 MusicItem.AutoButtonColor = false
                 MusicItem.Font = Enum.Font.SourceSans
                 MusicItem.Text = ""
@@ -3277,7 +3045,7 @@ function lib:Window(text, subtitle, preset, closebind, settings)
                 MusicItemTitle.Parent = MusicItem
                 MusicItemTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
                 MusicItemTitle.BackgroundTransparency = 1.000
-                MusicItemTitle.Size = UDim2.new(0, 408, 0, 30)
+                MusicItemTitle.Size = UDim2.new(0, 428, 0, 30)
                 MusicItemTitle.Font = Enum.Font.Gotham
                 MusicItemTitle.Text = song
                 MusicItemTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -3316,33 +3084,21 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             local ToolFrameCorner = Instance.new("UICorner")
             local ToolLayout = Instance.new("UIListLayout")
             local ToolPadding = Instance.new("UIPadding")
-            local ToolIcon = Instance.new("ImageLabel")
 
             Tool.Name = "Tool"
             Tool.Parent = Tab
             Tool.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-            Tool.Size = UDim2.new(0, 460, 0, 150)
+            Tool.Size = UDim2.new(0, 480, 0, 150)
 
             ToolCorner.CornerRadius = UDim.new(0, 10)
             ToolCorner.Name = "ToolCorner"
             ToolCorner.Parent = Tool
 
-            ToolIcon.Name = "ToolIcon"
-            ToolIcon.Parent = Tool
-            ToolIcon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-            ToolIcon.BackgroundTransparency = 1.000
-            ToolIcon.Position = UDim2.new(0.03, 0, 0.1, 0)
-            ToolIcon.Size = UDim2.new(0, 25, 0, 25)
-            ToolIcon.Image = "rbxassetid://3926305904"
-            ToolIcon.ImageColor3 = Color3.fromRGB(200, 200, 200)
-            ToolIcon.ImageRectOffset = Vector2.new(884, 4)
-            ToolIcon.ImageRectSize = Vector2.new(36, 36)
-
             ToolTitle.Name = "ToolTitle"
             ToolTitle.Parent = Tool
             ToolTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
             ToolTitle.BackgroundTransparency = 1.000
-            ToolTitle.Position = UDim2.new(0.1, 0, 0, 0)
+            ToolTitle.Position = UDim2.new(0.03, 0, 0, 0)
             ToolTitle.Size = UDim2.new(0, 150, 0, 30)
             ToolTitle.Font = Enum.Font.Gotham
             ToolTitle.Text = text
@@ -3356,7 +3112,7 @@ function lib:Window(text, subtitle, preset, closebind, settings)
             ToolFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
             ToolFrame.BorderSizePixel = 0
             ToolFrame.Position = UDim2.new(0.05, 0, 0.25, 0)
-            ToolFrame.Size = UDim2.new(0, 420, 0, 100)
+            ToolFrame.Size = UDim2.new(0, 440, 0, 100)
             ToolFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
             ToolFrame.ScrollBarThickness = 4
 
@@ -3382,7 +3138,7 @@ function lib:Window(text, subtitle, preset, closebind, settings)
                 ToolItem.Name = "ToolItem"
                 ToolItem.Parent = ToolFrame
                 ToolItem.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
-                ToolItem.Size = UDim2.new(0, 408, 0, 30)
+                ToolItem.Size = UDim2.new(0, 428, 0, 30)
                 ToolItem.AutoButtonColor = false
                 ToolItem.Font = Enum.Font.SourceSans
                 ToolItem.Text = ""
@@ -3397,7 +3153,7 @@ function lib:Window(text, subtitle, preset, closebind, settings)
                 ToolItemTitle.Parent = ToolItem
                 ToolItemTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
                 ToolItemTitle.BackgroundTransparency = 1.000
-                ToolItemTitle.Size = UDim2.new(0, 408, 0, 30)
+                ToolItemTitle.Size = UDim2.new(0, 428, 0, 30)
                 ToolItemTitle.Font = Enum.Font.Gotham
                 ToolItemTitle.Text = tool
                 ToolItemTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -3432,4 +3188,44 @@ function lib:Window(text, subtitle, preset, closebind, settings)
     end
     return tabhold
 end
+
+-- 外部设置函数
+function lib:SetWindowSize(width, height)
+    if Main then
+        Main.Size = UDim2.new(0, width or 700, 0, height or 480)
+    end
+end
+
+function lib:SetWindowPosition(xScale, yScale, xOffset, yOffset)
+    if Main then
+        Main.Position = UDim2.new(xScale or 0.5, xOffset or 0, yScale or 0.5, yOffset or 0)
+    end
+end
+
+function lib:SetWindowBackgroundColor(color)
+    if Main then
+        Main.BackgroundColor3 = color
+    end
+end
+
+function lib:SetTransparency(transparency)
+    if Main then
+        Main.BackgroundTransparency = transparency
+    end
+end
+
+function lib:SetCornerRadius(radius)
+    if Main and MainCorner then
+        MainCorner.CornerRadius = UDim.new(0, radius)
+    end
+end
+
+function lib:SetFont(font)
+    -- 可以添加字体设置逻辑
+end
+
+function lib:SetTheme(theme)
+    -- 可以添加主题设置逻辑
+end
+
 return lib
