@@ -204,21 +204,21 @@ function library.new(library, name, theme)
             Currently = "Currently："
         },
         ["zh-cn"] = {
-            Universal = "欢迎使用SX HUB",
+            Universal = "欢迎使用SX",
             OpenUI = "打开UI",
             HideUI = "隐藏UI",
             Currently = "当前："
         },
-        ["zh-tw"] = {
-            Universal = "歡迎使用SX HUB",
-            OpenUI = "打開UI",
-            HideUI = "隱藏UI",
+        ["zh-cn"] = {
+            Universal = "欢迎使用SX",
+            OpenUI = "打开UI",
+            HideUI = "隐藏UI",
             Currently = "當前："
         },
-        ["zh-hk"] = { 
-            Universal = "歡迎使用SX HUB",
-            OpenUI = "打開UI",
-            HideUI = "隱藏UI",
+        ["zh-cn"] = { 
+            Universal = "欢迎使用SX",
+            OpenUI = "打开UI",
+            HideUI = "隐藏UI",
             Currently = "當前："
         },
         ["fr-fr"] = {
