@@ -4,32 +4,29 @@ local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
 local LocalPlayer = game:GetService("Players").LocalPlayer
 local Mouse = LocalPlayer:GetMouse()
-local PresetColor = Color3.fromRGB(255, 255, 255) -- 修改为白色主题色
+local PresetColor = Color3.fromRGB(255, 255, 255)
 local CloseBind = Enum.KeyCode.RightControl
 
--- 设备检测
 local function getDeviceType()
     local viewportSize = workspace.CurrentCamera.ViewportSize
     local aspectRatio = viewportSize.X / viewportSize.Y
-    
     if aspectRatio > 1.5 then
-        return "Desktop" -- 电脑
+        return "Desktop"
     elseif aspectRatio > 1.2 then
-        return "Tablet" -- 平板
+        return "Tablet"
     else
-        return "Mobile" -- 手机
+        return "Mobile"
     end
 end
 
--- 根据设备类型获取UI尺寸
 local function getUISize()
     local deviceType = getDeviceType()
     if deviceType == "Mobile" then
-        return UDim2.new(0, 320, 0, 500) -- 手机比例
+        return UDim2.new(0, 320, 0, 500)
     elseif deviceType == "Tablet" then
-        return UDim2.new(0, 500, 0, 600) -- 平板比例
+        return UDim2.new(0, 500, 0, 600)
     else
-        return UDim2.new(0, 600, 0, 500) -- 电脑比例
+        return UDim2.new(0, 600, 0, 500)
     end
 end
 
@@ -45,7 +42,7 @@ local function getMinimizedSize()
 end
 
 local ui = Instance.new("ScreenGui")
-ui.Name = "ui"
+ui.Name = "SX_UI"
 ui.Parent = game.CoreGui
 ui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
@@ -54,11 +51,9 @@ coroutine.wrap(
         while wait() do
             lib.RainbowColorValue = lib.RainbowColorValue + 1 / 255
             lib.HueSelectionPosition = lib.HueSelectionPosition + 1
-
             if lib.RainbowColorValue >= 1 then
                 lib.RainbowColorValue = 0
             end
-
             if lib.HueSelectionPosition == 80 then
                 lib.HueSelectionPosition = 0
             end
@@ -71,7 +66,6 @@ local function MakeDraggable(topbarobject, object)
     local DragInput = nil
     local DragStart = nil
     local StartPosition = nil
-
     local function Update(input)
         local Delta = input.Position - DragStart
         local pos =
@@ -83,14 +77,12 @@ local function MakeDraggable(topbarobject, object)
         )
         object.Position = pos
     end
-
     topbarobject.InputBegan:Connect(
         function(input)
             if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
                 Dragging = true
                 DragStart = input.Position
                 StartPosition = object.Position
-
                 input.Changed:Connect(
                     function()
                         if input.UserInputState == Enum.UserInputState.End then
@@ -101,7 +93,6 @@ local function MakeDraggable(topbarobject, object)
             end
         end
     )
-
     topbarobject.InputChanged:Connect(
         function(input)
             if
@@ -112,7 +103,6 @@ local function MakeDraggable(topbarobject, object)
             end
         end
     )
-
     UserInputService.InputChanged:Connect(
         function(input)
             if input == DragInput and Dragging then
@@ -122,13 +112,14 @@ local function MakeDraggable(topbarobject, object)
     )
 end
 
-function lib:Window(text, preset, closebind, iconImage)
+function lib:Window(text, subtext, preset, closebind, iconImage)
     CloseBind = closebind or Enum.KeyCode.RightControl
-    PresetColor = preset or Color3.fromRGB(255, 255, 255) -- 修改为白色主题色
+    PresetColor = preset or Color3.fromRGB(255, 255, 255)
     local fs = false
     local isMinimized = false
     local originalSize = getUISize()
     local minimizedSize = getMinimizedSize()
+    local isOpen = true
     
     local Main = Instance.new("Frame")
     local MainCorner = Instance.new("UICorner")
@@ -136,6 +127,7 @@ function lib:Window(text, preset, closebind, iconImage)
     local TabHoldLayout = Instance.new("UIListLayout")
     local TabHolderPadding = Instance.new("UIPadding")
     local Title = Instance.new("TextLabel")
+    local SubTitle = Instance.new("TextLabel")
     local TabFolder = Instance.new("Folder")
     local DragFrame = Instance.new("Frame")
     local Header = Instance.new("Frame")
@@ -144,7 +136,6 @@ function lib:Window(text, preset, closebind, iconImage)
     local IconFrame = Instance.new("Frame")
     local IconCorner = Instance.new("UICorner")
     local IconImage = Instance.new("ImageLabel")
-    local IconRotate = Instance.new("ImageLabel")
     local IconButton = Instance.new("TextButton")
     local ScriptName = Instance.new("TextLabel")
     local PlayerFrame = Instance.new("Frame")
@@ -159,8 +150,11 @@ function lib:Window(text, preset, closebind, iconImage)
     local SearchCorner = Instance.new("UICorner")
     local SearchBox = Instance.new("TextBox")
     local SearchIcon = Instance.new("ImageLabel")
-    local MinimizedIcon = Instance.new("ImageLabel") -- 缩小后的图标
+    local MinimizedIcon = Instance.new("ImageLabel")
     local MinimizedIconCorner = Instance.new("UICorner")
+    local ToggleButton = Instance.new("ImageButton")
+    local ToggleButtonCorner = Instance.new("UICorner")
+    local ToggleButtonGlow = Instance.new("ImageLabel")
 
     Main.Name = "Main"
     Main.Parent = ui
@@ -180,7 +174,7 @@ function lib:Window(text, preset, closebind, iconImage)
     Header.Parent = Main
     Header.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
     Header.BorderSizePixel = 0
-    Header.Size = UDim2.new(1, 0, 0, 70)
+    Header.Size = UDim2.new(1, 0, 0, 90)
     
     HeaderCorner.CornerRadius = UDim.new(0, 15)
     HeaderCorner.Name = "HeaderCorner"
@@ -199,10 +193,10 @@ function lib:Window(text, preset, closebind, iconImage)
     IconFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
     IconFrame.BackgroundTransparency = 0
     IconFrame.Position = UDim2.new(0.02, 0, 0.15, 0)
-    IconFrame.Size = UDim2.new(0, 50, 0, 50)
+    IconFrame.Size = UDim2.new(0, 60, 0, 60)
     IconFrame.ClipsDescendants = true
 
-    IconCorner.CornerRadius = UDim.new(0, 10)
+    IconCorner.CornerRadius = UDim.new(0, 12)
     IconCorner.Name = "IconCorner"
     IconCorner.Parent = IconFrame
 
@@ -214,13 +208,6 @@ function lib:Window(text, preset, closebind, iconImage)
     IconImage.ImageColor3 = PresetColor
     IconImage.ScaleType = Enum.ScaleType.Crop
     
-    IconRotate.Name = "IconRotate"
-    IconRotate.Parent = IconFrame
-    IconRotate.BackgroundTransparency = 1
-    IconRotate.Size = UDim2.new(1, 0, 1, 0)
-    IconRotate.Image = "rbxassetid://0"
-    IconRotate.Visible = false
-
     IconButton.Name = "IconButton"
     IconButton.Parent = IconFrame
     IconButton.BackgroundTransparency = 1
@@ -230,18 +217,29 @@ function lib:Window(text, preset, closebind, iconImage)
     ScriptName.Name = "ScriptName"
     ScriptName.Parent = Header
     ScriptName.BackgroundTransparency = 1
-    ScriptName.Position = UDim2.new(0.13, 0, 0.2, 0)
-    ScriptName.Size = UDim2.new(0, 200, 0, 25)
+    ScriptName.Position = UDim2.new(0.13, 0, 0.15, 0)
+    ScriptName.Size = UDim2.new(0, 200, 0, 30)
     ScriptName.Font = Enum.Font.GothamBold
     ScriptName.Text = text
     ScriptName.TextColor3 = Color3.fromRGB(255, 255, 255)
-    ScriptName.TextSize = 18
+    ScriptName.TextSize = 20
     ScriptName.TextXAlignment = Enum.TextXAlignment.Left
+
+    SubTitle.Name = "SubTitle"
+    SubTitle.Parent = Header
+    SubTitle.BackgroundTransparency = 1
+    SubTitle.Position = UDim2.new(0.13, 0, 0.55, 0)
+    SubTitle.Size = UDim2.new(0, 200, 0, 20)
+    SubTitle.Font = Enum.Font.Gotham
+    SubTitle.Text = subtext or ""
+    SubTitle.TextColor3 = Color3.fromRGB(180, 180, 180)
+    SubTitle.TextSize = 14
+    SubTitle.TextXAlignment = Enum.TextXAlignment.Left
 
     PlayerFrame.Name = "PlayerFrame"
     PlayerFrame.Parent = Header
     PlayerFrame.BackgroundTransparency = 1
-    PlayerFrame.Position = UDim2.new(0.75, 0, 0.15, 0)
+    PlayerFrame.Position = UDim2.new(0.75, 0, 0.2, 0)
     PlayerFrame.Size = UDim2.new(0, 140, 0, 50)
 
     PlayerAvatarBorder.Name = "PlayerAvatarBorder"
@@ -305,7 +303,7 @@ function lib:Window(text, preset, closebind, iconImage)
     SearchIcon.BackgroundTransparency = 1
     SearchIcon.Position = UDim2.new(0.05, 0, 0.25, 0)
     SearchIcon.Size = UDim2.new(0, 20, 0, 20)
-    SearchIcon.Image = "rbxassetid://3926307971"
+    SearchIcon.Image = "rbxassetid://3926305904"
     SearchIcon.ImageRectOffset = Vector2.new(964, 324)
     SearchIcon.ImageRectSize = Vector2.new(36, 36)
     SearchIcon.ImageColor3 = Color3.fromRGB(150, 150, 150)
@@ -316,7 +314,7 @@ function lib:Window(text, preset, closebind, iconImage)
     SearchBox.Position = UDim2.new(0.2, 0, 0, 0)
     SearchBox.Size = UDim2.new(0.75, 0, 1, 0)
     SearchBox.Font = Enum.Font.Gotham
-    SearchBox.PlaceholderText = "搜索功能..."
+    SearchBox.PlaceholderText = "搜索..."
     SearchBox.PlaceholderColor3 = Color3.fromRGB(150, 150, 150)
     SearchBox.Text = ""
     SearchBox.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -327,7 +325,7 @@ function lib:Window(text, preset, closebind, iconImage)
     TabHold.Parent = Main
     TabHold.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
     TabHold.BorderSizePixel = 0
-    TabHold.Position = UDim2.new(0.03, 0, 0.2, 0)
+    TabHold.Position = UDim2.new(0.03, 0, 0.22, 0)
     TabHold.Size = UDim2.new(0.94, 0, 0, 45)
     TabHold.CanvasSize = UDim2.new(0, 0, 0, 0)
     TabHold.ScrollBarThickness = 3
@@ -366,7 +364,6 @@ function lib:Window(text, preset, closebind, iconImage)
     TabFolder.Name = "TabFolder"
     TabFolder.Parent = Main
 
-    -- 创建缩小后的图标（单独浮动）
     MinimizedIcon.Name = "MinimizedIcon"
     MinimizedIcon.Parent = ui
     MinimizedIcon.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
@@ -381,67 +378,85 @@ function lib:Window(text, preset, closebind, iconImage)
     MinimizedIconCorner.Name = "MinimizedIconCorner"
     MinimizedIconCorner.Parent = MinimizedIcon
 
+    ToggleButton.Name = "ToggleButton"
+    ToggleButton.Parent = Main
+    ToggleButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    ToggleButton.Position = UDim2.new(-0.1, 0, 0.1, 0)
+    ToggleButton.Size = UDim2.new(0, 40, 0, 40)
+    ToggleButton.Image = "rbxassetid://3926305904"
+    ToggleButton.ImageRectOffset = Vector2.new(124, 204)
+    ToggleButton.ImageRectSize = Vector2.new(36, 36)
+    ToggleButton.ImageColor3 = PresetColor
+    
+    ToggleButtonCorner.CornerRadius = UDim.new(0, 8)
+    ToggleButtonCorner.Name = "ToggleButtonCorner"
+    ToggleButtonCorner.Parent = ToggleButton
+    
+    ToggleButtonGlow.Name = "ToggleButtonGlow"
+    ToggleButtonGlow.Parent = ToggleButton
+    ToggleButtonGlow.BackgroundTransparency = 1
+    ToggleButtonGlow.Size = UDim2.new(1, 0, 1, 0)
+    ToggleButtonGlow.Image = "rbxassetid://4996893990"
+    ToggleButtonGlow.ImageColor3 = PresetColor
+    ToggleButtonGlow.ImageTransparency = 0.7
+    ToggleButtonGlow.ScaleType = Enum.ScaleType.Fit
+
     Main:TweenSize(originalSize, Enum.EasingDirection.Out, Enum.EasingStyle.Quart, .6, true)
 
     MakeDraggable(DragFrame, Main)
-    MakeDraggable(MinimizedIcon, MinimizedIcon) -- 让缩小后的图标也可拖动
+    MakeDraggable(MinimizedIcon, MinimizedIcon)
 
-    -- 图标旋转动画
-    coroutine.wrap(function()
-        while wait(0.016) do -- 60 FPS
-            IconImage.Rotation = IconImage.Rotation + 2
-            if MinimizedIcon.Visible then
-                MinimizedIcon.Rotation = MinimizedIcon.Rotation + 2
-            end
+    local function toggleUI()
+        if isOpen then
+            isOpen = false
+            TweenService:Create(
+                ToggleButton,
+                TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                {Rotation = 180}
+            ):Play()
+            
+            TweenService:Create(
+                Main,
+                TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
+                {Size = UDim2.new(0, 0, 0, 0)}
+            ):Play()
+            
+            wait(0.3)
+            Main.Visible = false
+        else
+            isOpen = true
+            Main.Visible = true
+            TweenService:Create(
+                ToggleButton,
+                TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                {Rotation = 0}
+            ):Play()
+            
+            Main:TweenSize(
+                originalSize,
+                Enum.EasingDirection.Out,
+                Enum.EasingStyle.Elastic,
+                0.8,
+                true
+            )
         end
-    end)()
+    end
 
-    local uitoggled = false
+    ToggleButton.MouseButton1Click:Connect(toggleUI)
+
     UserInputService.InputBegan:Connect(
         function(io, p)
             if io.KeyCode == CloseBind then
-                if uitoggled == false then
-                    uitoggled = true
-                
-                    Main:TweenSize(
-                        UDim2.new(0, 0, 0, 0), 
-                        Enum.EasingDirection.Out, 
-                        Enum.EasingStyle.Quart, 
-                        .6, 
-                        true, 
-                        function()
-                            Main.Visible = false
-                        end
-                    )
-                    
-                else
-                    uitoggled = false
-                    Main.Visible = true
-                
-                    Main:TweenSize(
-                        originalSize,
-                        Enum.EasingDirection.Out,
-                        Enum.EasingStyle.Quart,
-                        .6,
-                        true
-                    )
-                end
+                toggleUI()
             end
         end
     )
 
-    -- 图标点击事件 - 动态缩小/展开
     IconButton.MouseButton1Click:Connect(function()
         if not isMinimized then
             isMinimized = true
-            
-            -- 保存主窗口位置
             local mainPosition = Main.Position
-            
-            -- 创建缩小动画
             local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
-            
-            -- 缩小主窗口到图标位置
             local iconScreenPos = IconFrame.AbsolutePosition
             local iconSize = IconFrame.AbsoluteSize
             
@@ -455,16 +470,11 @@ function lib:Window(text, preset, closebind, iconImage)
             )
             
             wait(0.3)
-            
-            -- 隐藏主窗口，显示浮动图标
             Main.Visible = false
-            
-            -- 设置浮动图标的位置和大小
             MinimizedIcon.Position = UDim2.new(0, iconScreenPos.X, 0, iconScreenPos.Y)
             MinimizedIcon.Size = UDim2.new(0, iconSize.X, 0, iconSize.Y)
             MinimizedIcon.Visible = true
             
-            -- 浮动图标放大动画
             MinimizedIcon:TweenSize(
                 minimizedSize,
                 Enum.EasingDirection.Out,
@@ -475,14 +485,8 @@ function lib:Window(text, preset, closebind, iconImage)
             
         else
             isMinimized = false
-            
-            -- 获取浮动图标位置
-            local minimizedPos = MinimizedIcon.Position
-            local minimizedAbsPos = MinimizedIcon.AbsolutePosition
-            
-            -- 浮动图标缩小动画
             MinimizedIcon:TweenSize(
-                UDim2.new(0, 50, 0, 50),
+                UDim2.new(0, 60, 0, 60),
                 Enum.EasingDirection.Out,
                 Enum.EasingStyle.Quart,
                 0.3,
@@ -490,16 +494,12 @@ function lib:Window(text, preset, closebind, iconImage)
             )
             
             wait(0.2)
-            
-            -- 隐藏浮动图标，显示主窗口
             MinimizedIcon.Visible = false
             Main.Visible = true
-            
-            -- 设置主窗口到浮动图标位置
+            local minimizedPos = MinimizedIcon.Position
             Main.Position = minimizedPos
-            Main.Size = UDim2.new(0, 50, 0, 50)
+            Main.Size = UDim2.new(0, 60, 0, 60)
             
-            -- 主窗口展开动画
             Main:TweenSizeAndPosition(
                 originalSize,
                 UDim2.new(0.5, 0, 0.5, 0),
@@ -509,17 +509,14 @@ function lib:Window(text, preset, closebind, iconImage)
                 true
             )
         end
-    end)
+    })
 
-    -- 浮动图标点击事件
     MinimizedIcon.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
             if isMinimized then
                 isMinimized = false
-                
-                -- 浮动图标缩小动画
                 MinimizedIcon:TweenSize(
-                    UDim2.new(0, 50, 0, 50),
+                    UDim2.new(0, 60, 0, 60),
                     Enum.EasingDirection.Out,
                     Enum.EasingStyle.Quart,
                     0.3,
@@ -527,17 +524,12 @@ function lib:Window(text, preset, closebind, iconImage)
                 )
                 
                 wait(0.2)
-                
-                -- 隐藏浮动图标，显示主窗口
                 MinimizedIcon.Visible = false
                 Main.Visible = true
-                
-                -- 设置主窗口到浮动图标位置
                 local minimizedPos = MinimizedIcon.Position
                 Main.Position = minimizedPos
-                Main.Size = UDim2.new(0, 50, 0, 50)
+                Main.Size = UDim2.new(0, 60, 0, 60)
                 
-                -- 主窗口展开动画
                 Main:TweenSizeAndPosition(
                     originalSize,
                     UDim2.new(0.5, 0, 0.5, 0),
@@ -548,10 +540,14 @@ function lib:Window(text, preset, closebind, iconImage)
                 )
             end
         end
-    end)
+    })
 
     function lib:ChangePresetColor(toch)
         PresetColor = toch
+        IconImage.ImageColor3 = toch
+        MinimizedIcon.ImageColor3 = toch
+        ToggleButton.ImageColor3 = toch
+        ToggleButtonGlow.ImageColor3 = toch
     end
 
     function lib:Notification(texttitle, textdesc, textbtn)
@@ -758,6 +754,8 @@ function lib:Window(text, preset, closebind, iconImage)
         )()
 
         local Tab = Instance.new("ScrollingFrame")
+        local TabBorder = Instance.new("Frame")
+        local TabBorderCorner = Instance.new("UICorner")
         local TabCorner = Instance.new("UICorner")
         local TabLayout = Instance.new("UIListLayout")
         local TabPadding = Instance.new("UIPadding")
@@ -767,12 +765,23 @@ function lib:Window(text, preset, closebind, iconImage)
         Tab.Active = true
         Tab.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
         Tab.BorderSizePixel = 0
-        Tab.Position = UDim2.new(0.03, 0, 0.3, 0)
-        Tab.Size = UDim2.new(0.94, 0, 0.65, 0)
+        Tab.Position = UDim2.new(0.03, 0, 0.32, 0)
+        Tab.Size = UDim2.new(0.94, 0, 0.63, 0)
         Tab.CanvasSize = UDim2.new(0, 0, 0, 0)
         Tab.ScrollBarThickness = 3
         Tab.Visible = false
         Tab.ScrollBarImageColor3 = Color3.fromRGB(60, 60, 60)
+
+        TabBorder.Name = "TabBorder"
+        TabBorder.Parent = Tab
+        TabBorder.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+        TabBorder.BorderSizePixel = 0
+        TabBorder.Size = UDim2.new(1, 0, 1, 0)
+        TabBorder.ZIndex = 0
+
+        TabBorderCorner.CornerRadius = UDim.new(0, 12)
+        TabBorderCorner.Name = "TabBorderCorner"
+        TabBorderCorner.Parent = TabBorder
 
         TabCorner.CornerRadius = UDim.new(0, 10)
         TabCorner.Name = "TabCorner"
@@ -1012,7 +1021,7 @@ function lib:Window(text, preset, closebind, iconImage)
             Toggle.Name = "Toggle"
             Toggle.Parent = Tab
             Toggle.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-            Toggle.Size = UDim2.new(1, 0, 0, 50) -- 扩大开关高度
+            Toggle.Size = UDim2.new(1, 0, 0, 50)
             Toggle.AutoButtonColor = false
             Toggle.Font = Enum.Font.SourceSans
             Toggle.Text = ""
@@ -1039,7 +1048,7 @@ function lib:Window(text, preset, closebind, iconImage)
             ToggleFrame.Parent = Toggle
             ToggleFrame.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
             ToggleFrame.Position = UDim2.new(0.85, 0, 0.3, 0)
-            ToggleFrame.Size = UDim2.new(0, 50, 0, 25) -- 扩大开关框架
+            ToggleFrame.Size = UDim2.new(0, 50, 0, 25)
 
             ToggleFrameCorner.CornerRadius = UDim.new(1, 0)
             ToggleFrameCorner.Name = "ToggleFrameCorner"
@@ -1060,7 +1069,7 @@ function lib:Window(text, preset, closebind, iconImage)
             ToggleCircle.Parent = ToggleFrame
             ToggleCircle.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
             ToggleCircle.Position = UDim2.new(0.05, 0, 0.1, 0)
-            ToggleCircle.Size = UDim2.new(0, 20, 0, 20) -- 扩大开关圆点
+            ToggleCircle.Size = UDim2.new(0, 20, 0, 20)
 
             ToggleCircleCorner.CornerRadius = UDim.new(1, 0)
             ToggleCircleCorner.Name = "ToggleCircleCorner"
@@ -1292,7 +1301,6 @@ function lib:Window(text, preset, closebind, iconImage)
                         SliderValue.Text = tostring(value)
                         pcall(callback, value)
                         
-                        -- 动态更新滑块值
                         CurrentValueFrame:TweenSize(
                             UDim2.new(relativeX, 0, 1, 0),
                             Enum.EasingDirection.Out,
@@ -1321,7 +1329,6 @@ function lib:Window(text, preset, closebind, iconImage)
                         pcall(callback, value)
                     end
                     
-                    -- 丝滑的滑块移动
                     SlideCircle:TweenPosition(
                         pos,
                         Enum.EasingDirection.Out,
@@ -1330,7 +1337,6 @@ function lib:Window(text, preset, closebind, iconImage)
                         true
                     )
                     
-                    -- 滑块发光效果
                     TweenService:Create(
                         SlideCircleGlow,
                         TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
@@ -1343,14 +1349,12 @@ function lib:Window(text, preset, closebind, iconImage)
                 if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
                     dragging = true
                     
-                    -- 滑块点击效果
                     TweenService:Create(
                         SlideCircle,
                         TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
                         {Size = UDim2.new(0, 28, 0, 28)}
                     ):Play()
                     
-                    -- 开始拖动时立即更新
                     move(input)
                 end
             end
@@ -1359,7 +1363,6 @@ function lib:Window(text, preset, closebind, iconImage)
                 if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
                     dragging = false
                     
-                    -- 滑块恢复效果
                     TweenService:Create(
                         SlideCircle,
                         TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
@@ -2414,10 +2417,150 @@ function lib:Window(text, preset, closebind, iconImage)
 
             Tab.CanvasSize = UDim2.new(0, 0, 0, TabLayout.AbsoluteContentSize.Y)
         end
+        
+        function tabcontent:List(text, items, callback)
+            local List = Instance.new("Frame")
+            local ListCorner = Instance.new("UICorner")
+            local ListTitle = Instance.new("TextLabel")
+            local ListScroller = Instance.new("ScrollingFrame")
+            local ListLayout = Instance.new("UIListLayout")
+            local ListPadding = Instance.new("UIPadding")
+            
+            List.Name = "List"
+            List.Parent = Tab
+            List.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+            List.Size = UDim2.new(1, 0, 0, 150)
+            
+            ListCorner.CornerRadius = UDim.new(0, 8)
+            ListCorner.Name = "ListCorner"
+            ListCorner.Parent = List
+            
+            ListTitle.Name = "ListTitle"
+            ListTitle.Parent = List
+            ListTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+            ListTitle.BackgroundTransparency = 1.000
+            ListTitle.Position = UDim2.new(0.03, 0, 0, 0)
+            ListTitle.Size = UDim2.new(0.94, 0, 0, 30)
+            ListTitle.Font = Enum.Font.GothamBold
+            ListTitle.Text = text
+            ListTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+            ListTitle.TextSize = 16
+            ListTitle.TextXAlignment = Enum.TextXAlignment.Left
+            
+            ListScroller.Name = "ListScroller"
+            ListScroller.Parent = List
+            ListScroller.Active = true
+            ListScroller.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+            ListScroller.BorderSizePixel = 0
+            ListScroller.Position = UDim2.new(0.03, 0, 0.25, 0)
+            ListScroller.Size = UDim2.new(0.94, 0, 0.7, 0)
+            ListScroller.CanvasSize = UDim2.new(0, 0, 0, 0)
+            ListScroller.ScrollBarThickness = 3
+            ListScroller.ScrollBarImageColor3 = Color3.fromRGB(60, 60, 60)
+            
+            ListLayout.Name = "ListLayout"
+            ListLayout.Parent = ListScroller
+            ListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+            ListLayout.Padding = UDim.new(0, 5)
+            
+            ListPadding.Name = "ListPadding"
+            ListPadding.Parent = ListScroller
+            ListPadding.PaddingLeft = UDim.new(0, 5)
+            ListPadding.PaddingRight = UDim.new(0, 5)
+            ListPadding.PaddingTop = UDim.new(0, 5)
+            
+            for _, item in pairs(items) do
+                local ListItem = Instance.new("TextButton")
+                local ListItemCorner = Instance.new("UICorner")
+                local ListItemTitle = Instance.new("TextLabel")
+                local ListItemHover = Instance.new("Frame")
+                local ListItemHoverCorner = Instance.new("UICorner")
+                
+                ListItem.Name = "ListItem"
+                ListItem.Parent = ListScroller
+                ListItem.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
+                ListItem.Size = UDim2.new(1, -10, 0, 35)
+                ListItem.AutoButtonColor = false
+                ListItem.Font = Enum.Font.SourceSans
+                ListItem.Text = ""
+                ListItem.TextColor3 = Color3.fromRGB(0, 0, 0)
+                ListItem.TextSize = 14.000
+                
+                ListItemCorner.CornerRadius = UDim.new(0, 6)
+                ListItemCorner.Name = "ListItemCorner"
+                ListItemCorner.Parent = ListItem
+                
+                ListItemTitle.Name = "ListItemTitle"
+                ListItemTitle.Parent = ListItem
+                ListItemTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                ListItemTitle.BackgroundTransparency = 1.000
+                ListItemTitle.Size = UDim2.new(1, 0, 1, 0)
+                ListItemTitle.Font = Enum.Font.Gotham
+                ListItemTitle.Text = item
+                ListItemTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+                ListItemTitle.TextSize = 14.000
+                ListItemTitle.ZIndex = 2
+                
+                ListItemHover.Name = "ListItemHover"
+                ListItemHover.Parent = ListItem
+                ListItemHover.BackgroundColor3 = PresetColor
+                ListItemHover.BackgroundTransparency = 0.9
+                ListItemHover.Size = UDim2.new(0, 0, 1, 0)
+                ListItemHover.ZIndex = 1
+                
+                ListItemHoverCorner.CornerRadius = UDim.new(0, 6)
+                ListItemHoverCorner.Name = "ListItemHoverCorner"
+                ListItemHoverCorner.Parent = ListItemHover
+                
+                ListItem.MouseEnter:Connect(function()
+                    TweenService:Create(
+                        ListItem,
+                        TweenInfo.new(.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {BackgroundColor3 = Color3.fromRGB(65, 65, 65)}
+                    ):Play()
+                    TweenService:Create(
+                        ListItemHover,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {Size = UDim2.new(1, 0, 1, 0)}
+                    ):Play()
+                end)
+                
+                ListItem.MouseLeave:Connect(function()
+                    TweenService:Create(
+                        ListItem,
+                        TweenInfo.new(.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {BackgroundColor3 = Color3.fromRGB(55, 55, 55)}
+                    ):Play()
+                    TweenService:Create(
+                        ListItemHover,
+                        TweenInfo.new(.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {Size = UDim2.new(0, 0, 1, 0)}
+                    ):Play()
+                end)
+                
+                ListItem.MouseButton1Click:Connect(function()
+                    TweenService:Create(
+                        ListItemHover,
+                        TweenInfo.new(.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {BackgroundTransparency = 0.7}
+                    ):Play()
+                    wait(0.1)
+                    TweenService:Create(
+                        ListItemHover,
+                        TweenInfo.new(.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {BackgroundTransparency = 0.9}
+                    ):Play()
+                    pcall(callback, item)
+                end)
+                
+                ListScroller.CanvasSize = UDim2.new(0, 0, 0, ListLayout.AbsoluteContentSize.Y + 10)
+            end
+            
+            Tab.CanvasSize = UDim2.new(0, 0, 0, TabLayout.AbsoluteContentSize.Y)
+        end
 
         TabHold.CanvasSize = UDim2.new(0, TabHoldLayout.AbsoluteContentSize.X + 20, 0, 0)
         
-      
         SearchBox:GetPropertyChangedSignal("Text"):Connect(function()
             local searchText = string.lower(SearchBox.Text)
             local foundAny = false
@@ -2430,7 +2573,6 @@ function lib:Window(text, preset, closebind, iconImage)
                             tabBtn.Visible = true
                             foundAny = true
                         else
-                       
                             local tabText = string.lower(tabTitle.Text)
                             local keywords = {}
                             for word in string.gmatch(searchText, "%S+") do
@@ -2452,11 +2594,10 @@ function lib:Window(text, preset, closebind, iconImage)
                 end
             end
             
-            -- 如果没有找到任何匹配项，显示提示
             if searchText ~= "" and not foundAny then
                 SearchBox.PlaceholderText = "未找到匹配项"
             else
-                SearchBox.PlaceholderText = "搜索功能..."
+                SearchBox.PlaceholderText = "搜索..."
             end
         end)
 
