@@ -10,6 +10,7 @@ local CloseBind = Enum.KeyCode.RightControl
 local function getDeviceType()
     local viewportSize = workspace.CurrentCamera.ViewportSize
     local aspectRatio = viewportSize.X / viewportSize.Y
+    
     if aspectRatio > 1.5 then
         return "Desktop"
     elseif aspectRatio > 1.2 then
@@ -51,9 +52,11 @@ coroutine.wrap(
         while wait() do
             lib.RainbowColorValue = lib.RainbowColorValue + 1 / 255
             lib.HueSelectionPosition = lib.HueSelectionPosition + 1
+
             if lib.RainbowColorValue >= 1 then
                 lib.RainbowColorValue = 0
             end
+
             if lib.HueSelectionPosition == 80 then
                 lib.HueSelectionPosition = 0
             end
@@ -66,6 +69,7 @@ local function MakeDraggable(topbarobject, object)
     local DragInput = nil
     local DragStart = nil
     local StartPosition = nil
+
     local function Update(input)
         local Delta = input.Position - DragStart
         local pos =
@@ -77,12 +81,14 @@ local function MakeDraggable(topbarobject, object)
         )
         object.Position = pos
     end
+
     topbarobject.InputBegan:Connect(
         function(input)
             if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
                 Dragging = true
                 DragStart = input.Position
                 StartPosition = object.Position
+
                 input.Changed:Connect(
                     function()
                         if input.UserInputState == Enum.UserInputState.End then
@@ -93,6 +99,7 @@ local function MakeDraggable(topbarobject, object)
             end
         end
     )
+
     topbarobject.InputChanged:Connect(
         function(input)
             if
@@ -103,6 +110,7 @@ local function MakeDraggable(topbarobject, object)
             end
         end
     )
+
     UserInputService.InputChanged:Connect(
         function(input)
             if input == DragInput and Dragging then
@@ -117,9 +125,9 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
     PresetColor = preset or Color3.fromRGB(255, 255, 255)
     local fs = false
     local isMinimized = false
+    local uiVisible = true
     local originalSize = getUISize()
     local minimizedSize = getMinimizedSize()
-    local isOpen = true
     
     local Main = Instance.new("Frame")
     local MainCorner = Instance.new("UICorner")
@@ -127,7 +135,6 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
     local TabHoldLayout = Instance.new("UIListLayout")
     local TabHolderPadding = Instance.new("UIPadding")
     local Title = Instance.new("TextLabel")
-    local SubTitle = Instance.new("TextLabel")
     local TabFolder = Instance.new("Folder")
     local DragFrame = Instance.new("Frame")
     local Header = Instance.new("Frame")
@@ -136,8 +143,11 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
     local IconFrame = Instance.new("Frame")
     local IconCorner = Instance.new("UICorner")
     local IconImage = Instance.new("ImageLabel")
-    local IconButton = Instance.new("TextButton")
+    local ToggleButton = Instance.new("TextButton")
+    local ToggleButtonCorner = Instance.new("UICorner")
+    local ToggleIcon = Instance.new("ImageLabel")
     local ScriptName = Instance.new("TextLabel")
+    local ScriptSubtitle = Instance.new("TextLabel")
     local PlayerFrame = Instance.new("Frame")
     local PlayerCorner = Instance.new("UICorner")
     local PlayerAvatar = Instance.new("ImageLabel")
@@ -152,9 +162,6 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
     local SearchIcon = Instance.new("ImageLabel")
     local MinimizedIcon = Instance.new("ImageLabel")
     local MinimizedIconCorner = Instance.new("UICorner")
-    local ToggleButton = Instance.new("ImageButton")
-    local ToggleButtonCorner = Instance.new("UICorner")
-    local ToggleButtonGlow = Instance.new("ImageLabel")
 
     Main.Name = "Main"
     Main.Parent = ui
@@ -174,7 +181,7 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
     Header.Parent = Main
     Header.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
     Header.BorderSizePixel = 0
-    Header.Size = UDim2.new(1, 0, 0, 90)
+    Header.Size = UDim2.new(1, 0, 0, 80)
     
     HeaderCorner.CornerRadius = UDim.new(0, 15)
     HeaderCorner.Name = "HeaderCorner"
@@ -190,13 +197,13 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
 
     IconFrame.Name = "IconFrame"
     IconFrame.Parent = Header
-    IconFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    IconFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     IconFrame.BackgroundTransparency = 0
     IconFrame.Position = UDim2.new(0.02, 0, 0.15, 0)
-    IconFrame.Size = UDim2.new(0, 60, 0, 60)
+    IconFrame.Size = UDim2.new(0, 50, 0, 50)
     IconFrame.ClipsDescendants = true
 
-    IconCorner.CornerRadius = UDim.new(0, 12)
+    IconCorner.CornerRadius = UDim.new(0, 10)
     IconCorner.Name = "IconCorner"
     IconCorner.Parent = IconFrame
 
@@ -207,39 +214,56 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
     IconImage.Image = iconImage or "rbxassetid://0"
     IconImage.ImageColor3 = PresetColor
     IconImage.ScaleType = Enum.ScaleType.Crop
+
+    ToggleButton.Name = "ToggleButton"
+    ToggleButton.Parent = Main
+    ToggleButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    ToggleButton.Position = UDim2.new(-0.12, 0, 0.1, 0)
+    ToggleButton.Size = UDim2.new(0, 40, 0, 40)
+    ToggleButton.AutoButtonColor = false
+    ToggleButton.Text = ""
     
-    IconButton.Name = "IconButton"
-    IconButton.Parent = IconFrame
-    IconButton.BackgroundTransparency = 1
-    IconButton.Size = UDim2.new(1, 0, 1, 0)
-    IconButton.Text = ""
+    ToggleButtonCorner.CornerRadius = UDim.new(0, 8)
+    ToggleButtonCorner.Name = "ToggleButtonCorner"
+    ToggleButtonCorner.Parent = ToggleButton
+    
+    ToggleIcon.Name = "ToggleIcon"
+    ToggleIcon.Parent = ToggleButton
+    ToggleIcon.AnchorPoint = Vector2.new(0.5, 0.5)
+    ToggleIcon.BackgroundTransparency = 1
+    ToggleIcon.Position = UDim2.new(0.5, 0, 0.5, 0)
+    ToggleIcon.Size = UDim2.new(0.7, 0, 0.7, 0)
+    ToggleIcon.Image = "rbxassetid://3926305904"
+    ToggleIcon.ImageRectOffset = Vector2.new(324, 364)
+    ToggleIcon.ImageRectSize = Vector2.new(36, 36)
+    ToggleIcon.ImageColor3 = Color3.fromRGB(255, 255, 255)
 
     ScriptName.Name = "ScriptName"
     ScriptName.Parent = Header
     ScriptName.BackgroundTransparency = 1
-    ScriptName.Position = UDim2.new(0.13, 0, 0.15, 0)
-    ScriptName.Size = UDim2.new(0, 200, 0, 30)
+    ScriptName.Position = UDim2.new(0.13, 0, 0.2, 0)
+    ScriptName.Size = UDim2.new(0, 200, 0, 25)
     ScriptName.Font = Enum.Font.GothamBold
     ScriptName.Text = text
     ScriptName.TextColor3 = Color3.fromRGB(255, 255, 255)
-    ScriptName.TextSize = 20
+    ScriptName.TextSize = 18
     ScriptName.TextXAlignment = Enum.TextXAlignment.Left
 
-    SubTitle.Name = "SubTitle"
-    SubTitle.Parent = Header
-    SubTitle.BackgroundTransparency = 1
-    SubTitle.Position = UDim2.new(0.13, 0, 0.55, 0)
-    SubTitle.Size = UDim2.new(0, 200, 0, 20)
-    SubTitle.Font = Enum.Font.Gotham
-    SubTitle.Text = subtext or ""
-    SubTitle.TextColor3 = Color3.fromRGB(180, 180, 180)
-    SubTitle.TextSize = 14
-    SubTitle.TextXAlignment = Enum.TextXAlignment.Left
+    ScriptSubtitle.Name = "ScriptSubtitle"
+    ScriptSubtitle.Parent = Header
+    ScriptSubtitle.BackgroundTransparency = 1
+    ScriptSubtitle.Position = UDim2.new(0.13, 0, 0.55, 0)
+    ScriptSubtitle.Size = UDim2.new(0, 200, 0, 20)
+    ScriptSubtitle.Font = Enum.Font.Gotham
+    ScriptSubtitle.Text = subtext or ""
+    ScriptSubtitle.TextColor3 = Color3.fromRGB(180, 180, 180)
+    ScriptSubtitle.TextSize = 12
+    ScriptSubtitle.TextXAlignment = Enum.TextXAlignment.Left
 
     PlayerFrame.Name = "PlayerFrame"
     PlayerFrame.Parent = Header
     PlayerFrame.BackgroundTransparency = 1
-    PlayerFrame.Position = UDim2.new(0.75, 0, 0.2, 0)
+    PlayerFrame.Position = UDim2.new(0.75, 0, 0.15, 0)
     PlayerFrame.Size = UDim2.new(0, 140, 0, 50)
 
     PlayerAvatarBorder.Name = "PlayerAvatarBorder"
@@ -290,7 +314,7 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
 
     SearchFrame.Name = "SearchFrame"
     SearchFrame.Parent = Header
-    SearchFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    SearchFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     SearchFrame.Position = UDim2.new(0.4, 0, 0.15, 0)
     SearchFrame.Size = UDim2.new(0, 200, 0, 40)
 
@@ -303,10 +327,10 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
     SearchIcon.BackgroundTransparency = 1
     SearchIcon.Position = UDim2.new(0.05, 0, 0.25, 0)
     SearchIcon.Size = UDim2.new(0, 20, 0, 20)
-    SearchIcon.Image = "rbxassetid://3926305904"
+    SearchIcon.Image = "rbxassetid://3926307971"
     SearchIcon.ImageRectOffset = Vector2.new(964, 324)
     SearchIcon.ImageRectSize = Vector2.new(36, 36)
-    SearchIcon.ImageColor3 = Color3.fromRGB(150, 150, 150)
+    SearchIcon.ImageColor3 = Color3.fromRGB(200, 200, 200)
 
     SearchBox.Name = "SearchBox"
     SearchBox.Parent = SearchFrame
@@ -378,158 +402,120 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
     MinimizedIconCorner.Name = "MinimizedIconCorner"
     MinimizedIconCorner.Parent = MinimizedIcon
 
-    ToggleButton.Name = "ToggleButton"
-    ToggleButton.Parent = Main
-    ToggleButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-    ToggleButton.Position = UDim2.new(-0.1, 0, 0.1, 0)
-    ToggleButton.Size = UDim2.new(0, 40, 0, 40)
-    ToggleButton.Image = "rbxassetid://3926305904"
-    ToggleButton.ImageRectOffset = Vector2.new(124, 204)
-    ToggleButton.ImageRectSize = Vector2.new(36, 36)
-    ToggleButton.ImageColor3 = PresetColor
-    
-    ToggleButtonCorner.CornerRadius = UDim.new(0, 8)
-    ToggleButtonCorner.Name = "ToggleButtonCorner"
-    ToggleButtonCorner.Parent = ToggleButton
-    
-    ToggleButtonGlow.Name = "ToggleButtonGlow"
-    ToggleButtonGlow.Parent = ToggleButton
-    ToggleButtonGlow.BackgroundTransparency = 1
-    ToggleButtonGlow.Size = UDim2.new(1, 0, 1, 0)
-    ToggleButtonGlow.Image = "rbxassetid://4996893990"
-    ToggleButtonGlow.ImageColor3 = PresetColor
-    ToggleButtonGlow.ImageTransparency = 0.7
-    ToggleButtonGlow.ScaleType = Enum.ScaleType.Fit
-
     Main:TweenSize(originalSize, Enum.EasingDirection.Out, Enum.EasingStyle.Quart, .6, true)
 
     MakeDraggable(DragFrame, Main)
     MakeDraggable(MinimizedIcon, MinimizedIcon)
 
-    local function toggleUI()
-        if isOpen then
-            isOpen = false
-            TweenService:Create(
-                ToggleButton,
-                TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-                {Rotation = 180}
-            ):Play()
-            
-            TweenService:Create(
-                Main,
-                TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
-                {Size = UDim2.new(0, 0, 0, 0)}
-            ):Play()
-            
-            wait(0.3)
-            Main.Visible = false
-        else
-            isOpen = true
-            Main.Visible = true
-            TweenService:Create(
-                ToggleButton,
-                TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-                {Rotation = 0}
-            ):Play()
-            
-            Main:TweenSize(
-                originalSize,
-                Enum.EasingDirection.Out,
-                Enum.EasingStyle.Elastic,
-                0.8,
-                true
-            )
-        end
-    end
-
-    ToggleButton.MouseButton1Click:Connect(toggleUI)
-
+    local uitoggled = false
     UserInputService.InputBegan:Connect(
         function(io, p)
             if io.KeyCode == CloseBind then
-                toggleUI()
+                if uitoggled == false then
+                    uitoggled = true
+                    Main:TweenSize(
+                        UDim2.new(0, 0, 0, 0), 
+                        Enum.EasingDirection.Out, 
+                        Enum.EasingStyle.Quart, 
+                        .6, 
+                        true, 
+                        function()
+                            Main.Visible = false
+                        end
+                    )
+                else
+                    uitoggled = false
+                    Main.Visible = true
+                    Main:TweenSize(
+                        originalSize,
+                        Enum.EasingDirection.Out,
+                        Enum.EasingStyle.Quart,
+                        .6,
+                        true
+                    )
+                end
             end
         end
     )
 
-    IconButton.MouseButton1Click:Connect(function()
-        if not isMinimized then
-            isMinimized = true
-            local mainPosition = Main.Position
-            local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
-            local iconScreenPos = IconFrame.AbsolutePosition
-            local iconSize = IconFrame.AbsoluteSize
-            
-            Main:TweenSizeAndPosition(
-                UDim2.new(0, iconSize.X, 0, iconSize.Y),
-                UDim2.new(0, iconScreenPos.X, 0, iconScreenPos.Y),
+    ToggleButton.MouseButton1Click:Connect(function()
+        if uiVisible then
+            uiVisible = false
+            TweenService:Create(
+                ToggleIcon,
+                TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                {Rotation = 180}
+            ):Play()
+            Main:TweenSize(
+                UDim2.new(0, 0, 0, 0),
                 Enum.EasingDirection.Out,
-                Enum.EasingStyle.Quart,
-                0.5,
-                true
+                Enum.EasingStyle.Back,
+                0.6,
+                true,
+                function()
+                    Main.Visible = false
+                end
             )
-            
-            wait(0.3)
-            Main.Visible = false
-            MinimizedIcon.Position = UDim2.new(0, iconScreenPos.X, 0, iconScreenPos.Y)
-            MinimizedIcon.Size = UDim2.new(0, iconSize.X, 0, iconSize.Y)
-            MinimizedIcon.Visible = true
-            
-            MinimizedIcon:TweenSize(
-                minimizedSize,
-                Enum.EasingDirection.Out,
-                Enum.EasingStyle.Elastic,
-                0.8,
-                true
-            )
-            
         else
-            isMinimized = false
-            MinimizedIcon:TweenSize(
-                UDim2.new(0, 60, 0, 60),
-                Enum.EasingDirection.Out,
-                Enum.EasingStyle.Quart,
-                0.3,
-                true
-            )
-            
-            wait(0.2)
-            MinimizedIcon.Visible = false
+            uiVisible = true
             Main.Visible = true
-            local minimizedPos = MinimizedIcon.Position
-            Main.Position = minimizedPos
-            Main.Size = UDim2.new(0, 60, 0, 60)
-            
-            Main:TweenSizeAndPosition(
+            TweenService:Create(
+                ToggleIcon,
+                TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                {Rotation = 0}
+            ):Play()
+            Main:TweenSize(
                 originalSize,
-                UDim2.new(0.5, 0, 0.5, 0),
                 Enum.EasingDirection.Out,
-                Enum.EasingStyle.Elastic,
-                0.8,
+                Enum.EasingStyle.Back,
+                0.6,
                 true
             )
         end
-    })
+    end)
 
-    MinimizedIcon.InputBegan:Connect(function(input)
+    IconFrame.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            if isMinimized then
+            if not isMinimized then
+                isMinimized = true
+                local iconScreenPos = IconFrame.AbsolutePosition
+                local iconSize = IconFrame.AbsoluteSize
+                
+                Main:TweenSizeAndPosition(
+                    UDim2.new(0, iconSize.X, 0, iconSize.Y),
+                    UDim2.new(0, iconScreenPos.X, 0, iconScreenPos.Y),
+                    Enum.EasingDirection.Out,
+                    Enum.EasingStyle.Quart,
+                    0.5,
+                    true
+                )
+                
+                wait(0.3)
+                Main.Visible = false
+                MinimizedIcon.Position = UDim2.new(0, iconScreenPos.X, 0, iconScreenPos.Y)
+                MinimizedIcon.Size = UDim2.new(0, iconSize.X, 0, iconSize.Y)
+                MinimizedIcon.Visible = true
+                MinimizedIcon:TweenSize(
+                    minimizedSize,
+                    Enum.EasingDirection.Out,
+                    Enum.EasingStyle.Elastic,
+                    0.8,
+                    true
+                )
+            else
                 isMinimized = false
                 MinimizedIcon:TweenSize(
-                    UDim2.new(0, 60, 0, 60),
+                    UDim2.new(0, 50, 0, 50),
                     Enum.EasingDirection.Out,
                     Enum.EasingStyle.Quart,
                     0.3,
                     true
                 )
-                
                 wait(0.2)
                 MinimizedIcon.Visible = false
                 Main.Visible = true
-                local minimizedPos = MinimizedIcon.Position
-                Main.Position = minimizedPos
-                Main.Size = UDim2.new(0, 60, 0, 60)
-                
+                Main.Position = MinimizedIcon.Position
+                Main.Size = UDim2.new(0, 50, 0, 50)
                 Main:TweenSizeAndPosition(
                     originalSize,
                     UDim2.new(0.5, 0, 0.5, 0),
@@ -540,14 +526,38 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
                 )
             end
         end
-    })
+    end)
+
+    MinimizedIcon.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            if isMinimized then
+                isMinimized = false
+                MinimizedIcon:TweenSize(
+                    UDim2.new(0, 50, 0, 50),
+                    Enum.EasingDirection.Out,
+                    Enum.EasingStyle.Quart,
+                    0.3,
+                    true
+                )
+                wait(0.2)
+                MinimizedIcon.Visible = false
+                Main.Visible = true
+                Main.Position = MinimizedIcon.Position
+                Main.Size = UDim2.new(0, 50, 0, 50)
+                Main:TweenSizeAndPosition(
+                    originalSize,
+                    UDim2.new(0.5, 0, 0.5, 0),
+                    Enum.EasingDirection.Out,
+                    Enum.EasingStyle.Elastic,
+                    0.8,
+                    true
+                )
+            end
+        end
+    end)
 
     function lib:ChangePresetColor(toch)
         PresetColor = toch
-        IconImage.ImageColor3 = toch
-        MinimizedIcon.ImageColor3 = toch
-        ToggleButton.ImageColor3 = toch
-        ToggleButtonGlow.ImageColor3 = toch
     end
 
     function lib:Notification(texttitle, textdesc, textbtn)
@@ -685,17 +695,13 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
                     .6,
                     true
                 )
-
                 wait(0.4)
-
                 TweenService:Create(
                     NotificationHold,
                     TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
                     {BackgroundTransparency = 1}
                 ):Play()
-
                 wait(.3)
-
                 NotificationHold:Destroy()
             end
         )
@@ -711,7 +717,7 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
 
         TabBtn.Name = "TabBtn"
         TabBtn.Parent = TabHold
-        TabBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+        TabBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
         TabBtn.BackgroundTransparency = 0
         TabBtn.Size = UDim2.new(0, 100, 0, 35)
         TabBtn.AutoButtonColor = false
@@ -741,9 +747,9 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
         TabBtnIndicator.Position = UDim2.new(0, 0, 0.9, 0)
         TabBtnIndicator.Size = UDim2.new(1, 0, 0, 3)
 
+        TabBtnIndicatorCorner.CornerRadius = UDim.new(0, 2)
         TabBtnIndicatorCorner.Name = "TabBtnIndicatorCorner"
         TabBtnIndicatorCorner.Parent = TabBtnIndicator
-        TabBtnIndicatorCorner.CornerRadius = UDim.new(0, 2)
 
         coroutine.wrap(
             function()
@@ -754,8 +760,6 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
         )()
 
         local Tab = Instance.new("ScrollingFrame")
-        local TabBorder = Instance.new("Frame")
-        local TabBorderCorner = Instance.new("UICorner")
         local TabCorner = Instance.new("UICorner")
         local TabLayout = Instance.new("UIListLayout")
         local TabPadding = Instance.new("UIPadding")
@@ -771,17 +775,6 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
         Tab.ScrollBarThickness = 3
         Tab.Visible = false
         Tab.ScrollBarImageColor3 = Color3.fromRGB(60, 60, 60)
-
-        TabBorder.Name = "TabBorder"
-        TabBorder.Parent = Tab
-        TabBorder.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-        TabBorder.BorderSizePixel = 0
-        TabBorder.Size = UDim2.new(1, 0, 1, 0)
-        TabBorder.ZIndex = 0
-
-        TabBorderCorner.CornerRadius = UDim.new(0, 12)
-        TabBorderCorner.Name = "TabBorderCorner"
-        TabBorderCorner.Parent = TabBorder
 
         TabCorner.CornerRadius = UDim.new(0, 10)
         TabCorner.Name = "TabCorner"
@@ -801,7 +794,7 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
         if fs == false then
             fs = true
             TabBtn.BackgroundTransparency = 0
-            TabBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+            TabBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
             TabTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
             TabBtnIndicator.Visible = true
             Tab.Visible = true
@@ -828,7 +821,7 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
                         TweenService:Create(
                             v,
                             TweenInfo.new(.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-                            {BackgroundColor3 = Color3.fromRGB(50, 50, 50)}
+                            {BackgroundColor3 = Color3.fromRGB(40, 40, 40)}
                         ):Play()
                         TweenService:Create(
                             v.TabTitle,
@@ -847,7 +840,7 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
                 TweenService:Create(
                     TabBtn,
                     TweenInfo.new(.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-                    {BackgroundColor3 = Color3.fromRGB(60, 60, 60)}
+                    {BackgroundColor3 = Color3.fromRGB(50, 50, 50)}
                 ):Play()
                 TweenService:Create(
                     TabTitle,
@@ -911,7 +904,7 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
 
             Button.Name = "Button"
             Button.Parent = Tab
-            Button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+            Button.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
             Button.Size = UDim2.new(1, 0, 0, 45)
             Button.AutoButtonColor = false
             Button.Font = Enum.Font.SourceSans
@@ -924,8 +917,8 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
             ButtonCorner.Parent = Button
 
             ButtonGradient.Color = ColorSequence.new{
-                ColorSequenceKeypoint.new(0.00, Color3.fromRGB(50, 50, 50)),
-                ColorSequenceKeypoint.new(1.00, Color3.fromRGB(45, 45, 45))
+                ColorSequenceKeypoint.new(0.00, Color3.fromRGB(45, 45, 45)),
+                ColorSequenceKeypoint.new(1.00, Color3.fromRGB(40, 40, 40))
             }
             ButtonGradient.Rotation = 90
             ButtonGradient.Name = "ButtonGradient"
@@ -960,7 +953,7 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
                     TweenService:Create(
                         Button,
                         TweenInfo.new(.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-                        {BackgroundColor3 = Color3.fromRGB(60, 60, 60)}
+                        {BackgroundColor3 = Color3.fromRGB(50, 50, 50)}
                     ):Play()
                     TweenService:Create(
                         ButtonHoverEffect,
@@ -975,7 +968,7 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
                     TweenService:Create(
                         Button,
                         TweenInfo.new(.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-                        {BackgroundColor3 = Color3.fromRGB(50, 50, 50)}
+                        {BackgroundColor3 = Color3.fromRGB(40, 40, 40)}
                     ):Play()
                     TweenService:Create(
                         ButtonHoverEffect,
@@ -1020,7 +1013,7 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
 
             Toggle.Name = "Toggle"
             Toggle.Parent = Tab
-            Toggle.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+            Toggle.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
             Toggle.Size = UDim2.new(1, 0, 0, 50)
             Toggle.AutoButtonColor = false
             Toggle.Font = Enum.Font.SourceSans
@@ -1046,7 +1039,7 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
 
             ToggleFrame.Name = "ToggleFrame"
             ToggleFrame.Parent = Toggle
-            ToggleFrame.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+            ToggleFrame.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
             ToggleFrame.Position = UDim2.new(0.85, 0, 0.3, 0)
             ToggleFrame.Size = UDim2.new(0, 50, 0, 25)
 
@@ -1080,7 +1073,6 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
                     if toggled == false then
                         toggled = true
                         ToggleGlow.Visible = true
-                        
                         TweenService:Create(
                             ToggleFrame,
                             TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
@@ -1108,7 +1100,7 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
                         TweenService:Create(
                             ToggleFrame,
                             TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-                            {BackgroundColor3 = Color3.fromRGB(70, 70, 70)}
+                            {BackgroundColor3 = Color3.fromRGB(60, 60, 60)}
                         ):Play()
                         TweenService:Create(
                             ToggleCircle,
@@ -1177,7 +1169,7 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
 
             Slider.Name = "Slider"
             Slider.Parent = Tab
-            Slider.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+            Slider.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
             Slider.Size = UDim2.new(1, 0, 0, 80)
 
             SliderCorner.CornerRadius = UDim.new(0, 8)
@@ -1210,7 +1202,7 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
 
             SlideFrame.Name = "SlideFrame"
             SlideFrame.Parent = Slider
-            SlideFrame.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+            SlideFrame.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
             SlideFrame.BorderSizePixel = 0
             SlideFrame.Position = UDim2.new(0.03, 0, 0.6, 0)
             SlideFrame.Size = UDim2.new(0.94, 0, 0, 8)
@@ -1220,8 +1212,8 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
             SlideFrameCorner.Parent = SlideFrame
 
             SlideFrameGradient.Color = ColorSequence.new{
-                ColorSequenceKeypoint.new(0.00, Color3.fromRGB(80, 80, 80)),
-                ColorSequenceKeypoint.new(1.00, Color3.fromRGB(70, 70, 70))
+                ColorSequenceKeypoint.new(0.00, Color3.fromRGB(70, 70, 70)),
+                ColorSequenceKeypoint.new(1.00, Color3.fromRGB(60, 60, 60))
             }
             SlideFrameGradient.Rotation = 90
             SlideFrameGradient.Name = "SlideFrameGradient"
@@ -1296,11 +1288,9 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
                         local slideSize = SlideFrame.AbsoluteSize
                         local relativeX = math.clamp((input.Position.X - slidePos.X) / slideSize.X, 0, 1)
                         pos = UDim2.new(relativeX, -12, -0.5, 0)
-                        
                         local value = math.floor(relativeX * (max - min) + min)
                         SliderValue.Text = tostring(value)
                         pcall(callback, value)
-                        
                         CurrentValueFrame:TweenSize(
                             UDim2.new(relativeX, 0, 1, 0),
                             Enum.EasingDirection.Out,
@@ -1321,14 +1311,11 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
                             0,
                             8
                         )
-                        
                         CurrentValueFrame:TweenSize(valuePos, Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.05, true)
-                        
                         local value = math.floor(((pos.X.Scale * max) / max) * (max - min) + min)
                         SliderValue.Text = tostring(value)
                         pcall(callback, value)
                     end
-                    
                     SlideCircle:TweenPosition(
                         pos,
                         Enum.EasingDirection.Out,
@@ -1336,7 +1323,6 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
                         0.05,
                         true
                     )
-                    
                     TweenService:Create(
                         SlideCircleGlow,
                         TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
@@ -1348,13 +1334,11 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
             local function beginDrag(input)
                 if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
                     dragging = true
-                    
                     TweenService:Create(
                         SlideCircle,
                         TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
                         {Size = UDim2.new(0, 28, 0, 28)}
                     ):Play()
-                    
                     move(input)
                 end
             end
@@ -1362,13 +1346,11 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
             local function endDrag(input)
                 if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
                     dragging = false
-                    
                     TweenService:Create(
                         SlideCircle,
                         TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
                         {Size = UDim2.new(0, 24, 0, 24)}
                     ):Play()
-                    
                     TweenService:Create(
                         SlideCircleGlow,
                         TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
@@ -1380,7 +1362,6 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
             SlideCircle.InputBegan:Connect(beginDrag)
             TouchInput.InputBegan:Connect(beginDrag)
             SlideFrame.InputBegan:Connect(beginDrag)
-            
             SlideCircle.InputEnded:Connect(endDrag)
             TouchInput.InputEnded:Connect(endDrag)
             SlideFrame.InputEnded:Connect(endDrag)
@@ -1412,7 +1393,7 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
 
             Dropdown.Name = "Dropdown"
             Dropdown.Parent = Tab
-            Dropdown.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+            Dropdown.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
             Dropdown.ClipsDescendants = true
             Dropdown.Size = UDim2.new(1, 0, 0, 45)
 
@@ -1637,7 +1618,7 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
 
             Colorpicker.Name = "Colorpicker"
             Colorpicker.Parent = Tab
-            Colorpicker.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+            Colorpicker.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
             Colorpicker.ClipsDescendants = true
             Colorpicker.Size = UDim2.new(1, 0, 0, 45)
 
@@ -1854,7 +1835,6 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
             local function UpdateColorPicker(nope)
                 BoxColor.BackgroundColor3 = Color3.fromHSV(ColorH, ColorS, ColorV)
                 Color.BackgroundColor3 = Color3.fromHSV(ColorH, 1, 1)
-
                 pcall(callback, BoxColor.BackgroundColor3)
             end
 
@@ -1972,7 +1952,6 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
                             TweenInfo.new(.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
                             {BackgroundColor3 = Color3.fromRGB(100, 100, 100)}
                         ):Play()
-                        
                         OldToggleColor = BoxColor.BackgroundColor3
                         OldColor = Color.BackgroundColor3
                         OldColorSelectionPosition = ColorSelection.Position
@@ -1981,10 +1960,8 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
                         while RainbowColorPicker do
                             BoxColor.BackgroundColor3 = Color3.fromHSV(lib.RainbowColorValue, 1, 1)
                             Color.BackgroundColor3 = Color3.fromHSV(lib.RainbowColorValue, 1, 1)
-
                             ColorSelection.Position = UDim2.new(1, 0, 0, 0)
                             HueSelection.Position = UDim2.new(0.5, 0, 0, lib.HueSelectionPosition)
-
                             pcall(callback, BoxColor.BackgroundColor3)
                             wait()
                         end
@@ -1994,13 +1971,10 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
                             TweenInfo.new(.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
                             {BackgroundColor3 = Color3.fromRGB(60, 60, 60)}
                         ):Play()
-
                         BoxColor.BackgroundColor3 = OldToggleColor
                         Color.BackgroundColor3 = OldColor
-
                         ColorSelection.Position = OldColorSelectionPosition
                         HueSelection.Position = OldHueSelectionPosition
-
                         pcall(callback, BoxColor.BackgroundColor3)
                     end
                 end
@@ -2057,7 +2031,7 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
 
             Label.Name = "Label"
             Label.Parent = Tab
-            Label.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+            Label.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
             Label.Size = UDim2.new(1, 0, 0, 40)
 
             LabelCorner.CornerRadius = UDim.new(0, 8)
@@ -2089,7 +2063,7 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
 
             Textbox.Name = "Textbox"
             Textbox.Parent = Tab
-            Textbox.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+            Textbox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
             Textbox.ClipsDescendants = true
             Textbox.Size = UDim2.new(1, 0, 0, 50)
 
@@ -2111,7 +2085,7 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
 
             TextboxFrame.Name = "TextboxFrame"
             TextboxFrame.Parent = Textbox
-            TextboxFrame.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+            TextboxFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
             TextboxFrame.Position = UDim2.new(0.55, 0, 0.2, 0)
             TextboxFrame.Size = UDim2.new(0.4, 0, 0.6, 0)
 
@@ -2120,8 +2094,8 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
             TextboxFrameCorner.Parent = TextboxFrame
 
             TextboxFrameGradient.Color = ColorSequence.new{
-                ColorSequenceKeypoint.new(0.00, Color3.fromRGB(65, 65, 65)),
-                ColorSequenceKeypoint.new(1.00, Color3.fromRGB(60, 60, 60))
+                ColorSequenceKeypoint.new(0.00, Color3.fromRGB(55, 55, 55)),
+                ColorSequenceKeypoint.new(1.00, Color3.fromRGB(50, 50, 50))
             }
             TextboxFrameGradient.Rotation = 90
             TextboxFrameGradient.Name = "TextboxFrameGradient"
@@ -2155,7 +2129,7 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
                 TweenService:Create(
                     TextboxFrame,
                     TweenInfo.new(.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-                    {BackgroundColor3 = Color3.fromRGB(70, 70, 70)}
+                    {BackgroundColor3 = Color3.fromRGB(60, 60, 60)}
                 ):Play()
             end)
             
@@ -2163,7 +2137,7 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
                 TweenService:Create(
                     TextboxFrame,
                     TweenInfo.new(.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-                    {BackgroundColor3 = Color3.fromRGB(60, 60, 60)}
+                    {BackgroundColor3 = Color3.fromRGB(50, 50, 50)}
                 ):Play()
             end)
             
@@ -2181,7 +2155,7 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
 
             Bind.Name = "Bind"
             Bind.Parent = Tab
-            Bind.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+            Bind.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
             Bind.Size = UDim2.new(1, 0, 0, 45)
 
             BindCorner.CornerRadius = UDim.new(0, 8)
@@ -2202,7 +2176,7 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
 
             BindBtn.Name = "BindBtn"
             BindBtn.Parent = Bind
-            BindBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+            BindBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
             BindBtn.Position = UDim2.new(0.65, 0, 0.2, 0)
             BindBtn.Size = UDim2.new(0.3, 0, 0.6, 0)
             BindBtn.AutoButtonColor = false
@@ -2252,7 +2226,7 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
                 TweenService:Create(
                     BindBtn,
                     TweenInfo.new(.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-                    {BackgroundColor3 = Color3.fromRGB(70, 70, 70)}
+                    {BackgroundColor3 = Color3.fromRGB(60, 60, 60)}
                 ):Play()
             end)
             
@@ -2260,7 +2234,7 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
                 TweenService:Create(
                     BindBtn,
                     TweenInfo.new(.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-                    {BackgroundColor3 = Color3.fromRGB(60, 60, 60)}
+                    {BackgroundColor3 = Color3.fromRGB(50, 50, 50)}
                 ):Play()
             end)
         end
@@ -2276,7 +2250,7 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
 
             Keybind.Name = "Keybind"
             Keybind.Parent = Tab
-            Keybind.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+            Keybind.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
             Keybind.Size = UDim2.new(1, 0, 0, 45)
 
             KeybindCorner.CornerRadius = UDim.new(0, 8)
@@ -2297,7 +2271,7 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
 
             KeybindDisplay.Name = "KeybindDisplay"
             KeybindDisplay.Parent = Keybind
-            KeybindDisplay.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+            KeybindDisplay.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
             KeybindDisplay.Position = UDim2.new(0.65, 0, 0.2, 0)
             KeybindDisplay.Size = UDim2.new(0.3, 0, 0.6, 0)
             KeybindDisplay.AutoButtonColor = false
@@ -2335,7 +2309,7 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
                 TweenService:Create(
                     KeybindDisplay,
                     TweenInfo.new(.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-                    {BackgroundColor3 = Color3.fromRGB(70, 70, 70)}
+                    {BackgroundColor3 = Color3.fromRGB(60, 60, 60)}
                 ):Play()
             end)
             
@@ -2343,7 +2317,7 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
                 TweenService:Create(
                     KeybindDisplay,
                     TweenInfo.new(.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-                    {BackgroundColor3 = Color3.fromRGB(60, 60, 60)}
+                    {BackgroundColor3 = Color3.fromRGB(50, 50, 50)}
                 ):Play()
             end)
 
@@ -2358,7 +2332,7 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
 
             Paragraph.Name = "Paragraph"
             Paragraph.Parent = Tab
-            Paragraph.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+            Paragraph.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
             Paragraph.Size = UDim2.new(1, 0, 0, 80)
 
             ParagraphCorner.CornerRadius = UDim.new(0, 8)
@@ -2419,17 +2393,24 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
         end
         
         function tabcontent:List(text, items, callback)
+            local ListOpen = false
+            local SelectedItem = items[1] or ""
+            
             local List = Instance.new("Frame")
             local ListCorner = Instance.new("UICorner")
             local ListTitle = Instance.new("TextLabel")
-            local ListScroller = Instance.new("ScrollingFrame")
+            local ListBtn = Instance.new("TextButton")
+            local ListDisplay = Instance.new("TextLabel")
+            local ArrowImg = Instance.new("ImageLabel")
+            local ListHolder = Instance.new("ScrollingFrame")
             local ListLayout = Instance.new("UIListLayout")
             local ListPadding = Instance.new("UIPadding")
             
             List.Name = "List"
             List.Parent = Tab
-            List.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-            List.Size = UDim2.new(1, 0, 0, 150)
+            List.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+            List.ClipsDescendants = true
+            List.Size = UDim2.new(1, 0, 0, 45)
             
             ListCorner.CornerRadius = UDim.new(0, 8)
             ListCorner.Name = "ListCorner"
@@ -2440,121 +2421,202 @@ function lib:Window(text, subtext, preset, closebind, iconImage)
             ListTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
             ListTitle.BackgroundTransparency = 1.000
             ListTitle.Position = UDim2.new(0.03, 0, 0, 0)
-            ListTitle.Size = UDim2.new(0.94, 0, 0, 30)
-            ListTitle.Font = Enum.Font.GothamBold
+            ListTitle.Size = UDim2.new(0.6, 0, 1, 0)
+            ListTitle.Font = Enum.Font.Gotham
             ListTitle.Text = text
             ListTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
-            ListTitle.TextSize = 16
+            ListTitle.TextSize = 14.000
             ListTitle.TextXAlignment = Enum.TextXAlignment.Left
             
-            ListScroller.Name = "ListScroller"
-            ListScroller.Parent = List
-            ListScroller.Active = true
-            ListScroller.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-            ListScroller.BorderSizePixel = 0
-            ListScroller.Position = UDim2.new(0.03, 0, 0.25, 0)
-            ListScroller.Size = UDim2.new(0.94, 0, 0.7, 0)
-            ListScroller.CanvasSize = UDim2.new(0, 0, 0, 0)
-            ListScroller.ScrollBarThickness = 3
-            ListScroller.ScrollBarImageColor3 = Color3.fromRGB(60, 60, 60)
+            ListBtn.Name = "ListBtn"
+            ListBtn.Parent = List
+            ListBtn.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+            ListBtn.BackgroundTransparency = 1.000
+            ListBtn.Size = UDim2.new(1, 0, 0, 45)
+            ListBtn.Font = Enum.Font.SourceSans
+            ListBtn.Text = ""
+            ListBtn.TextColor3 = Color3.fromRGB(0, 0, 0)
+            ListBtn.TextSize = 14.000
+            
+            ListDisplay.Name = "ListDisplay"
+            ListDisplay.Parent = List
+            ListDisplay.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+            ListDisplay.BackgroundTransparency = 1.000
+            ListDisplay.Position = UDim2.new(0.65, 0, 0, 0)
+            ListDisplay.Size = UDim2.new(0.3, 0, 1, 0)
+            ListDisplay.Font = Enum.Font.Gotham
+            ListDisplay.Text = SelectedItem
+            ListDisplay.TextColor3 = PresetColor
+            ListDisplay.TextSize = 14.000
+            ListDisplay.TextXAlignment = Enum.TextXAlignment.Right
+            
+            ArrowImg.Name = "ArrowImg"
+            ArrowImg.Parent = ListDisplay
+            ArrowImg.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+            ArrowImg.BackgroundTransparency = 1.000
+            ArrowImg.Position = UDim2.new(1.1, 0, 0.2, 0)
+            ArrowImg.Size = UDim2.new(0, 25, 0, 25)
+            ArrowImg.Image = "rbxassetid://6031091004"
+            ArrowImg.ImageColor3 = Color3.fromRGB(200, 200, 200)
+            
+            ListHolder.Name = "ListHolder"
+            ListHolder.Parent = List
+            ListHolder.Active = true
+            ListHolder.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+            ListHolder.BorderSizePixel = 0
+            ListHolder.Position = UDim2.new(0, 0, 1, 5)
+            ListHolder.Size = UDim2.new(1, 0, 0, 0)
+            ListHolder.CanvasSize = UDim2.new(0, 0, 0, 0)
+            ListHolder.ScrollBarThickness = 3
+            ListHolder.Visible = false
             
             ListLayout.Name = "ListLayout"
-            ListLayout.Parent = ListScroller
+            ListLayout.Parent = ListHolder
             ListLayout.SortOrder = Enum.SortOrder.LayoutOrder
             ListLayout.Padding = UDim.new(0, 5)
             
             ListPadding.Name = "ListPadding"
-            ListPadding.Parent = ListScroller
+            ListPadding.Parent = ListHolder
             ListPadding.PaddingLeft = UDim.new(0, 5)
             ListPadding.PaddingRight = UDim.new(0, 5)
             ListPadding.PaddingTop = UDim.new(0, 5)
             
-            for _, item in pairs(items) do
-                local ListItem = Instance.new("TextButton")
-                local ListItemCorner = Instance.new("UICorner")
-                local ListItemTitle = Instance.new("TextLabel")
-                local ListItemHover = Instance.new("Frame")
-                local ListItemHoverCorner = Instance.new("UICorner")
+            coroutine.wrap(function()
+                while wait() do
+                    ListDisplay.TextColor3 = PresetColor
+                end
+            end)()
+            
+            for i, v in next, items do
+                local ItemBtn = Instance.new("TextButton")
+                local ItemCorner = Instance.new("UICorner")
+                local ItemTitle = Instance.new("TextLabel")
                 
-                ListItem.Name = "ListItem"
-                ListItem.Parent = ListScroller
-                ListItem.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
-                ListItem.Size = UDim2.new(1, -10, 0, 35)
-                ListItem.AutoButtonColor = false
-                ListItem.Font = Enum.Font.SourceSans
-                ListItem.Text = ""
-                ListItem.TextColor3 = Color3.fromRGB(0, 0, 0)
-                ListItem.TextSize = 14.000
+                ItemBtn.Name = "ItemBtn"
+                ItemBtn.Parent = ListHolder
+                ItemBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+                ItemBtn.Size = UDim2.new(1, -10, 0, 35)
+                ItemBtn.AutoButtonColor = false
+                ItemBtn.Font = Enum.Font.SourceSans
+                ItemBtn.Text = ""
+                ItemBtn.TextColor3 = Color3.fromRGB(0, 0, 0)
+                ItemBtn.TextSize = 14.000
                 
-                ListItemCorner.CornerRadius = UDim.new(0, 6)
-                ListItemCorner.Name = "ListItemCorner"
-                ListItemCorner.Parent = ListItem
+                ItemCorner.CornerRadius = UDim.new(0, 6)
+                ItemCorner.Name = "ItemCorner"
+                ItemCorner.Parent = ItemBtn
                 
-                ListItemTitle.Name = "ListItemTitle"
-                ListItemTitle.Parent = ListItem
-                ListItemTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-                ListItemTitle.BackgroundTransparency = 1.000
-                ListItemTitle.Size = UDim2.new(1, 0, 1, 0)
-                ListItemTitle.Font = Enum.Font.Gotham
-                ListItemTitle.Text = item
-                ListItemTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
-                ListItemTitle.TextSize = 14.000
-                ListItemTitle.ZIndex = 2
+                ItemTitle.Name = "ItemTitle"
+                ItemTitle.Parent = ItemBtn
+                ItemTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                ItemTitle.BackgroundTransparency = 1.000
+                ItemTitle.Size = UDim2.new(1, 0, 1, 0)
+                ItemTitle.Font = Enum.Font.Gotham
+                ItemTitle.Text = v
+                ItemTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+                ItemTitle.TextSize = 14.000
                 
-                ListItemHover.Name = "ListItemHover"
-                ListItemHover.Parent = ListItem
-                ListItemHover.BackgroundColor3 = PresetColor
-                ListItemHover.BackgroundTransparency = 0.9
-                ListItemHover.Size = UDim2.new(0, 0, 1, 0)
-                ListItemHover.ZIndex = 1
-                
-                ListItemHoverCorner.CornerRadius = UDim.new(0, 6)
-                ListItemHoverCorner.Name = "ListItemHoverCorner"
-                ListItemHoverCorner.Parent = ListItemHover
-                
-                ListItem.MouseEnter:Connect(function()
+                ItemBtn.MouseEnter:Connect(function()
                     TweenService:Create(
-                        ListItem,
-                        TweenInfo.new(.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-                        {BackgroundColor3 = Color3.fromRGB(65, 65, 65)}
-                    ):Play()
-                    TweenService:Create(
-                        ListItemHover,
+                        ItemBtn,
                         TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-                        {Size = UDim2.new(1, 0, 1, 0)}
+                        {BackgroundColor3 = Color3.fromRGB(60, 60, 60)}
                     ):Play()
                 end)
                 
-                ListItem.MouseLeave:Connect(function()
+                ItemBtn.MouseLeave:Connect(function()
                     TweenService:Create(
-                        ListItem,
-                        TweenInfo.new(.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-                        {BackgroundColor3 = Color3.fromRGB(55, 55, 55)}
-                    ):Play()
-                    TweenService:Create(
-                        ListItemHover,
-                        TweenInfo.new(.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-                        {Size = UDim2.new(0, 0, 1, 0)}
+                        ItemBtn,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {BackgroundColor3 = Color3.fromRGB(50, 50, 50)}
                     ):Play()
                 end)
                 
-                ListItem.MouseButton1Click:Connect(function()
+                ItemBtn.MouseButton1Click:Connect(function()
+                    SelectedItem = v
+                    ListDisplay.Text = v
+                    pcall(callback, v)
+                    
+                    ListOpen = false
+                    List:TweenSize(
+                        UDim2.new(1, 0, 0, 45),
+                        Enum.EasingDirection.Out,
+                        Enum.EasingStyle.Quart,
+                        .2,
+                        true
+                    )
+                    ListHolder:TweenSize(
+                        UDim2.new(1, 0, 0, 0),
+                        Enum.EasingDirection.Out,
+                        Enum.EasingStyle.Quart,
+                        .2,
+                        true
+                    )
                     TweenService:Create(
-                        ListItemHover,
-                        TweenInfo.new(.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-                        {BackgroundTransparency = 0.7}
+                        ArrowImg,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {Rotation = 0}
                     ):Play()
-                    wait(0.1)
-                    TweenService:Create(
-                        ListItemHover,
-                        TweenInfo.new(.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-                        {BackgroundTransparency = 0.9}
-                    ):Play()
-                    pcall(callback, item)
+                    wait(.2)
+                    ListHolder.Visible = false
+                    Tab.CanvasSize = UDim2.new(0, 0, 0, TabLayout.AbsoluteContentSize.Y)
                 end)
                 
-                ListScroller.CanvasSize = UDim2.new(0, 0, 0, ListLayout.AbsoluteContentSize.Y + 10)
+                ListHolder.CanvasSize = UDim2.new(0, 0, 0, ListLayout.AbsoluteContentSize.Y + 10)
             end
+            
+            ListBtn.MouseButton1Click:Connect(function()
+                if ListOpen == false then
+                    ListOpen = true
+                    ListHolder.Visible = true
+                    local totalHeight = math.min(#items * 40 + 10, 150)
+                    List:TweenSize(
+                        UDim2.new(1, 0, 0, 45 + totalHeight),
+                        Enum.EasingDirection.Out,
+                        Enum.EasingStyle.Quart,
+                        .2,
+                        true
+                    )
+                    ListHolder:TweenSize(
+                        UDim2.new(1, 0, 0, totalHeight),
+                        Enum.EasingDirection.Out,
+                        Enum.EasingStyle.Quart,
+                        .2,
+                        true
+                    )
+                    TweenService:Create(
+                        ArrowImg,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {Rotation = 180}
+                    ):Play()
+                    wait(.2)
+                    Tab.CanvasSize = UDim2.new(0, 0, 0, TabLayout.AbsoluteContentSize.Y)
+                else
+                    ListOpen = false
+                    List:TweenSize(
+                        UDim2.new(1, 0, 0, 45),
+                        Enum.EasingDirection.Out,
+                        Enum.EasingStyle.Quart,
+                        .2,
+                        true
+                    )
+                    ListHolder:TweenSize(
+                        UDim2.new(1, 0, 0, 0),
+                        Enum.EasingDirection.Out,
+                        Enum.EasingStyle.Quart,
+                        .2,
+                        true
+                    )
+                    TweenService:Create(
+                        ArrowImg,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {Rotation = 0}
+                    ):Play()
+                    wait(.2)
+                    ListHolder.Visible = false
+                    Tab.CanvasSize = UDim2.new(0, 0, 0, TabLayout.AbsoluteContentSize.Y)
+                end
+            end)
             
             Tab.CanvasSize = UDim2.new(0, 0, 0, TabLayout.AbsoluteContentSize.Y)
         end
